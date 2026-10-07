@@ -15,4 +15,4 @@ window.run=async(from,times)=>{await Promise.all(FONTLOAD.map(f=>document.fonts.
     const b=buildDial(d.def,d.id,null,r);let s='';for(let k=0;k<b.length;k+=8192)s+=String.fromCharCode.apply(null,b.subarray(k,k+8192));out.push({key:d.key,size:b.length,est:dialSize(r),live:isLive(r),b64:btoa(s)});});
   return out;};
 """
-open('ui/harness.html','w',encoding='utf8').write('<!doctype html><meta charset=utf-8><style>'+fonts+'body{margin:0;background:#141518}</style><canvas id=sheet></canvas><script>'+crc+R('engine.js')+R('toons.js')+R('extras.js')+R('extras2.js')+R('qr.js')+R('presets.js')+run+'</script>')
+open('ui/harness.html','w',encoding='utf8').write('<!doctype html><meta charset=utf-8><style>'+fonts+'body{margin:0;background:#141518}</style><canvas id=sheet></canvas><script>'+crc+R('engine.js')+R('toons.js')+R('extras.js')+R('extras2.js')+R('extras3.js')+R('qr.js')+R('presets.js')+run+'</script>')

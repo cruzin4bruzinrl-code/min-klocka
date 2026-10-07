@@ -399,6 +399,7 @@ function showTab(v){
   if(i>=0)$('tabSlide').style.transform='translateX('+(i*100)+'%)';
   document.body.classList.toggle('compact',v==='tools'||v==='log');
   document.body.classList.toggle('side',v==='dials');
+  if(v==='dials'&&window.__galleryReady)setTimeout(()=>paintGrid(nowT(),true),40);
 }
 $('tabs').addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(b)showTab(b.dataset.v);});
 

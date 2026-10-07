@@ -19,30 +19,34 @@ function paintFace(d,cv,t,r){
   else if(d._lv)paintAnalog(d._lv,t,s);
   else if(d.kind==='f'){s.fillStyle='#0c0d12';s.fillRect(0,0,DW,DH);text(s,'EGEN FIL',120,126,13,'pb','#9aa0b4','c',2);text(s,String(d.name).slice(0,22),120,150,10,'pm','#5d6274','c',0);}
   else return false;
-  const c=cv.getContext('2d');c.imageSmoothingQuality='high';c.drawImage(SCR,0,0,cv.width,cv.height);return true;
+  // Rutorna ritas i vanligt minne. Telefonen kan annars tömma dem när grafikminnet tar slut, och då blir de svarta.
+  const c=cv.getContext('2d',{willReadFrequently:true});c.imageSmoothingQuality='high';c.drawImage(SCR,0,0,cv.width,cv.height);return true;
 }
 function loadLive(d){const L=d.lv;if(!L||d._lv)return Promise.resolve();const ld=src=>new Promise(res=>{const im=new Image();im.onload=()=>res(im);im.onerror=()=>res(null);im.src=src;});
   return Promise.all([ld(L.base),ld(L.h[0]),ld(L.m[0]),ld(L.s[0]),ld(L.hub[0])]).then(a=>{if(a.some(x=>!x))return;
     d._lv={base:a[0],h:{img:a[1],px:L.h[1],py:L.h[2]},m:{img:a[2],px:L.m[1],py:L.m[2]},s:{img:a[3],px:L.s[1],py:L.s[2]},hub:{img:a[4],px:L.hub[1],py:L.hub[2]},c:L.c};});}
-function paintGrid(t,all){const H=window.innerHeight,m=t.h*60+t.m;
-  qsa('#dialGrid canvas[data-cv]').forEach(cv=>{const b=cv.getBoundingClientRect();if(b.bottom<-40||b.top>H+40||!b.width)return;const d=cv._d;if(!d)return;
-    if(!all&&!d.live&&cv._m===m&&cv._v===t.ver)return;try{if(paintFace(d,cv,t)){cv._m=m;cv._v=t.ver;}}catch(e){}});}
+let gridMore=0;
+function paintGrid(t,all){const H=window.innerHeight,m=t.h*60+t.m,t0=performance.now();let left=false;clearTimeout(gridMore);
+  qsa('#dialGrid canvas[data-cv]').forEach(cv=>{const b=cv.getBoundingClientRect();if(b.bottom<-60||b.top>H+60||!b.width)return;const d=cv._d;if(!d)return;
+    const fresh=cv._m===undefined;if(!all&&!fresh&&!d.live&&cv._m===m&&cv._v===t.ver)return;
+    // En ruta som aldrig ritats kan ta tid första gången. Hinner inte alla på en gång tas resten strax efter, så att sidan inte hackar.
+    if(fresh&&performance.now()-t0>36){left=true;return;}
+    try{if(paintFace(d,cv,t)){cv._m=m;cv._v=t.ver;}}catch(e){cv._m=m;}});
+  if(left)gridMore=setTimeout(()=>paintGrid(nowT(),false),0);}
 function tick(force){if(document.hidden)return;const t=nowT(),k=t.h+':'+t.m+':'+t.s+':'+t.ver;if(k===lastTick&&force!==true)return;lastTick=k;
   if(document.body.classList.contains('editing')){if(typeof edPaint==='function')edPaint(t);return;}
   try{if(heroDial&&heroCv)paintFace(heroDial,heroCv,t);}catch(e){}
-  if($('view-dials').classList.contains('on'))paintGrid(t,false);}
+  if($('view-dials').classList.contains('on'))paintGrid(t,t.s%5===0);}   // var femte sekund ritas allt som syns om, ifall en ruta har tömts
 function loadMine(){try{MINE=JSON.parse(localStorage.getItem(LSKEY)||'[]')||[];}catch(e){MINE=[];}}
 function saveMine(){try{localStorage.setItem(LSKEY,JSON.stringify(MINE));return true;}catch(e){log('Kunde inte spara i telefonen: '+e.message,'bad');return false;}}
 function allDials(){const dg=DIGITAL.map(d=>Object.assign(d,{gk:'d:'+d.key}));   // de nyaste visas först, men numren i klockan ändras inte
-  return dg.filter(d=>d.fresh).concat(dg.filter(d=>!d.fresh),ANALOG.map(d=>Object.assign(d,{gk:'a:'+d.key,kind:'a',live:true})),MINE.map(d=>Object.assign(d,{gk:'m:'+d.id,kind:'m',desc:d.note||'Egen urtavla.',tested:true,exp:defExp(d.def),live:liveDef(d.def),toon:!!(d.def&&(d.def.deco||[]).some(x=>x.k==='toon'))})));}
+  return dg.filter(d=>d.fresh===2).concat(dg.filter(d=>d.fresh===1),dg.filter(d=>!d.fresh),ANALOG.map(d=>Object.assign(d,{gk:'a:'+d.key,kind:'a',live:true})),MINE.map(d=>Object.assign(d,{gk:'m:'+d.id,kind:'m',desc:d.note||'Egen urtavla.',tested:true,exp:defExp(d.def),live:liveDef(d.def),toon:!!(d.def&&(d.def.deco||[]).some(x=>x.k==='toon'))})));}
 function findDial(gk){return allDials().find(d=>d.gk===gk);}
 function photoOf(def){const s=def&&def.bg&&def.bg.t==='photo'&&def.bg.src;return s?(photoCache[s]||null):null;}
 function ensurePhoto(def){const s=def&&def.bg&&def.bg.t==='photo'&&def.bg.src;if(!s||photoCache[s])return Promise.resolve();
   return new Promise(res=>{const im=new Image();im.onload=()=>{photoCache[s]=im;res();};im.onerror=()=>res();im.src=s;});}
-function thumbOf(d){ // en liten färdig bild per urtavla, som rutan visar tills den ritas levande
-  const t=mk(DW,DH);let ok=false;
-  try{ok=paintFace(d,t,nowT(),d.def?renderDial(d.def,photoOf(d.def)):null);}catch(e){}
-  if(ok)d.tc=t;return d.tc;
+function thumbOf(d){ // rutorna ritas när de syns. Här glöms bara den gamla bilden, så att en ändrad urtavla ritas om.
+  if(d&&d.gk)RC.delete(d.gk);if(d&&d.id!==undefined)RC.delete('m:'+d.id);return null;
 }
 function hint(){if(busy||!cur)return;
   const st=statusOf(cur);
@@ -61,7 +65,7 @@ function renderGrid(){
   if(!list.length&&cat!=='m')h+='<p class="empty">'+(cat==='f'?'Du har inga favoriter än. Välj en urtavla och tryck på Favorit.':cat==='p'?'Inga urtavlor är provade än.':'Här finns inget just nu.')+'</p>';
   if(cat==='m'&&!MINE.length)h+='<p class="empty">Du har inga egna urtavlor än. Tryck på Skapa egen, eller välj en digital urtavla och tryck Redigera.</p>';
   $('dialGrid').innerHTML=h;
-  qsa('#dialGrid canvas[data-cv]').forEach(cv=>{const d=list.find(x=>x.gk===cv.dataset.cv);cv._d=d;if(d&&d.tc)cv.getContext('2d').drawImage(d.tc,0,0);});
+  qsa('#dialGrid canvas[data-cv]').forEach(cv=>{cv._d=list.find(x=>x.gk===cv.dataset.cv);});
   if(window.__galleryReady)paintGrid(nowT(),false);
   qsa('#cats button').forEach(b=>b.classList.toggle('on',b.dataset.c===cat));$('mineTools').hidden=cat!=='m';
 }
@@ -106,10 +110,6 @@ async function initGallery(){
   loadMine();cur=null;renderGrid();
   try{await Promise.all(FONTLOAD.map(f=>document.fonts.load(f,'0123456789ÅÄÖ')));}catch(e){}
   await Promise.all(MINE.map(m=>ensurePhoto(m.def)).concat(ANALOG.map(loadLive)));
-  // rita miniatyrerna lite i taget så att sidan inte hänger sig
-  const todo=allDials().filter(d=>!d.tc);let i=0;
-  await new Promise(done=>{(function step(){const t0=performance.now();while(i<todo.length&&performance.now()-t0<24){try{thumbOf(todo[i]);}catch(e){log('Kunde inte rita '+todo[i].name+': '+e.message,'bad');}i++;}
-    if(i<todo.length)setTimeout(step,0);else done();})();});
   renderGrid();pickDial('d:rutnat',true);window.__galleryReady=true;
   setInterval(tick,200);document.addEventListener('visibilitychange',()=>{lastTick='';tick();});
   let sc=0;const onScroll=()=>{if(sc)return;sc=requestAnimationFrame(()=>{sc=0;if(!document.body.classList.contains('editing'))paintGrid(nowT(),false);});};
