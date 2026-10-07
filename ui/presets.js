@@ -339,5 +339,73 @@ const DIGITAL=[
 ,{key:'lillsekund',name:'Lillsekund',desc:'Experiment: en liten sekundvisare i egen urtavla längst ner.',c1:'#e8dcc0',c2:'#e8452c',exp:true,def:{bg:{t:'grad',c:'#1a2030',c2:'#090c14',a:180},
   deco:[RG(26,'#e8dcc0',1.4,.5,120,208),DT(120,208,2.5,'#e8dcc0'),{k:'numring',r:19,s:7,f:'pb',c:'#e8dcc0',x:120,y:208,list:['60','15','30','45']}],
   els:[TK(60,117,9,'#e8dcc0',{nums:1,ns:17,f:'se'}),vl('day',120,84,20,'se','#e8dcc0',''),HN({style:'taper',hc:'#e8dcc0',mc:'#e8dcc0',sc:'#e8452c',ml:94,sec:1,small:{x:120,y:208,len:21}})]}}
+// ---------- visarna är motivet: figurer med armar, bestick, saxblad, verktyg ----------
+,{key:'dirigenten',name:'Dirigenten',desc:'Han dirigerar tiden: pinnen visar minuten, handen timmen.',c1:'#d8302e',c2:'#3a0d16',toon:true,fresh:true,def:{bg:{t:'grad',c:'#6a1826',c2:'#2a0a12',a:180},
+  deco:[{k:'toon',n:'conductor'}],
+  els:[tm(120,4,28,'pb','#ffffff'),vl('pulse',34,230,20,'pb','#ffffff','PULS'),vl('steps',200,231,17,'pb','#ffffff','STEG'),
+    HN({hs:'finger',ms:'taktpinne',hc:'#20222c',mc:'#fbfbf6',htc:'#ffffff',sec:0,ml:100,hk:.62,w:12})]}}
+,{key:'bestick',name:'Bestick',desc:'Dukat bord: gaffeln visar timmen och kniven minuten.',c1:'#d8302e',c2:'#4ea1ff',toon:true,fresh:true,def:{bg:{t:'solid',c:'#f6f1e6'},
+  deco:[{k:'toon',n:'plate'},R(64,2,112,34,17,'#ffffff',.94),R(22,248,196,36,18,'#ffffff',.94)],
+  els:[tm(120,6,26,'pb','#20222c'),vl('pulse',70,251,17,'pb','#d8302e','PULS'),vl('steps',166,251,17,'pb','#20222c','STEG'),
+    HN({hs:'fork',ms:'knife',hc:'#dfe4ec',mc:'#dfe4ec',mtc:'#3a2a20',sec:0,ml:104,hk:.76})]}}
+,{key:'saxen',name:'Saxen',desc:'Saxens två blad är visarna. Det röda visar timmen.',c1:'#1f7a5a',c2:'#ffe14a',toon:true,fresh:true,def:{bg:{t:'solid',c:'#1f7a5a'},
+  deco:[{k:'toon',n:'cutmat'},R(66,2,108,32,16,'#0f3d2d',.9),R(22,250,196,34,17,'#0f3d2d',.9)],
+  els:[tm(120,5,26,'pb','#ffffff'),vl('day',70,252,17,'pb','#ffe14a','DAG'),vl('battv',166,252,17,'pb','#ffffff','BATT'),
+    HN({hs:'blade',ms:'blade',hc:'#dfe4ec',mc:'#dfe4ec',htc:'#ff5a5f',mtc:'#4ea1ff',sec:0,ml:102,hk:.7})]}}
+,{key:'mustaschen',name:'Mustaschen',desc:'En herre vars mustasch visar vad klockan är.',c1:'#2f8f8a',c2:'#d6ae60',toon:true,fresh:true,def:{bg:{t:'solid',c:'#2f8f8a'},
+  deco:[...Array.from({length:8},(_,k)=>R(k*32+6,0,10,286,0,'#2a827d')),{k:'toon',n:'gent'}],
+  els:[tm(120,20,26,'pb','#ffffff'),vl('pulse',34,234,18,'pb','#ffffff','PULS'),vl('steps',202,236,16,'pb','#ffffff','STEG'),
+    HN({hs:'mustache',ms:'mustache',hc:'#3a2416',mc:'#3a2416',sec:0,ml:90,hk:.72})]}}
+,{key:'ninjan',name:'Ninjan',desc:'Två svärd i natten. Det långa visar minuten.',c1:'#d8302e',c2:'#1b2a52',toon:true,fresh:true,def:{bg:{t:'grad',c:'#1f3060',c2:'#0a0f24',a:180},
+  deco:[...[[24,36],[60,84],[212,150],[30,170],[220,236],[150,24]].map(p=>DT(p[0],p[1],1.6,'#ffffff',.7)),{k:'toon',n:'ninja'}],
+  els:[tm(68,10,28,'pb','#ffffff'),vl('pulse',34,232,18,'pb','#ffffff','PULS'),vl('steps',202,234,16,'pb','#ffffff','STEG'),
+    HN({hs:'katana',ms:'katana',hc:'#e6ebf2',mc:'#e6ebf2',tc:'#20222c',sec:0,ml:106,hk:.66})]}}
+,{key:'trollkarlen',name:'Trollkarlen',desc:'Trollspöet pekar ut minuten och handen timmen.',c1:'#5b3fc4',c2:'#ffd23f',toon:true,fresh:true,def:{bg:{t:'grad',c:'#2c1660',c2:'#0c0620',a:180},
+  deco:[{k:'toon',n:'wizard'}],
+  els:[tm(52,10,24,'pb','#ffffff'),vl('battv',198,10,17,'pb','#ffd23f','BATT',{pct:false}),vl('pulse',32,234,17,'pb','#ffffff','PULS'),vl('steps',206,236,14,'pb','#ffffff','STEG'),
+    HN({hs:'finger',ms:'wand',hc:'#5b3fc4',mc:'#5a3a22',htc:'#ffd2a8',mtc:'#ffd23f',sec:0,ml:102,hk:.6,w:12})]}}
+,{key:'malvakten',name:'Målvakten',desc:'Målvakten sträcker sig efter tiden med handskarna.',c1:'#ff8a3c',c2:'#2f9e52',toon:true,sport:true,fresh:true,def:{bg:{t:'grad',c:'#1f6f8f',c2:'#2f9e7a',a:180},
+  deco:[{k:'toon',n:'keeper'}],
+  els:[tm(120,3,26,'pb','#ffffff'),vl('pulse',38,236,19,'pb','#ffffff','PULS'),vl('steps',200,237,17,'pb','#ffffff','STEG'),
+    HN({hs:'glove',ms:'glove',hc:'#ff8a3c',mc:'#ff8a3c',tc:'#ffffff',sec:0,ml:96,hk:.7,w:13})]}}
+,{key:'kaktusen',name:'Kaktusen',desc:'En glad kaktus som pekar ut tiden med armarna.',c1:'#3fae5a',c2:'#ffd23f',toon:true,fresh:true,def:{bg:{t:'grad',c:'#8fd8ff',c2:'#ffe9b8',a:180},
+  deco:[{k:'toon',n:'cactus'}],
+  els:[tm(60,12,28,'pb','#3a2e18'),vl('pulse',34,234,18,'pb','#3a2e18','PULS'),vl('steps',202,236,16,'pb','#3a2e18','STEG'),
+    HN({hs:'cactus',ms:'cactus',hc:'#3fae5a',mc:'#3fae5a',htc:'#ff6f91',mtc:'#ffb02e',sec:0,ml:94,hk:.68})]}}
+,{key:'snogubben',name:'Snögubben',desc:'Pinnarna är hans armar, och de visar tiden.',c1:'#ffffff',c2:'#1b3a6e',toon:true,fresh:true,def:{bg:{t:'grad',c:'#1f4480',c2:'#0e1c3a',a:180},
+  deco:[...[[24,40],[200,70],[40,130],[214,150],[20,200],[224,210],[176,30],[66,186],[190,196]].map(p=>DT(p[0],p[1],2,'#ffffff',.8)),{k:'toon',n:'snowman'}],
+  els:[tm(46,8,22,'pb','#ffffff'),vl('battv',202,8,17,'pb','#ffffff','BATT',{pct:false}),vl('pulse',30,206,17,'pb','#ffffff','PULS'),vl('steps',208,208,14,'pb','#ffffff','STEG'),
+    HN({hs:'twig',ms:'twig',hc:'#7a4e2a',mc:'#7a4e2a',sec:0,ml:98,hk:.7})]}}
+,{key:'trumman',name:'Trumman',desc:'Trumpinnarna slår an tiden på en virveltrumma.',c1:'#c62f3a',c2:'#e8c48a',toon:true,fresh:true,def:{bg:{t:'grad',c:'#2c2f3a',c2:'#101118',a:180},
+  deco:[{k:'toon',n:'drum'}],
+  els:[tm(120,3,26,'pb','#ffffff'),vl('pulse',52,253,17,'pb','#ff8a94','PULS'),vl('steps',186,253,17,'pb','#ffffff','STEG'),
+    HN({hs:'drumstick',ms:'drumstick',hc:'#e8c48a',mc:'#e8c48a',sec:0,ml:96,hk:.74})]}}
+,{key:'verktyg',name:'Verktyg',desc:'Skiftnyckeln visar timmen och skruvmejseln minuten.',c1:'#ff5a5f',c2:'#c9a878',toon:true,fresh:true,def:{bg:{t:'solid',c:'#c9a878'},
+  deco:[{k:'toon',n:'pegboard'},R(66,2,108,32,16,'#3a2414',.92),R(22,250,196,34,17,'#3a2414',.92)],
+  els:[tm(120,5,26,'pb','#ffffff'),vl('day',70,252,17,'pb','#ffd23f','DAG'),vl('battv',166,252,17,'pb','#ffffff','BATT'),
+    HN({hs:'wrench',ms:'screwdriver',hc:'#c2cad6',mc:'#ff5a5f',mtc:'#ffd23f',sec:1,sc:'#20222c',ml:104,hk:.72})]}}
+// ---------- batteriet som bild ----------
+,{key:'glaset',name:'Glaset',desc:'Saften sjunker i glaset när batteriet tar slut.',c1:'#ff8a1a',c2:'#ffe9c4',toon:true,fresh:true,def:{bg:{t:'grad',c:'#fff0d2',c2:'#ffd9a8',a:180},
+  deco:[R(0,186,240,100,0,'#e39a52'),R(0,186,240,5,0,'#c27d3a'),DT(204,34,20,'#ffd23f',.9)],
+  els:[tm(108,10,44,'pb','#5a2a10'),{k:'batt',x:120,y:82,w:70,h:98,style:'glass'},vl('battv',66,208,24,'pb','#3a1a08','BATT'),vl('steps',166,208,24,'pb','#3a1a08','STEG')]}}
+,{key:'manen',name:'Månen',desc:'Fullmåne vid fullt batteri, nymåne när det är slut.',c1:'#f6f0d4',c2:'#2a3152',fresh:true,def:{bg:{t:'grad',c:'#0b1230',c2:'#04060f',a:180},
+  deco:[...[[20,26],[58,70],[206,30],[222,96],[26,128],[196,140],[42,18],[224,60],[14,84]].map((p,i)=>DT(p[0],p[1],1.2+(i%3)*.5,'#ffffff',.5+(i%3)*.2))],
+  els:[{k:'batt',x:120,y:14,w:74,style:'moon'},tm(120,100,62,'pb','#ffffff'),vl('battv',46,204,20,'pb','#f6f0d4','BATT',{pct:false}),vl('pulse',112,204,20,'pb','#ff8a94','PULS'),vl('steps',184,204,20,'pb','#ffffff','STEG')]}}
+,{key:'isglassen',name:'Isglassen',desc:'Glassen äts upp i takt med batteriet. Till slut är bara pinnen kvar.',c1:'#ff6f91',c2:'#5cc8ff',toon:true,fresh:true,def:{bg:{t:'grad',c:'#c8f0ff',c2:'#ffeef5',a:160},
+  deco:[DT(206,40,5,'#ff6f91',.5),DT(26,30,4,'#ffd23f',.7),DT(216,180,4,'#5cc8ff',.6)],
+  els:[{k:'batt',x:62,y:48,w:56,h:104,style:'popsicle'},tm(162,38,60,'pb','#3a2a5a',{lay:'stack',gap:2}),vl('battv',62,210,24,'pb','#3a2a5a','BATT'),vl('steps',166,210,24,'pb','#3a2a5a','STEG')]}}
+// ---------- väder med puls, tid och steg ----------
+,{key:'vadergubben',name:'Vädergubben',desc:'Han klär sig efter vädret: solglasögon, tröja, paraply eller mössa.',c1:'#4ea1ff',c2:'#ffd23f',toon:true,fresh:true,def:{bg:{t:'grad',c:'#9fd8ff',c2:'#eaf7ff',a:180},
+  deco:[R(10,186,220,92,24,'#12305a',.94)],
+  els:[tm(120,4,38,'pb','#12305a'),{k:'weather',x:68,y:58,s:110,style:'gubbe'},vl('temp',182,62,32,'pb','#12305a',''),vl('pulse',186,112,26,'pb','#d8302e','PULS'),
+    vl('steps',72,198,28,'pb','#ffffff','STEG'),vl('battv',176,198,28,'pb','#7fe3b0','BATT')]}}
+,{key:'vaderkortet',name:'Väderkortet',desc:'Vädret som en rund skylt, med temperatur, puls och steg.',c1:'#ffb02e',c2:'#3f7fd8',fresh:true,def:{bg:{t:'grad',c:'#161d34',c2:'#070a14',a:180},
+  deco:[L(28,196,212,196,'#ffffff',1,.18)],
+  els:[{k:'weather',x:62,y:12,s:88,style:'badge'},vl('temp',164,30,44,'pb','#ffffff',''),tm(120,108,68,'pb','#ffffff'),
+    vl('pulse',44,208,24,'pb','#ff6e78','PULS'),vl('steps',122,208,24,'pb','#ffffff','STEG'),vl('battv',202,208,24,'pb','#7fe3b0','BATT',{pct:false})]}}
+,{key:'vadertavlan',name:'Vädertavlan',desc:'Dagens väder skrivet med krita, med puls och steg under.',c1:'#f4f4ea',c2:'#22382c',fresh:true,def:{bg:{t:'solid',c:'#22382c'},
+  deco:[R(0,0,240,286,0,'#8a5a2e'),R(8,8,224,270,34,'#22382c'),TX('DAGENS VÄDER',120,20,13,'pb','#f4f4ea','c',2),L(48,40,192,40,'#f4f4ea',2,.5),L(40,196,200,196,'#f4f4ea',2,.5)],
+  els:[{k:'weather',x:70,y:46,s:80,style:'chalk'},vl('temp',166,64,38,'pm','#f4f4ea',''),tm(120,128,60,'ch','#f4f4ea'),
+    vl('pulse',72,206,26,'pm','#ffb3c1','PULS'),vl('steps',166,208,24,'pm','#f4f4ea','STEG')]}}
 ];
-DIGITAL.forEach((d,i)=>{d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.exp=!!d.exp;});
+DIGITAL.forEach((d,i)=>{d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.exp=!!d.exp;d.fresh=!!d.fresh;});

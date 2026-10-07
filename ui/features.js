@@ -1,5 +1,5 @@
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=21;
+const APPV=22;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
@@ -16,7 +16,7 @@ function badge(d){const st=statusOf(d);
   return st==='svart'?'<em class="bad">svart</em>':st==='fel'?'<em class="bad">fel</em>':(d.exp&&st!=='ok')?'<em class="exp">exp</em>':st==='ny'?'<em>ny</em>':'';}
 function inCat(d){
   switch(cat){case 'all':return true;case 'l':return !!d.live;case 't':return !!d.toon;case 's':return !!d.sport;
-    case 'f':return !!FAV[d.gk];case 'p':return statusOf(d)==='ok';case 'n':return statusOf(d)==='ny';default:return d.kind===cat;}
+    case 'x':return !!d.fresh;case 'f':return !!FAV[d.gk];case 'p':return statusOf(d)==='ok';case 'n':return statusOf(d)==='ny';default:return d.kind===cat;}
 }
 function syncActs(){
   const f=!!(cur&&FAV[cur.gk]);$('btnFav').textContent=(f?'★':'☆')+' Favorit';$('btnFav').classList.toggle('on',f);

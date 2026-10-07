@@ -33,7 +33,8 @@ function tick(force){if(document.hidden)return;const t=nowT(),k=t.h+':'+t.m+':'+
   if($('view-dials').classList.contains('on'))paintGrid(t,false);}
 function loadMine(){try{MINE=JSON.parse(localStorage.getItem(LSKEY)||'[]')||[];}catch(e){MINE=[];}}
 function saveMine(){try{localStorage.setItem(LSKEY,JSON.stringify(MINE));return true;}catch(e){log('Kunde inte spara i telefonen: '+e.message,'bad');return false;}}
-function allDials(){return DIGITAL.map(d=>Object.assign(d,{gk:'d:'+d.key})).concat(ANALOG.map(d=>Object.assign(d,{gk:'a:'+d.key,kind:'a',live:true})),MINE.map(d=>Object.assign(d,{gk:'m:'+d.id,kind:'m',desc:d.note||'Egen urtavla.',tested:true,exp:defExp(d.def),live:liveDef(d.def),toon:!!(d.def&&(d.def.deco||[]).some(x=>x.k==='toon'))})));}
+function allDials(){const dg=DIGITAL.map(d=>Object.assign(d,{gk:'d:'+d.key}));   // de nyaste visas först, men numren i klockan ändras inte
+  return dg.filter(d=>d.fresh).concat(dg.filter(d=>!d.fresh),ANALOG.map(d=>Object.assign(d,{gk:'a:'+d.key,kind:'a',live:true})),MINE.map(d=>Object.assign(d,{gk:'m:'+d.id,kind:'m',desc:d.note||'Egen urtavla.',tested:true,exp:defExp(d.def),live:liveDef(d.def),toon:!!(d.def&&(d.def.deco||[]).some(x=>x.k==='toon'))})));}
 function findDial(gk){return allDials().find(d=>d.gk===gk);}
 function photoOf(def){const s=def&&def.bg&&def.bg.t==='photo'&&def.bg.src;return s?(photoCache[s]||null):null;}
 function ensurePhoto(def){const s=def&&def.bg&&def.bg.t==='photo'&&def.bg.src;if(!s||photoCache[s])return Promise.resolve();

@@ -137,6 +137,7 @@ function battFrames(e){
 function lerpHex(a,b,t){const x=hexRgb(a),y=hexRgb(b);return rgbHex(x[0]+(y[0]-x[0])*t,x[1]+(y[1]-x[1])*t,x[2]+(y[2]-x[2])*t);}
 // En visare som pekar rakt upp. Vridpunkten ligger på (bredd/2, len) i bilden.
 function handCanvas(style,len,tail,w,col,hub,tip){
+  if(typeof HANDPIC!=='undefined'&&HANDPIC[style])return HANDPIC[style](len,tail,w,col,hub,tip);   // visare som är en sak: gaffel, saxblad, trollspö
   if(style==='arm')return armCanvas(len,w,col,hub,tip);
   if(style==='glass'){const Wg=(Math.ceil(w)+4)|1,cg=mk(Wg+1,Math.round(len+tail)),x=ctxOf(cg),m=(Wg+1)/2;rr(x,m-w/2,1,w,len+Math.min(tail,w/2)-2,w/2);x.fillStyle=rgba(col,.36);x.fill();x.lineWidth=1.6;x.strokeStyle=rgba(col,.92);x.stroke();
     if(hub){x.beginPath();x.arc(m,len,Math.min(hub,w/2-1),0,7);x.fillStyle=rgba(col,.95);x.fill();}return cg;}
@@ -272,7 +273,7 @@ function renderDial(def,photo){
     else if(e.k==='ticks'){box={x:PX-20,y:PY-(e.r||112)-4,w:40,h:(e.len||9)+10};statics.unshift(()=>drawTicks(b,e));}
     else if(e.k==='hands'){
       const ml=Math.max(40,Math.min(116,e.ml||92)),hl=Math.round(ml*(e.hk||.64)),st=e.style||'bar',w=e.w||(st==='thin'?5:(st==='taper'?13:(st==='arm'?11:8)));
-      const hubR=st==='thin'?3.4:Math.max(4,w*.62),hh=handCanvas(st,hl,10,w+1,e.hc||'#ffffff',e.nomin?hubR:0,e.tc),mh=e.nomin?null:handCanvas(st,ml,10,w,e.mc||'#ffffff',hubR,e.tc);
+      const hubR=st==='thin'?3.4:Math.max(4,w*.62),hh=handCanvas(e.hs||st,hl,10,w+1,e.hc||'#ffffff',e.nomin?hubR:0,e.htc||e.tc),mh=e.nomin?null:handCanvas(e.ms||st,ml,10,w,e.mc||'#ffffff',hubR,e.mtc||e.tc);
       parts.push({ptr:1,typ:TY.ROTH,x:Math.round(PX-hh.width/2),y:PY-hl,img:hh,el:i});if(mh)parts.push({ptr:1,typ:TY.ROTM,x:Math.round(PX-mh.width/2),y:PY-ml,img:mh,el:i});   // nomin: bara en visare, som på en enhandsklocka
       if(e.sec&&e.small&&!els.some(z=>z.k==='orbit')){const sx=e.small.x,sy=e.small.y,sl=e.small.len||22,sh=handCanvas('thin',sl,6,4,e.sc||'#ff8a3c',2.6);parts.push({ptr:1,typ:TY.ROTS,x:Math.round(sx-sh.width/2),y:sy-sl,img:sh,el:i,px:sx,py:sy,exp:1});}
       else if(e.sec&&!els.some(z=>z.k==='orbit')){const sl=Math.min(118,ml+8),sh=handCanvas('thin',sl,Math.max(6,Math.min(20,122-sl)),4.6,e.sc||'#ff8a3c',3);parts.push({ptr:1,typ:TY.ROTS,x:Math.round(PX-sh.width/2),y:PY-sl,img:sh,el:i});}

@@ -31,7 +31,7 @@ for key,name,desc,c1,c2,tested in items:
     open('wrap_%s.bin'%key,'wb').write(__import__('dial').wrap(d))
 fonts=open('ui/fonts.css',encoding='utf8').read().replace("'PoppinsApp';font-weight:500","'PoppinsApp';font-weight:500")
 R=lambda n: open('ui/'+n,encoding='utf8').read()
-for k,v in (('/*FONTS*/',fonts),('/*CORE_A*/',A),('/*DIALS*/',',\n'.join(arr)),('/*CORE_B*/',B),('/*CORE_C*/',C),('/*ENGINE*/',R('engine.js')+R('toons.js')+R('extras.js')+R('qr.js')),('/*PRESETS*/',R('presets.js')),('/*GALLERY*/',R('gallery.js')),('/*EDITOR*/',R('editor.js')),('/*FEATURES*/',R('features.js'))):
+for k,v in (('/*FONTS*/',fonts),('/*CORE_A*/',A),('/*DIALS*/',',\n'.join(arr)),('/*CORE_B*/',B),('/*CORE_C*/',C),('/*ENGINE*/',R('engine.js')+R('toons.js')+R('extras.js')+R('extras2.js')+R('qr.js')),('/*PRESETS*/',R('presets.js')),('/*GALLERY*/',R('gallery.js')),('/*EDITOR*/',R('editor.js')),('/*FEATURES*/',R('features.js'))):
     assert t.count(k)==1,k; t=t.replace(k,v)
 open('index_v18.html','w',encoding='utf8').write(t); print('html',len(t),'| analoga',len(arr))
 import os,shutil
