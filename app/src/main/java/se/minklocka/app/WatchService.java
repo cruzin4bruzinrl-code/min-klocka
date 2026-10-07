@@ -541,7 +541,7 @@ public class WatchService extends Service {
 
     /**
      * Klockans musiksida. Provat på klockan: 4 spela eller pausa, 6 föregående, 7 nästa.
-     * 0x0A kommer när volymen ändras på klockan, men vad värdet betyder är inte klarlagt. Därför rörs inte volymen än.
+     * 0x0A kommer när volymreglaget på klockan ändras.
      */
     private void media(int key, byte[] d) {
         AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -568,8 +568,57 @@ public class WatchService extends Service {
                 am.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
                 log("Klockan: volym ner");
                 break;
+            case 10:
+                // Klockans volymreglage. Provat: värdet är klockans läge mellan 0 och 100.
+                if (d.length >= 2 && (d[0] & 255) == 1 && (d[1] & 255) <= 100) {
+                    volume(am, d[1] & 255);
+                    break;
+                }
+                log("Klockan: okänt volymvärde (" + hex(d) + ")");
+                break;
             default:
                 log("Klockan: okänd musikknapp " + Integer.toHexString(key) + (d.length > 0 ? " (" + hex(d) + ")" : ""));
+        }
+    }
+
+    private String lastVolumeNote = "";
+
+    /**
+     * Telefonens medievolym följer klockans reglage. Neråt direkt, uppåt bara ett steg per paket,
+     * så att ljudet aldrig hoppar till högt på en gång.
+     * Spelas ljudet i klockans egen högtalare sköter klockan volymen själv, och då rörs inte telefonen.
+     */
+    private void volume(AudioManager am, int percent) {
+        StringBuilder names = new StringBuilder();
+        boolean onWatch = false;
+        for (android.media.AudioDeviceInfo dev : am.getDevices(AudioManager.GET_DEVICES_OUTPUTS)) {
+            int t = dev.getType();
+            if (t == android.media.AudioDeviceInfo.TYPE_BLUETOOTH_A2DP || t == android.media.AudioDeviceInfo.TYPE_BLE_HEADSET || t == android.media.AudioDeviceInfo.TYPE_BLE_SPEAKER) {
+                String n = String.valueOf(dev.getProductName());
+                names.append(names.length() > 0 ? ", " : "").append(n);
+                if (n.toUpperCase(Locale.ROOT).contains("TRIA")) onWatch = true;
+            }
+        }
+        String note;
+        if (onWatch) {
+            note = "Klockan: volym " + percent + ". Ljudet spelas i klockan, så telefonen rörs inte";
+        } else {
+            int max = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC), cur = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+            int target = Math.round(percent * max / 100f);
+            int next = target < cur ? target : Math.min(target, cur + 1);
+            if (next != cur) {
+                try {
+                    am.setStreamVolume(AudioManager.STREAM_MUSIC, next, AudioManager.FLAG_SHOW_UI);
+                } catch (Exception e) {
+                    log("Kunde inte ändra volymen: " + e.getMessage());
+                    return;
+                }
+            }
+            note = "Klockan: volym " + percent + ", telefonen " + next + " av " + max + (names.length() > 0 ? " (ljud via " + names + ")" : "");
+        }
+        if (!note.equals(lastVolumeNote)) {
+            lastVolumeNote = note;
+            log(note);
         }
     }
 
