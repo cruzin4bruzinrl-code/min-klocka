@@ -339,6 +339,16 @@ button.row:active{background:rgba(255,255,255,.06)}
         <div class="block"><span class="lab">Träningssignal<span class="tag">oprovat</span><small>Skickar KÖR och VILA till klockan i samma takt som urtavlan. Låt sidan vara öppen under passet</small></span>
           <div class="seg" id="segSig"><button data-g="" class="on">Av</button><button data-g="intervall">Intervall</button><button data-g="tabata">Tabata</button><button data-g="pomodoro">Pomodoro</button></div></div>
       </div>
+      <div class="group glass" id="grpAI">
+        <div class="block" style="border-top:0"><label for="txtAI">Skapa med AI<span class="tag">oprovat</span><small>Beskriv en bild, så ritas den åt dig och blir en urtavla med tid, puls, steg och batteri ovanpå. Beskrivningen skickas till en bildtjänst på nätet (Pollinations, och i andra hand AI Horde där man står i kö), inget om klockan följer med. Ingen av dem kräver konto, men de kan säga nej eller vara långsamma</small></label>
+          <textarea class="tarea" id="txtAI" maxlength="240" style="min-height:70px" placeholder="En räv som sover under ett träd i höstfärger"></textarea>
+          <span class="lab" style="margin:12px 0 8px">Stil</span>
+          <div class="seg" id="segAIStyle"><button data-y="toon" class="on">Tecknad</button><button data-y="pixel">Pixel</button><button data-y="paint">Målad</button><button data-y="photo">Foto</button></div>
+          <span class="lab" style="margin:12px 0 8px">Var värdena ska stå</span>
+          <div class="seg" id="segAILay"><button data-l="ruta" class="on">Till höger</button><button data-l="brickor">Runda nertill</button><button data-l="list">List nertill</button></div>
+          <div class="msg"><button id="btnAI" style="flex:1;padding:13px 0">Skapa bilden</button></div>
+          <p class="note" id="stAI"></p></div>
+      </div>
       <div class="group glass">
         <div class="block" style="border-top:0"><label for="txtNote">Lapp på handleden<small>Din text som urtavla, så stor som får plats. Högst 9 rader</small></label>
           <textarea class="tarea" id="txtNote" maxlength="200" placeholder="Mjölk&#10;Bröd&#10;Hämta paket"></textarea>

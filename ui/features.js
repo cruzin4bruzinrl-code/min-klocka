@@ -1,5 +1,5 @@
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=23;
+const APPV=24;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
@@ -264,6 +264,88 @@ $('btnQR').addEventListener('click',()=>{
   try{qrMatrix(t);}catch(e){toast('Texten är för lång för en QR-kod här',true);return;}
   addMine({id:newId(),name:('QR '+t.replace(/^https?:\/\//,'')).slice(0,18),def:{bg:{t:'solid',c:'#ffffff'},deco:[{k:'qr',txt:t,x:10,y:8,size:220}],els:[{k:'time',x:120,y:240,s:32,f:'pb',c:'#111111'}]},c1:'#ffffff',c2:'#7c8cff',note:'QR-kod: '+t.slice(0,60)});
   log('QR-kod skapad ('+new TextEncoder().encode(t).length+' byte)');});
+
+// ---------- skapa med AI: en beskrivning blir en bild, och bilden blir bakgrund i en egen urtavla ----------
+// Bilden kommer från Pollinations, som är gratis och inte kräver konto. Tjänsten är inte vår, så allt här tål att den svarar fel eller inte alls.
+const AIIMG='https://image.pollinations.ai/prompt/',AITXT='https://text.pollinations.ai/';
+const AISTYLE={toon:'cute flat cartoon illustration, bold clean shapes, vivid colors, soft gradients',pixel:'16-bit pixel art game scene, crisp pixels',paint:'soft painted illustration, gentle light, rich colors',photo:'photorealistic, cinematic lighting, shallow depth of field'};
+const AIPLACE={ruta:'main subject in the lower left, calm uncluttered area along the right side and the top',brickor:'main subject in the middle, calm uncluttered area at the top and at the bottom',list:'main subject in the lower middle, calm uncluttered area at the top'};
+let aiStyle='toon',aiLay='ruta',aiBusy=false;
+function openAI(){showTab('tools');setTimeout(()=>{const g=$('grpAI');if(g&&g.scrollIntoView)g.scrollIntoView({block:'start',behavior:'smooth'});try{$('txtAI').focus({preventScroll:true});}catch(e){}},80);}
+$('segAIStyle').addEventListener('click',e=>{const b=e.target.closest('[data-y]');if(!b)return;aiStyle=b.dataset.y;qsa('button',$('segAIStyle')).forEach(x=>x.classList.toggle('on',x===b));});
+$('segAILay').addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(!b)return;aiLay=b.dataset.l;qsa('button',$('segAILay')).forEach(x=>x.classList.toggle('on',x===b));});
+async function aiFetch(url,ms,opt){const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),ms);try{return await fetch(url,Object.assign({signal:ctl.signal},opt||{}));}finally{clearTimeout(t);}}
+const aiWait=ms=>new Promise(r=>setTimeout(r,ms));
+// Bildtjänsten förstår engelska bäst. Går översättningen inte används din text som den är.
+async function aiEnglish(text){
+  try{const r=await aiFetch(AITXT+encodeURIComponent('Translate this image description to English. Answer with only the translation, nothing else: '+text),12000);if(!r.ok)return text;
+    const t=(await r.text()).trim().replace(/^["']|["']$/g,'');return t&&t.length<400&&!/^[{<]/.test(t)?t:text;}catch(e){return text;}
+}
+// Gör om en hämtad bild till klockans mått
+async function aiFit(url){
+  const im=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>rej(new Error('Bilden gick inte att läsa'));i.src=url;});
+  const cv=mk(DW,DH),c=ctxOf(cv),k=Math.max(DW/im.width,DH/im.height),w=im.width*k,h=im.height*k;c.imageSmoothingQuality='high';c.drawImage(im,(DW-w)/2,(DH-h)/2,w,h);return cv.toDataURL('image/jpeg',.9);
+}
+async function aiFitBlob(b){if(!/^image\//.test(b.type))throw new Error('Bildtjänsten gav ingen bild');const url=URL.createObjectURL(b);try{return await aiFit(url);}finally{URL.revokeObjectURL(url);}}
+// Första tjänsten: Pollinations. Fel som betyder "inte nu" eller "inte gratis" märks med soft, så att reserven får försöka.
+async function aiPollinations(prompt){
+  const u=AIIMG+encodeURIComponent(prompt+', no text, no letters, no numbers, no clock, no watermark')+'?width=480&height=576&nologo=true&seed='+Math.floor(Math.random()*1e9);
+  const soft=m=>{const e=new Error(m);e.soft=true;return e;};
+  let r;try{r=await aiFetch(u,100000);}catch(e){throw soft(e&&e.name==='AbortError'?'Bildtjänsten svarade inte i tid':'Bildtjänsten gick inte att nå');}
+  if(r.status===429)throw soft('Bildtjänsten vill att du väntar en stund');
+  if(r.status===401||r.status===402||r.status===403)throw soft('Bildtjänsten tar betalt just nu (svar '+r.status+')');
+  if(!r.ok)throw soft('Bildtjänsten svarade med fel '+r.status);
+  return aiFitBlob(await r.blob());
+}
+// Reserven: AI Horde, där frivilliga lånar ut sina datorer. Gratis utan konto, men man står i kö.
+const AIHORDE='https://aihorde.net/api/v2/generate/',AIHEAD={'Client-Agent':'min-klocka:1:github.com/cruzin4bruzinrl-code/min-klocka'};
+async function aiHorde(prompt,say){
+  const body={prompt:prompt+' ### text, letters, numbers, watermark, logo, clock, blurry',params:{width:512,height:576,steps:20,n:1,sampler_name:'k_euler_a',cfg_scale:7,karras:true},nsfw:false,censor_nsfw:true,r2:false,shared:false,slow_workers:true};
+  let r;try{r=await aiFetch(AIHORDE+'async',25000,{method:'POST',headers:Object.assign({'Content-Type':'application/json','apikey':'0000000000'},AIHEAD),body:JSON.stringify(body)});}catch(e){throw new Error('Reservtjänsten gick inte att nå');}
+  if(r.status===429)throw new Error('Reservtjänsten vill att du väntar en stund. Prova igen om en minut');
+  if(!r.ok)throw new Error('Reservtjänsten svarade med fel '+r.status);
+  let id;try{id=(await r.json()).id;}catch(e){}if(!id)throw new Error('Reservtjänsten gav inget kvitto');
+  const t0=Date.now();
+  for(;;){
+    if(Date.now()-t0>AIHMAX){try{aiFetch(AIHORDE+'status/'+id,8000,{method:'DELETE',headers:AIHEAD}).catch(()=>{});}catch(e){}throw new Error('Kön var för lång just nu. Prova igen senare');}
+    await aiWait(AIHPOLL);
+    let c;try{const q=await aiFetch(AIHORDE+'check/'+id,15000,{headers:AIHEAD});if(!q.ok)continue;c=await q.json();}catch(e){continue;}
+    if(c.faulted)throw new Error('Reservtjänsten misslyckades med bilden');
+    if(c.is_possible===false)throw new Error('Ingen ritare är ledig hos reservtjänsten just nu');
+    if(c.done)break;
+    say('Bilden står i kö hos reservtjänsten'+(c.queue_position>0?', plats '+c.queue_position:'')+(c.wait_time>0?', ungefär '+c.wait_time+' sekunder kvar':'')+'…');
+  }
+  let g;try{const q=await aiFetch(AIHORDE+'status/'+id,40000,{headers:AIHEAD});g=((await q.json()).generations||[])[0];}catch(e){throw new Error('Reservtjänsten gav ingen bild');}
+  if(!g||!g.img)throw new Error('Reservtjänsten gav ingen bild');
+  if(g.censored)throw new Error('Bilden stoppades av tjänstens filter. Prova en annan beskrivning');
+  if(/^https?:/.test(g.img)){let b;try{b=await(await aiFetch(g.img,40000)).blob();}catch(e){throw new Error('Bilden gick inte att hämta');}return aiFitBlob(b);}
+  return aiFit('data:image/webp;base64,'+g.img);
+}
+let AIHMAX=240000,AIHPOLL=4000;
+// Ger {src, via}. Säger den första tjänsten nej får reserven försöka.
+async function aiPicture(prompt,say){
+  try{return {src:await aiPollinations(prompt),via:'Pollinations'};}
+  catch(e){if(!e.soft)throw e;log('Skapa med AI: '+e.message+'. Provar reservtjänsten.','info');say(e.message+'. Provar reservtjänsten, där man står i kö…');
+    try{return {src:await aiHorde(prompt,say),via:'AI Horde'};}catch(e2){throw new Error(e.message+'. '+e2.message);}}
+}
+function aiDef(src,lay){
+  const bg={t:'photo',src:src,dim:.08},P='#0b1020';
+  if(lay==='brickor'){const b=BADGES(230,{a:.78});return {bg:bg,deco:[R(30,8,180,62,24,P,.42),...b.deco],els:[tm(120,12,52,'pb','#ffffff'),...b.els]};}
+  if(lay==='list'){const b=BAR(246,{a:.78}),d=DATE(24,62);return {bg:bg,deco:[R(10,8,150,84,22,P,.42),...d.deco,...b.deco],els:[tm(84,14,40,'pb','#ffffff'),...d.els,...b.els]};}
+  const s=STATS(144,92,{a:.7}),d=DATE(24,16);return {bg:bg,deco:[R(106,6,128,48,20,P,.42),R(12,8,74,32,16,P,.42),...d.deco,...s.deco],els:[tm(168,12,36,'pb','#ffffff'),...d.els,...s.els]};
+}
+$('btnAI').addEventListener('click',async()=>{
+  if(aiBusy)return;const text=$('txtAI').value.trim().replace(/\s+/g,' ');if(text.length<3){toast('Beskriv bilden först',true);return;}
+  aiBusy=true;$('btnAI').disabled=true;const say=t=>{$('stAI').textContent=t;};
+  try{say('Förbereder beskrivningen…');const en=await aiEnglish(text);
+    say('Ritar bilden. Det brukar ta 10 till 40 sekunder…');
+    const got=await aiPicture(en+', '+AISTYLE[aiStyle]+', vertical phone wallpaper, '+AIPLACE[aiLay],say),src=got.src;
+    const rec={id:newId(),name:('AI '+text).slice(0,18),def:aiDef(src,aiLay),c1:'#7c8cff',c2:'#ff5aa0',note:'Skapad med AI: '+text.slice(0,70)};
+    await ensurePhoto(rec.def);
+    if(addMine(rec)){say('Klar. Urtavlan ligger under Mina. Tryck Skapa bilden igen för en ny variant.');log('Urtavla skapad med AI ('+got.via+'): '+text+(en!==text?' ('+en+')':''),'ok');}
+  }catch(e){say(e.message);toast('Det gick inte att skapa bilden',true);log('Skapa med AI: '+e.message,'bad');}
+  aiBusy=false;$('btnAI').disabled=false;
+});
 
 // ---------- version, installation och anslutning utan att fråga ----------
 let swReg=null;

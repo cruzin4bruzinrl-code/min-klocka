@@ -60,7 +60,7 @@ function showFace(d){
 }
 function renderGrid(){
   const list=allDials().filter(inCat);
-  let h='<button type="button" class="chip add" data-new="1"><i>+</i><span>Skapa egen</span></button>';
+  let h='<button type="button" class="chip add" data-new="1"><i>+</i><span>Skapa egen</span></button><button type="button" class="chip add" data-ai="1"><i>✦</i><span>Skapa med AI</span></button>';
   h+=list.map(d=>'<button type="button" class="chip'+(cur&&cur.gk===d.gk?' on':'')+'" data-k="'+d.gk+'"><canvas width="240" height="286" data-cv="'+d.gk+'"></canvas><span>'+(FAV[d.gk]?'★ ':'')+d.name.replace(/</g,'&lt;')+badge(d)+'</span></button>').join('');
   if(!list.length&&cat!=='m')h+='<p class="empty">'+(cat==='f'?'Du har inga favoriter än. Välj en urtavla och tryck på Favorit.':cat==='p'?'Inga urtavlor är provade än.':'Här finns inget just nu.')+'</p>';
   if(cat==='m'&&!MINE.length)h+='<p class="empty">Du har inga egna urtavlor än. Tryck på Skapa egen, eller välj en digital urtavla och tryck Redigera.</p>';
@@ -82,7 +82,7 @@ function pickDial(gk,quiet){
   qsa('.chip',$('dialGrid')).forEach(c=>c.classList.toggle('on',c.dataset.k===d.gk));hint();syncActs();
   if(!quiet)log('Urtavla vald: '+d.name+(statusOf(d)==='ny'?' (inte provad på klockan än)':''));
 }
-$('dialGrid').addEventListener('click',e=>{if(busy)return;const n=e.target.closest('[data-new]');if(n){openEditor(null);return;}const b=e.target.closest('[data-k]');if(b)pickDial(b.dataset.k);});
+$('dialGrid').addEventListener('click',e=>{if(busy)return;const n=e.target.closest('[data-new]');if(n){openEditor(null);return;}if(e.target.closest('[data-ai]')){openAI();return;}const b=e.target.closest('[data-k]');if(b)pickDial(b.dataset.k);});
 $('cats').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;cat=b.dataset.c;renderGrid();});
 $('btnEdit').addEventListener('click',()=>{if(cur&&cur.def&&!busy)openEditor(cur);});
 $('btnDelete').addEventListener('click',()=>{if(!cur||cur.kind!=='m'||busy)return;const n=cur.name;MINE=MINE.filter(m=>m.id!==cur.id);saveMine();delete FAV[cur.gk];delete RES[cur.gk];lsSet(FAVLS,FAV);lsSet(RESLS,RES);renderGrid();pickDial(allDials()[0].gk,true);toast(n+' är borttagen');log('Egen urtavla borttagen: '+n);});

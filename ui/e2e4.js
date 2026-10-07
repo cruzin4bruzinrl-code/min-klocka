@@ -15,6 +15,14 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
   await p.addInitScript(()=>{window.__nokey=true;window.__quick=false;});await p.addInitScript(fake);
   await ctx.route('https://geocoding-api.open-meteo.com/**',r=>r.fulfill({status:200,headers:{'access-control-allow-origin':'*'},contentType:'application/json',body:JSON.stringify({results:[{name:'Provstad',latitude:59.3293,longitude:18.0686}]})}));
   await ctx.route('https://api.open-meteo.com/**',r=>r.fulfill({status:200,headers:{'access-control-allow-origin':'*'},contentType:'application/json',body:JSON.stringify({current:{temperature_2m:-3.4,weather_code:73},daily:{time:['a','b','c','d','e','f','g'],weather_code:[73,0,3,61,95,45,86],temperature_2m_max:[-1.2,4,5,6,7,8,9],temperature_2m_min:[-7.6,-2,0,1,2,3,4]}})}));
+  // en påhittad bildtjänst: ger en enkel bild och minns vad den fick
+  let aiUrl='';const png=require('zlib');
+  const pic=(()=>{const W=48,H=58,raw=Buffer.alloc((W*3+1)*H);for(let y=0;y<H;y++){raw[y*(W*3+1)]=0;for(let x=0;x<W;x++){const o=y*(W*3+1)+1+x*3;raw[o]=40+x*4;raw[o+1]=90+y*2;raw[o+2]=200;}}
+    const crc=b=>{let c,n,k,t=[];for(n=0;n<256;n++){c=n;for(k=0;k<8;k++)c=c&1?0xedb88320^(c>>>1):c>>>1;t[n]=c>>>0;}let r=0xffffffff;for(const x of b)r=t[(r^x)&255]^(r>>>8);return (r^0xffffffff)>>>0;};
+    const chunk=(ty,d)=>{const l=Buffer.alloc(4);l.writeUInt32BE(d.length);const td=Buffer.concat([Buffer.from(ty),d]);const c=Buffer.alloc(4);c.writeUInt32BE(crc(td));return Buffer.concat([l,td,c]);};
+    const ih=Buffer.alloc(13);ih.writeUInt32BE(W,0);ih.writeUInt32BE(H,4);ih[8]=8;ih[9]=2;return Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),chunk('IHDR',ih),chunk('IDAT',png.deflateSync(raw)),chunk('IEND',Buffer.alloc(0))]);})();
+  await ctx.route('https://image.pollinations.ai/**',r=>{aiUrl=r.request().url();r.fulfill({status:200,headers:{'access-control-allow-origin':'*'},contentType:'image/png',body:pic});});
+  await ctx.route('https://text.pollinations.ai/**',r=>r.fulfill({status:200,headers:{'access-control-allow-origin':'*'},contentType:'text/plain',body:'A fox sleeping under a tree'}));
   const ready=()=>p.waitForFunction(()=>window.__galleryReady===true&&document.getElementById('stVer').textContent!=='–',null,{timeout:40000});
   const sheetBtn=async(txt,ms)=>{await p.waitForSelector('#shade:not([hidden])',{timeout:ms||30000});await p.click('#shB button:has-text("'+txt+'")');};
   const connected=()=>p.waitForFunction(()=>document.getElementById('stConn').textContent==='Ansluten',null,{timeout:30000});
@@ -30,7 +38,7 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
   await p.click('#btnConnect');await connected();await p.waitForTimeout(500);
   const s83=await sent('83/');ok('hälsningen är nyckeln',s83.length===1&&s83[0]==='83/1:a1a2a3a4a5a6b1b2b3b4b5b600',s83[0]);
   const s44=await sent('4/44');ok('bindningen kommer ur nyckeln',s44[0]==='4/44:a1a2a3a4a5a6b1b2b3b4b5b601',s44[0]);
-  ok('versionen visas',await p.textContent('#stVer')==='23');
+  ok('versionen visas',await p.textContent('#stVer')==='24');
   await p.evaluate(()=>{window.__push(0x0D,7,[]);window.__push(0x0D,4,[]);window.__push(0x21,3,[1,2]);});await p.waitForTimeout(200);
   ok('musikknappar och okända paket syns i loggen',await p.evaluate(()=>{const t=document.getElementById('log').textContent;return /Knapp på klockan: nästa låt \(0d\/7\)/.test(t)&&/spela eller pausa/.test(t)&&/inte känner till: 21\/3 01 02/.test(t);}));
 
@@ -113,6 +121,42 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
   ok('QR-urtavlan skickas',!!last);if(last)fs.writeFileSync('ui/sent/_qr.bin',last.subarray(53));await p.screenshot({path:'ui/v9_qr.png'});
   ok('egna urtavlor: tre nya',await p.evaluate(()=>MINE.length===3),await p.evaluate(()=>MINE.map(m=>m.name).join(', ')));
 
+  // --- skapa med AI: bildtjänsten låtsas här
+  await p.click('#tabs [data-v="dials"]');await p.click('#cats [data-c="all"]');await p.click('#dialGrid [data-ai]');await p.waitForTimeout(400);
+  ok('rutan Skapa med AI leder till verktyget',await p.evaluate(()=>document.getElementById('view-tools').classList.contains('on')));
+  await p.fill('#txtAI','En räv som sover under ett träd');await p.click('#segAILay [data-l="brickor"]');await p.click('#btnAI');
+  await p.waitForFunction(()=>/Klar\./.test(document.getElementById('stAI').textContent)||/gick inte|svarade|nå/.test(document.getElementById('stAI').textContent),null,{timeout:20000});
+  ok('beskrivningen blir en egen urtavla med bilden som bakgrund',await p.evaluate(()=>cur.kind==='m'&&/^AI /.test(cur.name)&&cur.def.bg.t==='photo'&&/^data:image\/jpeg/.test(cur.def.bg.src)&&cur.def.els.some(e=>e.k==='steps')),await p.textContent('#stAI'));
+  ok('beskrivningen översattes och skickades med stil och placering',/A%20fox%20sleeping%20under%20a%20tree/.test(aiUrl)&&/no%20text/.test(aiUrl)&&/width=480/.test(aiUrl),aiUrl.slice(0,120));
+  last=null;await p.click('#btnSend');await p.waitForFunction(()=>/finns nu på klockan/.test(document.getElementById('stProg').textContent)&&!busy,null,{timeout:60000});
+  ok('AI-urtavlan går att skicka',!!last&&last.length>200000,last&&last.length);if(last)fs.writeFileSync('ui/sent/_ai.bin',last.subarray(53));await p.screenshot({path:'ui/v11_ai.png'});
+  // första tjänsten säger "betala": då ska reserven ta över, med kö
+  await ctx.unroute('https://image.pollinations.ai/**');await ctx.route('https://image.pollinations.ai/**',r=>r.fulfill({status:402,headers:{'access-control-allow-origin':'*'},body:'Payment Required'}));
+  let hBody=null,hChecks=0,hHead=null;const CORS={'access-control-allow-origin':'*','access-control-allow-headers':'*','access-control-allow-methods':'*'};
+  await ctx.route('https://aihorde.net/**',r=>{const q=r.request(),u=q.url();
+    if(q.method()==='OPTIONS')return r.fulfill({status:204,headers:CORS});
+    if(/\/async$/.test(u)){hBody=JSON.parse(q.postData());hHead=q.headers();return r.fulfill({status:202,headers:CORS,contentType:'application/json',body:'{"id":"abc","kudos":5}'});}
+    if(/\/check\/abc$/.test(u)){hChecks++;return r.fulfill({status:200,headers:CORS,contentType:'application/json',body:JSON.stringify(hChecks<3?{done:false,faulted:false,is_possible:true,queue_position:4,wait_time:22}:{done:true,faulted:false,is_possible:true})});}
+    if(/\/status\/abc$/.test(u))return r.fulfill({status:200,headers:CORS,contentType:'application/json',body:JSON.stringify({done:true,generations:[{img:pic.toString('base64'),censored:false}]})});
+    r.fulfill({status:404,headers:CORS,body:'{}'});});
+  const nAI=await p.evaluate(()=>{AIHPOLL=250;return MINE.filter(m=>/^AI /.test(m.name)).length;});
+  await p.click('#tabs [data-v="tools"]');await p.click('#btnAI');
+  await p.waitForFunction(()=>/i kö hos reservtjänsten, plats 4/.test(document.getElementById('stAI').textContent),null,{timeout:20000});
+  ok('säger första tjänsten nej tar reserven över och visar kön',true,await p.textContent('#stAI'));
+  await p.waitForFunction(()=>/Klar\./.test(document.getElementById('stAI').textContent),null,{timeout:20000});
+  ok('reserven ger en urtavla',await p.evaluate(n=>MINE.filter(m=>/^AI /.test(m.name)).length===n+1&&/^data:image\/jpeg/.test(cur.def.bg.src),nAI));
+  ok('reserven fick beskrivning, mått och anonym nyckel',!!hBody&&/A fox sleeping under a tree/.test(hBody.prompt)&&/ ### /.test(hBody.prompt)&&hBody.params.width===512&&hBody.params.height===576&&hBody.nsfw===false&&hBody.r2===false&&hHead.apikey==='0000000000'&&/^min-klocka:/.test(hHead['client-agent']),hBody&&hBody.prompt.slice(0,90));
+  // båda säger nej: ett begripligt besked, ingen ny urtavla
+  await ctx.unroute('https://aihorde.net/**');await ctx.route('https://aihorde.net/**',r=>r.request().method()==='OPTIONS'?r.fulfill({status:204,headers:CORS}):r.fulfill({status:503,headers:CORS,body:'{}'}));
+  await p.click('#tabs [data-v="tools"]');await p.click('#btnAI');await p.waitForFunction(()=>/Reservtjänsten svarade med fel 503/.test(document.getElementById('stAI').textContent),null,{timeout:20000});
+  ok('när båda tjänsterna säger nej visas ett begripligt besked',await p.evaluate(n=>MINE.filter(m=>/^AI /.test(m.name)).length===n+1&&!document.getElementById('btnAI').disabled,nAI),await p.textContent('#stAI'));
+  // kön tar för lång tid: ger upp med besked
+  await ctx.unroute('https://aihorde.net/**');await ctx.route('https://aihorde.net/**',r=>{const q=r.request(),u=q.url();if(q.method()==='OPTIONS')return r.fulfill({status:204,headers:CORS});
+    if(/\/async$/.test(u))return r.fulfill({status:202,headers:CORS,contentType:'application/json',body:'{"id":"abc"}'});
+    r.fulfill({status:200,headers:CORS,contentType:'application/json',body:'{"done":false,"faulted":false,"is_possible":true,"queue_position":90,"wait_time":900}'});});
+  await p.evaluate(()=>{AIHMAX=1500;});await p.click('#btnAI');await p.waitForFunction(()=>/Kön var för lång/.test(document.getElementById('stAI').textContent),null,{timeout:20000});
+  ok('för lång kö ger besked i stället för att hänga',await p.evaluate(()=>!document.getElementById('btnAI').disabled),await p.textContent('#stAI'));
+  await p.evaluate(()=>{MINE=MINE.filter(m=>!/^AI /.test(m.name));saveMine();cat='m';renderGrid();pickDial('m:'+MINE[0].id,true);});
   // --- pass från IronSplit, som ligger under samma adress
   await p.evaluate(()=>{localStorage.setItem('ironsplit.idag',JSON.stringify({d:'2026-10-07',t:'Överkropp B',day:'Torsdag',l:['Lutande bröstpress i maskin 3×8–12','Butterfly i maskin 2×12–15','Latsdrag, smalt grepp 3×8–12','Rodd i maskin, högt drag 3×8–12','Sidolyft i maskin 3×12–20','Face pull i kabel med rep 3×15–20','Bicepscurl i kabel 3×10–15','Tricepsextension över huvudet 3×10–15']}));syncPass();});
   await p.click('#tabs [data-v="tools"]');await p.click('#btnPass');await p.waitForTimeout(600);
