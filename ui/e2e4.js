@@ -30,7 +30,7 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
   await p.click('#btnConnect');await connected();await p.waitForTimeout(500);
   const s83=await sent('83/');ok('hälsningen är nyckeln',s83.length===1&&s83[0]==='83/1:a1a2a3a4a5a6b1b2b3b4b5b600',s83[0]);
   const s44=await sent('4/44');ok('bindningen kommer ur nyckeln',s44[0]==='4/44:a1a2a3a4a5a6b1b2b3b4b5b601',s44[0]);
-  ok('versionen visas',await p.textContent('#stVer')==='19');
+  ok('versionen visas',await p.textContent('#stVer')==='20');
   await p.evaluate(()=>{window.__push(0x0D,7,[]);window.__push(0x0D,4,[]);window.__push(0x21,3,[1,2]);});await p.waitForTimeout(200);
   ok('musikknappar och okända paket syns i loggen',await p.evaluate(()=>{const t=document.getElementById('log').textContent;return /Knapp på klockan: nästa låt \(0d\/7\)/.test(t)&&/spela eller pausa/.test(t)&&/inte känner till: 21\/3 01 02/.test(t);}));
 
@@ -113,6 +113,11 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
   ok('QR-urtavlan skickas',!!last);if(last)fs.writeFileSync('ui/sent/_qr.bin',last.subarray(53));await p.screenshot({path:'ui/v9_qr.png'});
   ok('egna urtavlor: tre nya',await p.evaluate(()=>MINE.length===3),await p.evaluate(()=>MINE.map(m=>m.name).join(', ')));
 
+  // --- pass från IronSplit, som ligger under samma adress
+  await p.evaluate(()=>{localStorage.setItem('ironsplit.idag',JSON.stringify({d:'2026-10-07',t:'Överkropp B',day:'Torsdag',l:['Lutande bröstpress i maskin 3×8–12','Butterfly i maskin 2×12–15','Latsdrag, smalt grepp 3×8–12','Rodd i maskin, högt drag 3×8–12','Sidolyft i maskin 3×12–20','Face pull i kabel med rep 3×15–20','Bicepscurl i kabel 3×10–15','Tricepsextension över huvudet 3×10–15']}));syncPass();});
+  await p.click('#tabs [data-v="tools"]');await p.click('#btnPass');await p.waitForTimeout(600);
+  ok('passet från IronSplit blir en urtavla',await p.evaluate(()=>cur.kind==='m'&&/^Pass /.test(cur.name)&&cur.def.deco[1].lines.length===8&&cur.def.deco[1].lines.every(l=>l.length<=28)),await p.evaluate(()=>cur.def.deco[1].lines.join(' | ')));
+  await p.screenshot({path:'ui/v10_pass.png'});await p.evaluate(()=>{MINE=MINE.filter(m=>m.id!==0x86B2F004);saveMine();cat='m';renderGrid();pickDial('m:'+MINE[0].id,true);});
   // --- dela som länk och öppna länken
   await p.evaluate(()=>{navigator.share=undefined;});await p.click('#dialGrid [data-k="'+await p.evaluate(()=>'m:'+MINE.find(m=>/^Lapp/.test(m.name)).id)+'"]');await p.click('#btnShare');await p.waitForTimeout(500);
   const link=await p.evaluate(()=>navigator.clipboard.readText());ok('länken kopieras',/#u=[zj]/.test(link),link.length+' tecken');

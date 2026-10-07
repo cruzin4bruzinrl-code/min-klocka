@@ -1,5 +1,5 @@
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=19;
+const APPV=20;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
@@ -247,6 +247,16 @@ $('btnToday').addEventListener('click',()=>{
   const pl=lsGet(PLLS,null),sun=pl&&typeof pl.lat==='number'?sunTimes(pl.lat,pl.lon,d):null;
   addMine({id:0x86B2F002,name:'Dagens '+d.getDate()+'/'+(d.getMonth()+1),def:todayDef(d,cnt,sun),c1:'#ffc83c',c2:'#4ea1ff',note:'Gäller '+DAYS[d.getDay()].toLowerCase()+' '+d.getDate()+' '+MONTHS[d.getMonth()]+'. Skapa en ny i morgon.'});
   log('Dagens urtavla skapad'+(sun?', sol '+sun[0]+' till '+sun[1]:', utan soltider (hämta vädret en gång så sparas platsen)')+(cnt?', '+cnt:''));});
+// IronSplit ligger under samma adress och lägger ut dagens eller nästa pass. Här blir det en urtavla att läsa av i gymmet.
+function passData(){const p=lsGet('ironsplit.idag',null);return p&&typeof p.t==='string'&&Array.isArray(p.l)&&p.l.length?p:null;}
+function syncPass(){const p=passData();$('blkPass').hidden=!p;if(p)$('stPass').textContent=(p.day?p.day+': ':'')+p.t+', '+p.l.length+' övningar';}
+$('btnPass').addEventListener('click',()=>{
+  const p=passData();if(!p){toast('Öppna IronSplit först',true);return;}
+  const lines=p.l.slice(0,9).map(t=>{t=String(t);const m=t.match(/^(.*?)\s+(\d+)[×x](\d+)[–-](\d+)$/);
+    const nm=(m?m[1]:t).replace(/ i maskin| i kabel( med rep)?|, smalt grepp|, högt drag|, brett grepp| över huvudet/g,'').trim();
+    return m?nm.slice(0,19).trim()+' '+m[2]+'x'+m[3]+'-'+m[4]:nm.slice(0,28);});
+  const def=noteDef(lines);def.bg={t:'solid',c:'#10131c'};def.deco[0].c='#1c2233';def.deco[1].c='#ffffff';def.els[0].c='#ffffff';
+  addMine({id:0x86B2F004,name:('Pass '+p.t).slice(0,18),def:def,c1:'#7c6cf6',c2:'#2dd4bf',note:(p.day?p.day+': ':'')+p.t+'. Skapa en ny inför nästa pass.'});log('Urtavla av passet skapad: '+p.t+', '+lines.length+' rader');});
 $('btnQR').addEventListener('click',()=>{
   const t=$('txtQR').value.trim();if(!t){toast('Skriv texten eller länken först',true);return;}
   try{qrMatrix(t);}catch(e){toast('Texten är för lång för en QR-kod här',true);return;}
@@ -270,10 +280,10 @@ async function autoConnect(){
     reconnBusy=false;
   }catch(e){}
 }
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&wantConn&&!connected&&device&&!reconnBusy&&!rescuing){reconnN=Math.min(reconnN,2);planReconnect();}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncPass();if(!document.hidden&&wantConn&&!connected&&device&&!reconnBusy&&!rescuing){reconnN=Math.min(reconnN,2);planReconnect();}
   if(!document.hidden&&sigMode&&!wakeL&&navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>{wakeL=l;}).catch(()=>{});});
 async function afterInit(){
-  $('stVer').textContent=APPV;keyState();
+  $('stVer').textContent=APPV;keyState();syncPass();
   const c=lsGet(CNTLS,null);if(c&&c.n&&c.d){$('txtCount').value=c.n;$('datCount').value=c.d;}
   const pl=lsGet(PLLS,null);if(pl&&pl.name&&pl.name!=='Här')$('txtOrt').value=pl.name;
   if(lastSel&&findDial(lastSel))pickDial(lastSel,true);
