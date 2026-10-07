@@ -1,3 +1,34 @@
+// Inne i Android-appen håller appen kontakten med klockan. Den här biten låter sidan använda den kontakten
+// på samma sätt som webbläsarens Bluetooth, så att resten av sidan är likadan i appen och i Chrome.
+(function(){
+  const N=window.MinKlockaNative;if(!N)return;
+  const b64=u=>{let s='';for(let i=0;i<u.length;i+=8192)s+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(s);};
+  const unb=t=>{const s=atob(t),a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a;};
+  let ready=false,waiters=[],wid=0;const pend=new Map(),rxL=[],discL=[];
+  const chN={startNotifications:async()=>chN,addEventListener:(t,f)=>{if(t==='characteristicvaluechanged'&&!rxL.includes(f))rxL.push(f);}};
+  const chW={writeValueWithoutResponse(v){const u=v instanceof Uint8Array?v:new Uint8Array(v.buffer||v);
+    return new Promise((res,rej)=>{if(!ready)return rej(new Error('Klockan är inte ansluten'));const id=++wid;
+      pend.set(id,{res,rej,t:setTimeout(()=>{pend.delete(id);rej(new Error('Skrivningen tog för lång tid'));},15000)});N.write(id,b64(u));});}};
+  chW.writeValue=chW.writeValueWithoutResponse;
+  const svc={getCharacteristic:async u=>String(u).toLowerCase().includes('baa1')?chW:chN},server={getPrimaryService:async()=>svc};
+  const fireGone=()=>discL.forEach(f=>{try{f({target:dev});}catch(e){}});
+  const dev={name:'TRIARENALI1',native:true,addEventListener:(t,f)=>{if(t==='gattserverdisconnected'&&!discL.includes(f))discL.push(f);},
+    gatt:{connected:false,
+      connect:()=>new Promise((res,rej)=>{if(ready){dev.gatt.connected=true;return res(server);}
+        try{N.start();}catch(e){}
+        const w={res,rej};w.t=setTimeout(()=>{waiters=waiters.filter(x=>x!==w);rej(new Error('Appen når inte klockan just nu'));},30000);waiters.push(w);}),
+      disconnect(){if(!dev.gatt.connected)return;dev.gatt.connected=false;setTimeout(fireGone,0);}}};
+  window.__mk={
+    rx(t){const u=unb(t),ev={target:{value:new DataView(u.buffer)}};rxL.forEach(f=>{try{f(ev);}catch(e){}});},
+    done(id,ok){const p=pend.get(id);if(!p)return;pend.delete(id);clearTimeout(p.t);if(ok)p.res();else p.rej(new Error('Skrivningen gick inte fram'));},
+    state(on){on=!!on;if(on===ready)return;ready=on;
+      if(on){const had=waiters.length;waiters.splice(0).forEach(w=>{clearTimeout(w.t);dev.gatt.connected=true;w.res(server);});if(!had&&typeof window.__mkAuto==='function')setTimeout(window.__mkAuto,50);}
+      else{pend.forEach(p=>{clearTimeout(p.t);p.rej(new Error('Klockan kopplades från'));});pend.clear();if(dev.gatt.connected){dev.gatt.connected=false;fireGone();}}},
+    line(t){try{if(typeof log==='function')log('Appen: '+String(t).replace(/^\d\d:\d\d:\d\d\s+/,''));}catch(e){}}
+  };
+  try{Object.defineProperty(navigator,'bluetooth',{value:{requestDevice:async()=>dev,getDevices:async()=>[dev]},configurable:true});}catch(e){}
+  try{ready=!!N.isReady();}catch(e){}
+})();
 
 // Protokollkärna: delas av HTML-verktyget och testet
 function crc16(bytes){let c=0xFFFF;for(const b of bytes){c^=b<<8;for(let i=0;i<8;i++){c=(c&0x8000)?((c<<1)^0x1021)&0xFFFF:(c<<1)&0xFFFF;}}return c;}

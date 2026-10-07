@@ -90,6 +90,8 @@ $('file').addEventListener('change',async e=>{
 // Egna urtavlor sparas i webbläsaren och hör till just den här adressen. Filen gör att de går att flytta med.
 $('btnExport').addEventListener('click',()=>{if(!MINE.length){toast('Du har inga egna urtavlor än',true);return;}
   const data=JSON.stringify({app:'min-klocka',v:1,mina:MINE.map(m=>({id:m.id,name:m.name,def:m.def,c1:m.c1,c2:m.c2}))});
+  if(window.MinKlockaNative){const u=new TextEncoder().encode(data);let s='';for(let i=0;i<u.length;i+=8192)s+=String.fromCharCode.apply(null,u.subarray(i,i+8192));
+    const ok=window.MinKlockaNative.saveFile('mina-urtavlor.json',btoa(s));toast(ok?'Sparade '+MINE.length+' urtavlor i Nedladdningar':'Det gick inte att spara filen',!ok);return;}
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='mina-urtavlor.json';document.body.appendChild(a);a.click();a.remove();
   toast('Sparade '+MINE.length+' urtavlor till en fil');log('Egna urtavlor sparade till fil: '+MINE.length);});
 $('fileImport').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;

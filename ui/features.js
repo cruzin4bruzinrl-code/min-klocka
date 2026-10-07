@@ -1,8 +1,9 @@
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=20;
+const APPV=21;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
+const NATIVE=window.MinKlockaNative||null;   // finns när sidan visas inne i Android-appen
 let FAV=lsGet(FAVLS,{}), RES=lsGet(RESLS,{});
 const lastSel=lsGet(SELLS,'');   // läses innan galleriet väljer sin första urtavla
 if(typeof FAV!=='object')FAV={};if(typeof RES!=='object')RES={};
@@ -93,7 +94,7 @@ $('btnCopyRes').addEventListener('click',async()=>{
 
 // ---------- nyckel: hälsningen som klockan känner igen ----------
 function keyState(){const has=!!pairKey();$('keyBox').hidden=has;return has;}
-function storeKey(k){k=String(k||'').toLowerCase().replace(/[^0-9a-f]/g,'');if(!/^ba[0-9a-f]{50}$/.test(k))return false;try{localStorage.setItem(KEYLS,k);}catch(e){return false;}keyState();return true;}
+function storeKey(k){k=String(k||'').toLowerCase().replace(/[^0-9a-f]/g,'');if(!/^ba[0-9a-f]{50}$/.test(k))return false;try{localStorage.setItem(KEYLS,k);}catch(e){return false;}try{if(NATIVE)NATIVE.setKey(k);}catch(e){}keyState();return true;}
 $('btnKey').addEventListener('click',()=>{if(storeKey($('txtKey').value)){$('txtKey').value='';toast('Nyckeln är sparad');log('Nyckeln är sparad i den här webbläsaren','ok');}else toast('Det där är inte en hel nyckel',true);});
 
 // ---------- dela en urtavla som länk ----------
@@ -120,6 +121,7 @@ $('btnShare').addEventListener('click',async()=>{
   if(!cur||!cur.def)return;
   if(cur.def.bg&&cur.def.bg.t==='photo'){toast('Urtavlor med foto går inte att dela som länk',true);return;}
   try{const url=location.href.split('#')[0]+'#u='+await packDial(cur);
+    if(NATIVE){NATIVE.share(url);return;}
     if(navigator.share){try{await navigator.share({title:cur.name,text:'Urtavla: '+cur.name,url:url});return;}catch(e){if(e&&e.name==='AbortError')return;}}
     await navigator.clipboard.writeText(url);toast('Länken till '+cur.name+' är kopierad');log('Länk till '+cur.name+' kopierad ('+url.length+' tecken)');
   }catch(e){toast('Det gick inte att dela',true);log('Dela: '+e.message,'bad');}
@@ -273,7 +275,7 @@ $('btnUpd').addEventListener('click',async()=>{
 });
 // Har webbläsaren redan fått lov att använda klockan ansluter sidan direkt, utan att fråga. Finns inte i alla versioner av Chrome.
 async function autoConnect(){
-  if(!navigator.bluetooth||!navigator.bluetooth.getDevices||connected||window.__quick)return;
+  if(!navigator.bluetooth||!navigator.bluetooth.getDevices||connected||reconnBusy||window.__quick)return;
   try{const list=await navigator.bluetooth.getDevices(),dev=list.find(d=>/^TRIARENA/.test(d.name||''));if(!dev)return;
     log('Klockan är känd sedan förut. Försöker ansluta utan att fråga.');wantConn=true;reconnN=0;reconnBusy=true;
     try{await connectDevice(dev,true);reconnN=0;}catch(e){log('Det gick inte den här gången: '+e.message);try{dev.gatt.disconnect();}catch(_){}chW=null;pill('','Inte ansluten');watchState('');setConnected(false);wantConn=false;}
@@ -283,7 +285,14 @@ async function autoConnect(){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncPass();if(!document.hidden&&wantConn&&!connected&&device&&!reconnBusy&&!rescuing){reconnN=Math.min(reconnN,2);planReconnect();}
   if(!document.hidden&&sigMode&&!wakeL&&navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>{wakeL=l;}).catch(()=>{});});
 async function afterInit(){
-  $('stVer').textContent=APPV;keyState();syncPass();
+  $('stVer').textContent=APPV+(NATIVE?' i appen':'');syncPass();
+  if(NATIVE){
+    // Appen och sidan delar nyckeln, så att den bara behöver läggas in på ett ställe
+    try{const nk=NATIVE.getKey();if(!pairKey()&&nk)storeKey(nk);else if(pairKey()&&!nk)NATIVE.setKey(pairKey());}catch(e){}
+    $('btnConnectAll').hidden=true;$('btnConnectAll').style.display='none';
+    window.__mkAuto=()=>{if(!connected&&!reconnBusy&&!rescuing&&!busy)autoConnect();};
+  }
+  keyState();
   const c=lsGet(CNTLS,null);if(c&&c.n&&c.d){$('txtCount').value=c.n;$('datCount').value=c.d;}
   const pl=lsGet(PLLS,null);if(pl&&pl.name&&pl.name!=='Här')$('txtOrt').value=pl.name;
   if(lastSel&&findDial(lastSel))pickDial(lastSel,true);
