@@ -377,6 +377,37 @@ button.row:active{background:rgba(255,255,255,.06)}
 <div class="shade" id="shade" hidden><div class="sheet glass" role="dialog" aria-modal="true" aria-labelledby="shT"><h2 id="shT"></h2><p id="shP"></p><div id="shB"></div></div></div>
 
 <script>
+// Inne i Android-appen håller appen kontakten med klockan. Den här biten låter sidan använda den kontakten
+// på samma sätt som webbläsarens Bluetooth, så att resten av sidan är likadan i appen och i Chrome.
+(function(){
+  const N=window.MinKlockaNative;if(!N)return;
+  const b64=u=>{let s='';for(let i=0;i<u.length;i+=8192)s+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(s);};
+  const unb=t=>{const s=atob(t),a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a;};
+  let ready=false,waiters=[],wid=0;const pend=new Map(),rxL=[],discL=[];
+  const chN={startNotifications:async()=>chN,addEventListener:(t,f)=>{if(t==='characteristicvaluechanged'&&!rxL.includes(f))rxL.push(f);}};
+  const chW={writeValueWithoutResponse(v){const u=v instanceof Uint8Array?v:new Uint8Array(v.buffer||v);
+    return new Promise((res,rej)=>{if(!ready)return rej(new Error('Klockan är inte ansluten'));const id=++wid;
+      pend.set(id,{res,rej,t:setTimeout(()=>{pend.delete(id);rej(new Error('Skrivningen tog för lång tid'));},15000)});N.write(id,b64(u));});}};
+  chW.writeValue=chW.writeValueWithoutResponse;
+  const svc={getCharacteristic:async u=>String(u).toLowerCase().includes('baa1')?chW:chN},server={getPrimaryService:async()=>svc};
+  const fireGone=()=>discL.forEach(f=>{try{f({target:dev});}catch(e){}});
+  const dev={name:'TRIARENALI1',native:true,addEventListener:(t,f)=>{if(t==='gattserverdisconnected'&&!discL.includes(f))discL.push(f);},
+    gatt:{connected:false,
+      connect:()=>new Promise((res,rej)=>{if(ready){dev.gatt.connected=true;return res(server);}
+        try{N.start();}catch(e){}
+        const w={res,rej};w.t=setTimeout(()=>{waiters=waiters.filter(x=>x!==w);rej(new Error('Appen når inte klockan just nu'));},30000);waiters.push(w);}),
+      disconnect(){if(!dev.gatt.connected)return;dev.gatt.connected=false;setTimeout(fireGone,0);}}};
+  window.__mk={
+    rx(t){const u=unb(t),ev={target:{value:new DataView(u.buffer)}};rxL.forEach(f=>{try{f(ev);}catch(e){}});},
+    done(id,ok){const p=pend.get(id);if(!p)return;pend.delete(id);clearTimeout(p.t);if(ok)p.res();else p.rej(new Error('Skrivningen gick inte fram'));},
+    state(on){on=!!on;if(on===ready)return;ready=on;
+      if(on){const had=waiters.length;waiters.splice(0).forEach(w=>{clearTimeout(w.t);dev.gatt.connected=true;w.res(server);});if(!had&&typeof window.__mkAuto==='function')setTimeout(window.__mkAuto,50);}
+      else{pend.forEach(p=>{clearTimeout(p.t);p.rej(new Error('Klockan kopplades från'));});pend.clear();if(dev.gatt.connected){dev.gatt.connected=false;fireGone();}}},
+    line(t){try{if(typeof log==='function')log('Appen: '+String(t).replace(/^\d\d:\d\d:\d\d\s+/,''));}catch(e){}}
+  };
+  try{Object.defineProperty(navigator,'bluetooth',{value:{requestDevice:async()=>dev,getDevices:async()=>[dev]},configurable:true});}catch(e){}
+  try{ready=!!N.isReady();}catch(e){}
+})();
 
 // Protokollkärna: delas av HTML-verktyget och testet
 function crc16(bytes){let c=0xFFFF;for(const b of bytes){c^=b<<8;for(let i=0;i<8;i++){c=(c&0x8000)?((c<<1)^0x1021)&0xFFFF:(c<<1)&0xFFFF;}}return c;}
@@ -1723,6 +1754,8 @@ $('file').addEventListener('change',async e=>{
 // Egna urtavlor sparas i webbläsaren och hör till just den här adressen. Filen gör att de går att flytta med.
 $('btnExport').addEventListener('click',()=>{if(!MINE.length){toast('Du har inga egna urtavlor än',true);return;}
   const data=JSON.stringify({app:'min-klocka',v:1,mina:MINE.map(m=>({id:m.id,name:m.name,def:m.def,c1:m.c1,c2:m.c2}))});
+  if(window.MinKlockaNative){const u=new TextEncoder().encode(data);let s='';for(let i=0;i<u.length;i+=8192)s+=String.fromCharCode.apply(null,u.subarray(i,i+8192));
+    const ok=window.MinKlockaNative.saveFile('mina-urtavlor.json',btoa(s));toast(ok?'Sparade '+MINE.length+' urtavlor i Nedladdningar':'Det gick inte att spara filen',!ok);return;}
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='mina-urtavlor.json';document.body.appendChild(a);a.click();a.remove();
   toast('Sparade '+MINE.length+' urtavlor till en fil');log('Egna urtavlor sparade till fil: '+MINE.length);});
 $('fileImport').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;
@@ -2165,10 +2198,11 @@ $('edSend').addEventListener('click',async()=>{if(!ed||busy)return;const rec=edS
   cat='m';closeEditor();renderGrid();pickDial('m:'+rec.id,true);$('btnSend').click();});
 
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=20;
+const APPV=21;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
+const NATIVE=window.MinKlockaNative||null;   // finns när sidan visas inne i Android-appen
 let FAV=lsGet(FAVLS,{}), RES=lsGet(RESLS,{});
 const lastSel=lsGet(SELLS,'');   // läses innan galleriet väljer sin första urtavla
 if(typeof FAV!=='object')FAV={};if(typeof RES!=='object')RES={};
@@ -2259,7 +2293,7 @@ $('btnCopyRes').addEventListener('click',async()=>{
 
 // ---------- nyckel: hälsningen som klockan känner igen ----------
 function keyState(){const has=!!pairKey();$('keyBox').hidden=has;return has;}
-function storeKey(k){k=String(k||'').toLowerCase().replace(/[^0-9a-f]/g,'');if(!/^ba[0-9a-f]{50}$/.test(k))return false;try{localStorage.setItem(KEYLS,k);}catch(e){return false;}keyState();return true;}
+function storeKey(k){k=String(k||'').toLowerCase().replace(/[^0-9a-f]/g,'');if(!/^ba[0-9a-f]{50}$/.test(k))return false;try{localStorage.setItem(KEYLS,k);}catch(e){return false;}try{if(NATIVE)NATIVE.setKey(k);}catch(e){}keyState();return true;}
 $('btnKey').addEventListener('click',()=>{if(storeKey($('txtKey').value)){$('txtKey').value='';toast('Nyckeln är sparad');log('Nyckeln är sparad i den här webbläsaren','ok');}else toast('Det där är inte en hel nyckel',true);});
 
 // ---------- dela en urtavla som länk ----------
@@ -2286,6 +2320,7 @@ $('btnShare').addEventListener('click',async()=>{
   if(!cur||!cur.def)return;
   if(cur.def.bg&&cur.def.bg.t==='photo'){toast('Urtavlor med foto går inte att dela som länk',true);return;}
   try{const url=location.href.split('#')[0]+'#u='+await packDial(cur);
+    if(NATIVE){NATIVE.share(url);return;}
     if(navigator.share){try{await navigator.share({title:cur.name,text:'Urtavla: '+cur.name,url:url});return;}catch(e){if(e&&e.name==='AbortError')return;}}
     await navigator.clipboard.writeText(url);toast('Länken till '+cur.name+' är kopierad');log('Länk till '+cur.name+' kopierad ('+url.length+' tecken)');
   }catch(e){toast('Det gick inte att dela',true);log('Dela: '+e.message,'bad');}
@@ -2439,7 +2474,7 @@ $('btnUpd').addEventListener('click',async()=>{
 });
 // Har webbläsaren redan fått lov att använda klockan ansluter sidan direkt, utan att fråga. Finns inte i alla versioner av Chrome.
 async function autoConnect(){
-  if(!navigator.bluetooth||!navigator.bluetooth.getDevices||connected||window.__quick)return;
+  if(!navigator.bluetooth||!navigator.bluetooth.getDevices||connected||reconnBusy||window.__quick)return;
   try{const list=await navigator.bluetooth.getDevices(),dev=list.find(d=>/^TRIARENA/.test(d.name||''));if(!dev)return;
     log('Klockan är känd sedan förut. Försöker ansluta utan att fråga.');wantConn=true;reconnN=0;reconnBusy=true;
     try{await connectDevice(dev,true);reconnN=0;}catch(e){log('Det gick inte den här gången: '+e.message);try{dev.gatt.disconnect();}catch(_){}chW=null;pill('','Inte ansluten');watchState('');setConnected(false);wantConn=false;}
@@ -2449,7 +2484,14 @@ async function autoConnect(){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncPass();if(!document.hidden&&wantConn&&!connected&&device&&!reconnBusy&&!rescuing){reconnN=Math.min(reconnN,2);planReconnect();}
   if(!document.hidden&&sigMode&&!wakeL&&navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>{wakeL=l;}).catch(()=>{});});
 async function afterInit(){
-  $('stVer').textContent=APPV;keyState();syncPass();
+  $('stVer').textContent=APPV+(NATIVE?' i appen':'');syncPass();
+  if(NATIVE){
+    // Appen och sidan delar nyckeln, så att den bara behöver läggas in på ett ställe
+    try{const nk=NATIVE.getKey();if(!pairKey()&&nk)storeKey(nk);else if(pairKey()&&!nk)NATIVE.setKey(pairKey());}catch(e){}
+    $('btnConnectAll').hidden=true;$('btnConnectAll').style.display='none';
+    window.__mkAuto=()=>{if(!connected&&!reconnBusy&&!rescuing&&!busy)autoConnect();};
+  }
+  keyState();
   const c=lsGet(CNTLS,null);if(c&&c.n&&c.d){$('txtCount').value=c.n;$('datCount').value=c.d;}
   const pl=lsGet(PLLS,null);if(pl&&pl.name&&pl.name!=='Här')$('txtOrt').value=pl.name;
   if(lastSel&&findDial(lastSel))pickDial(lastSel,true);
