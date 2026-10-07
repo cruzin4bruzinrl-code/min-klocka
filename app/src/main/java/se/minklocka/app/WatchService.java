@@ -61,6 +61,33 @@ public class WatchService extends Service {
     static volatile Runnable listener;
     static final List<String> LOG = Collections.synchronizedList(new ArrayList<String>());
 
+    /** Appens fönster (webbsidan) kopplar in sig här och får allt klockan skickar. Anropas alltid på huvudtråden. */
+    interface Web {
+        void rx(byte[] v);
+
+        void state(boolean on);
+
+        void line(String s);
+
+        void done(int id, boolean ok);
+    }
+
+    static volatile WatchService instance;
+    static volatile Web web;
+    static volatile boolean readyNow = false;
+    private static final Handler MAIN = new Handler(Looper.getMainLooper());
+
+    /** En bit att skriva till klockan. id är satt på sista biten av något webbsidan bett om, så att den får kvitto. */
+    private static final class Part {
+        final byte[] b;
+        final int id;
+
+        Part(byte[] b, int id) {
+            this.b = b;
+            this.id = id;
+        }
+    }
+
     private final Handler h = new Handler(Looper.getMainLooper());
     private BluetoothGatt gatt;
     private BluetoothGattCharacteristic chW, chN;
@@ -68,7 +95,9 @@ public class WatchService extends Service {
     private boolean scanning, ready, writing, discoverStarted;
     private int mtu = 23, seq = 0x0500, generation = 0;
     private byte[] rx = new byte[0];
-    private final ArrayDeque<byte[]> queue = new ArrayDeque<>();
+    private final ArrayDeque<Part> queue = new ArrayDeque<>();
+    private Part flying;
+    private int pumpTries = 0;
 
     // ---------- hjälp ----------
     static void log(String s) {
@@ -79,6 +108,28 @@ public class WatchService extends Service {
         }
         Runnable r = listener;
         if (r != null) r.run();
+        MAIN.post(() -> {
+            Web w = web;
+            if (w != null) w.line(s);
+        });
+    }
+
+    private void setReady(boolean on) {
+        ready = on;
+        readyNow = on;
+        Web w = web;
+        if (w != null) w.state(on);
+    }
+
+    /** Tömmer kön. Det webbsidan väntade på får besked om att det inte gick. */
+    private void dropQueue() {
+        Web w = web;
+        if (flying != null && flying.id > 0 && w != null) w.done(flying.id, false);
+        flying = null;
+        for (Part q : queue) if (q.id > 0 && w != null) w.done(q.id, false);
+        queue.clear();
+        writing = false;
+        pumpTries = 0;
     }
 
     private void setStatus(String s) {
@@ -162,6 +213,7 @@ public class WatchService extends Service {
             stopSelf();
             return START_NOT_STICKY;
         }
+        instance = this;
         if (!running) {
             running = true;
             log("Startar");
@@ -173,6 +225,7 @@ public class WatchService extends Service {
     @Override
     public void onDestroy() {
         running = false;
+        instance = null;
         generation++;
         h.removeCallbacksAndMessages(null);
         stopScan();
@@ -320,9 +373,8 @@ public class WatchService extends Service {
     }
 
     private void closeGatt() {
-        ready = false;
-        writing = false;
-        queue.clear();
+        setReady(false);
+        dropQueue();
         chW = null;
         chN = null;
         if (gatt != null) {
@@ -342,24 +394,22 @@ public class WatchService extends Service {
                 if (g != gatt || !running) return;
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
                     log("Kontakt med klockan, förbereder");
-                    ready = false;
-                    writing = false;
+                    setReady(false);
+                    dropQueue();
                     discoverStarted = false;
-                    queue.clear();
                     rx = new byte[0];
                     mtu = 23;
                     h.postDelayed(() -> {
                         if (g != gatt) return;
-                        if (!g.requestMtu(247)) discover(g);
+                        if (!g.requestMtu(517)) discover(g);
                     }, 300);
                     // Svarar telefonen aldrig om paketstorleken går vi vidare ändå
                     h.postDelayed(() -> {
                         if (g == gatt) discover(g);
                     }, 3000);
                 } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                    ready = false;
-                    writing = false;
-                    queue.clear();
+                    setReady(false);
+                    dropQueue();
                     log("Frånkopplad (" + st + ")");
                     setStatus("Väntar på klockan");
                     // connect() på samma kontakt väntar tills klockan är nära igen
@@ -427,8 +477,7 @@ public class WatchService extends Service {
         public void onCharacteristicWrite(final BluetoothGatt g, BluetoothGattCharacteristic c, int st) {
             h.post(() -> {
                 if (g != gatt) return;
-                writing = false;
-                pump();
+                wrote();
             });
         }
 
@@ -457,7 +506,6 @@ public class WatchService extends Service {
 
     private void onReady() {
         if (ready) return;
-        ready = true;
         String k = prefs().getString(KEY, "");
         if (k.matches("ba[0-9a-f]{50}")) {
             // Hälsning och bindning, samma som webbsidan skickar
@@ -478,37 +526,63 @@ public class WatchService extends Service {
         sendRaw(frame(0x04, 0x40, new byte[0], seq++));
         setStatus("Ansluten till klockan");
         log("Ansluten. Musikknapparna på klockan styr nu telefonen");
+        setReady(true);
     }
 
     // ---------- skicka ----------
     private void sendRaw(byte[] data) {
-        int size = Math.max(20, Math.min(244, mtu - 3));
+        enqueue(data, 0);
+    }
+
+    /** Webbsidan vill skriva till klockan. Kvittot (done) kommer när sista biten har gått iväg. */
+    void webWrite(int id, byte[] data) {
+        if (!ready || gatt == null || chW == null || data.length == 0) {
+            Web w = web;
+            if (w != null) w.done(id, false);
+            return;
+        }
+        enqueue(data, id);
+    }
+
+    private void enqueue(byte[] data, int id) {
+        int size = Math.max(20, Math.min(512, mtu - 3));
         for (int off = 0; off < data.length; off += size) {
             byte[] part = new byte[Math.min(size, data.length - off)];
             System.arraycopy(data, off, part, 0, part.length);
-            queue.add(part);
+            queue.add(new Part(part, off + size >= data.length ? id : 0));
         }
+        pump();
+    }
+
+    private void wrote() {
+        Part p = flying;
+        flying = null;
+        writing = false;
+        Web w = web;
+        if (p != null && p.id > 0 && w != null) w.done(p.id, true);
         pump();
     }
 
     private void pump() {
         if (writing || queue.isEmpty() || gatt == null || chW == null) return;
-        byte[] part = queue.peek();
+        Part part = queue.peek();
         chW.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE);
-        chW.setValue(part);
+        chW.setValue(part.b);
         if (gatt.writeCharacteristic(chW)) {
             queue.poll();
+            flying = part;
             writing = true;
+            pumpTries = 0;
             // Skulle kvittot utebli fortsätter kön ändå
             final BluetoothGatt g = gatt;
             final long t = SystemClock.uptimeMillis();
             lastWrite = t;
             h.postDelayed(() -> {
-                if (g == gatt && writing && lastWrite == t) {
-                    writing = false;
-                    pump();
-                }
+                if (g == gatt && writing && lastWrite == t) wrote();
             }, 1500);
+        } else if (++pumpTries > 60) {
+            log("Telefonen tar inte emot mer att skicka. Kön töms");
+            dropQueue();
         } else {
             h.postDelayed(this::pump, 80);
         }
@@ -518,6 +592,8 @@ public class WatchService extends Service {
 
     // ---------- ta emot ----------
     private void feed(byte[] v) {
+        Web w = web;
+        if (w != null) w.rx(v);
         byte[] n = new byte[rx.length + v.length];
         System.arraycopy(rx, 0, n, 0, rx.length);
         System.arraycopy(v, 0, n, rx.length, v.length);

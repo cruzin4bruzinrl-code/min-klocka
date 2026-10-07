@@ -1,182 +1,120 @@
 package se.minklocka.app;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.InputType;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.MediaStore;
+import android.util.Base64;
+import android.view.WindowManager;
+import android.webkit.JavascriptInterface;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** Ett enda fönster: läget, nyckeln, starta och stoppa, och en logg. */
-public class MainActivity extends Activity {
-    private TextView statusView, logView, keyState;
-    private EditText keyInput;
-    private Button startBtn;
+/**
+ * Appens enda fönster. Det visar sidan Min klocka (urtavlor och verktyg), och låter sidan prata med klockan
+ * genom tjänsten som redan håller kontakten i bakgrunden. Då räcker en app och en anslutning.
+ */
+public class MainActivity extends Activity implements WatchService.Web {
+    static final String HOME = "https://cruzin4bruzinrl-code.github.io/min-klocka/";
+    private final Handler ui = new Handler(Looper.getMainLooper());
+    private WebView wv;
+    private ValueCallback<Uri[]> picking;
+    private volatile boolean trusted = false;   // bara vår egen sida får använda bron till klockan
+    private boolean loaded = false;
 
-    private int dp(float v) {
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, v, getResources().getDisplayMetrics()));
-    }
-
-    private GradientDrawable box(int color, float radius) {
-        GradientDrawable g = new GradientDrawable();
-        g.setColor(color);
-        g.setCornerRadius(dp(radius));
-        return g;
-    }
-
-    private TextView text(String s, float size, int color, boolean bold) {
-        TextView t = new TextView(this);
-        t.setText(s);
-        t.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
-        t.setTextColor(color);
-        if (bold) t.setTypeface(Typeface.DEFAULT_BOLD);
-        return t;
-    }
-
-    private Button button(String s, int bg, int fg) {
-        Button b = new Button(this);
-        b.setText(s);
-        b.setAllCaps(false);
-        b.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        b.setTextColor(fg);
-        b.setTypeface(Typeface.DEFAULT_BOLD);
-        b.setBackground(box(bg, 18));
-        b.setStateListAnimator(null);
-        b.setMinHeight(dp(54));
-        return b;
-    }
-
-    private LinearLayout.LayoutParams row(int top) {
-        LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        p.topMargin = dp(top);
-        return p;
-    }
-
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final int ink = Color.parseColor("#07080c"), card = Color.parseColor("#171924"), fg = Color.parseColor("#f2f3f7"), dim = Color.parseColor("#9aa0b4"), accent = Color.parseColor("#3ba0ff");
+        final int ink = Color.parseColor("#07080c");
         getWindow().setStatusBarColor(ink);
         getWindow().setNavigationBarColor(ink);
+        // Skärmen hålls tänd medan appen visas, så att en överföring till klockan inte avbryts
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        ScrollView scroll = new ScrollView(this);
-        scroll.setBackgroundColor(ink);
-        scroll.setFillViewport(true);
-        LinearLayout root = new LinearLayout(this);
-        root.setOrientation(LinearLayout.VERTICAL);
-        root.setPadding(dp(20), dp(28), dp(20), dp(28));
-        scroll.addView(root);
+        wv = new WebView(this);
+        wv.setBackgroundColor(ink);
+        WebSettings st = wv.getSettings();
+        st.setJavaScriptEnabled(true);
+        st.setDomStorageEnabled(true);
+        st.setMediaPlaybackRequiresUserGesture(false);
+        st.setTextZoom(100);
+        wv.addJavascriptInterface(new Bridge(), "MinKlockaNative");
+        wv.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
+                trusted = url != null && url.startsWith(HOME);
+            }
 
-        root.addView(text("Min klocka", 28, fg, true));
-        root.addView(text("Klockans musikknappar styr det som spelar på telefonen.", 14, dim, false), row(4));
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                js("window.__mk&&__mk.state(" + WatchService.readyNow + ")");
+            }
 
-        statusView = text("", 18, fg, true);
-        statusView.setBackground(box(card, 20));
-        statusView.setPadding(dp(18), dp(18), dp(18), dp(18));
-        root.addView(statusView, row(20));
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+                if (url.startsWith(HOME)) return false;
+                // Allt annat öppnas i den vanliga webbläsaren
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, request.getUrl()));
+                } catch (Exception ignored) {
+                }
+                return true;
+            }
 
-        startBtn = button("Starta", accent, Color.parseColor("#08090d"));
-        root.addView(startBtn, row(12));
-        startBtn.setOnClickListener(v -> {
-            if (WatchService.running) {
-                startService(new Intent(this, WatchService.class).setAction(WatchService.ACTION_STOP));
-            } else {
-                start();
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                if (request.isForMainFrame()) showOffline();
             }
         });
-
-        keyState = text("", 14, dim, false);
-        root.addView(keyState, row(24));
-        keyInput = new EditText(this);
-        keyInput.setHint("Klistra in din personliga länk här");
-        keyInput.setHintTextColor(dim);
-        keyInput.setTextColor(fg);
-        keyInput.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        keyInput.setSingleLine(true);
-        keyInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-        keyInput.setBackground(box(card, 14));
-        keyInput.setPadding(dp(14), dp(14), dp(14), dp(14));
-        root.addView(keyInput, row(8));
-        Button save = button("Spara nyckeln", card, fg);
-        root.addView(save, row(8));
-        save.setOnClickListener(v -> saveKey());
-
-        root.addView(text("Logg", 14, dim, false), row(24));
-        logView = text("", 12, Color.parseColor("#b9c0d4"), false);
-        logView.setTypeface(Typeface.MONOSPACE);
-        logView.setBackground(box(card, 16));
-        logView.setPadding(dp(14), dp(14), dp(14), dp(14));
-        logView.setTextIsSelectable(true);
-        logView.setGravity(Gravity.TOP);
-        logView.setMinHeight(dp(160));
-        root.addView(logView, row(8));
-
-        setContentView(scroll);
+        wv.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> cb, FileChooserParams params) {
+                if (picking != null) picking.onReceiveValue(null);
+                picking = cb;
+                try {
+                    Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                    i.addCategory(Intent.CATEGORY_OPENABLE);
+                    i.setType("*/*");
+                    startActivityForResult(Intent.createChooser(i, "Välj fil"), 9);
+                } catch (Exception e) {
+                    picking = null;
+                    return false;
+                }
+                return true;
+            }
+        });
+        setContentView(wv);
+        WatchService.web = this;
+        begin();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        WatchService.listener = () -> runOnUiThread(this::refresh);
-        refresh();
-    }
-
-    @Override
-    protected void onPause() {
-        WatchService.listener = null;
-        super.onPause();
-    }
-
-    private SharedPreferences prefs() {
-        return getSharedPreferences(WatchService.PREFS, Context.MODE_PRIVATE);
-    }
-
-    private void refresh() {
-        statusView.setText(WatchService.status);
-        startBtn.setText(WatchService.running ? "Stoppa" : "Starta");
-        boolean has = prefs().getString(WatchService.KEY, "").matches("ba[0-9a-f]{50}");
-        keyState.setText(has ? "Nyckeln är sparad. Den lämnar aldrig telefonen." : "Nyckeln saknas. Utan den känner klockan kanske inte igen appen.");
-        StringBuilder sb = new StringBuilder();
-        synchronized (WatchService.LOG) {
-            for (int i = WatchService.LOG.size() - 1; i >= 0 && i >= WatchService.LOG.size() - 60; i--) sb.append(WatchService.LOG.get(i)).append('\n');
-        }
-        logView.setText(sb.length() == 0 ? "Inget har hänt än." : sb.toString().trim());
-    }
-
-    private void saveKey() {
-        Matcher m = Pattern.compile("ba[0-9a-f]{50}").matcher(keyInput.getText().toString().toLowerCase());
-        if (!m.find()) {
-            Toast.makeText(this, "Hittar ingen hel nyckel i texten", Toast.LENGTH_LONG).show();
-            return;
-        }
-        prefs().edit().putString(WatchService.KEY, m.group()).apply();
-        keyInput.setText("");
-        Toast.makeText(this, "Nyckeln är sparad", Toast.LENGTH_SHORT).show();
-        refresh();
-    }
-
-    private void start() {
+    /** Frågar om lov första gången, startar sedan tjänsten och visar sidan. */
+    private void begin() {
         List<String> need = new ArrayList<>();
         for (String p : new String[]{Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN}) {
             if (checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED) need.add(p);
@@ -184,23 +122,198 @@ public class MainActivity extends Activity {
         if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             need.add(Manifest.permission.POST_NOTIFICATIONS);
         }
-        if (!need.isEmpty()) {
+        if (!need.isEmpty() && !asked) {
+            asked = true;
             requestPermissions(need.toArray(new String[0]), 7);
             return;
         }
-        startForegroundService(new Intent(this, WatchService.class));
+        startWatch();
+        if (!loaded) {
+            loaded = true;
+            trusted = true;
+            wv.loadUrl(HOME);
+        }
+    }
+
+    private boolean asked = false;
+
+    private void startWatch() {
+        if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED
+                || checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Appen behöver lov att använda Bluetooth (Enheter i närheten)", Toast.LENGTH_LONG).show();
+            return;
+        }
+        if (!WatchService.running) {
+            try {
+                startForegroundService(new Intent(this, WatchService.class));
+            } catch (Exception e) {
+                Toast.makeText(this, "Kunde inte starta kontakten med klockan", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode != 7) return;
-        // Bluetooth krävs. Aviseringen är bara till för att visa att appen är igång.
-        if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED
-                && checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
-            startForegroundService(new Intent(this, WatchService.class));
-        } else {
-            Toast.makeText(this, "Appen behöver lov att använda Bluetooth (Enheter i närheten)", Toast.LENGTH_LONG).show();
+        if (requestCode == 7) begin();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != 9 || picking == null) return;
+        Uri[] out = null;
+        if (resultCode == RESULT_OK && data != null && data.getData() != null) out = new Uri[]{data.getData()};
+        picking.onReceiveValue(out);
+        picking = null;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        WatchService.web = this;
+        js("window.__mk&&__mk.state(" + WatchService.readyNow + ")");
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (WatchService.web == this) WatchService.web = null;
+        try {
+            wv.destroy();
+        } catch (Exception ignored) {
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Tillbaka lägger appen i bakgrunden. Kontakten med klockan fortsätter.
+        moveTaskToBack(true);
+    }
+
+    private void showOffline() {
+        trusted = false;
+        String html = "<!doctype html><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>"
+                + "<body style='margin:0;background:#07080c;color:#f2f3f7;font:17px/1.5 system-ui;padding:48px 24px'>"
+                + "<h1 style='font-size:26px;margin:0 0 12px'>Min klocka</h1>"
+                + "<p style='color:#9aa0b4'>Sidan kunde inte hämtas. Första gången behövs internet. Musikknapparna på klockan fungerar ändå.</p>"
+                + "<p><a href='" + HOME + "' style='display:block;text-align:center;padding:16px;border-radius:20px;background:#3ba0ff;color:#08090d;font-weight:700;text-decoration:none'>Försök igen</a></p></body>";
+        wv.loadDataWithBaseURL("about:blank", html, "text/html", "utf-8", null);
+    }
+
+    private SharedPreferences prefs() {
+        return getSharedPreferences(WatchService.PREFS, Context.MODE_PRIVATE);
+    }
+
+    private void js(final String code) {
+        ui.post(() -> {
+            try {
+                if (trusted) wv.evaluateJavascript(code, null);
+            } catch (Exception ignored) {
+            }
+        });
+    }
+
+    private static String quote(String s) {
+        return "'" + s.replace("\\", "\\\\").replace("'", "\\'").replace("\n", " ").replace("\r", " ") + "'";
+    }
+
+    // ---------- från tjänsten till sidan ----------
+    @Override
+    public void rx(byte[] v) {
+        js("window.__mk&&__mk.rx('" + Base64.encodeToString(v, Base64.NO_WRAP) + "')");
+    }
+
+    @Override
+    public void state(boolean on) {
+        js("window.__mk&&__mk.state(" + on + ")");
+    }
+
+    @Override
+    public void line(String s) {
+        js("window.__mk&&__mk.line(" + quote(s) + ")");
+    }
+
+    @Override
+    public void done(int id, boolean ok) {
+        js("window.__mk&&__mk.done(" + id + "," + ok + ")");
+    }
+
+    // ---------- från sidan till tjänsten ----------
+    private final class Bridge {
+        @JavascriptInterface
+        public boolean isReady() {
+            return trusted && WatchService.readyNow;
+        }
+
+        @JavascriptInterface
+        public void start() {
+            if (!trusted) return;
+            ui.post(MainActivity.this::startWatch);
+        }
+
+        @JavascriptInterface
+        public void write(final int id, String b64) {
+            if (!trusted) return;
+            final byte[] data;
+            try {
+                data = Base64.decode(b64, Base64.DEFAULT);
+            } catch (Exception e) {
+                done(id, false);
+                return;
+            }
+            ui.post(() -> {
+                WatchService s = WatchService.instance;
+                if (s == null) done(id, false);
+                else s.webWrite(id, data);
+            });
+        }
+
+        @JavascriptInterface
+        public String getKey() {
+            return trusted ? prefs().getString(WatchService.KEY, "") : "";
+        }
+
+        @JavascriptInterface
+        public void setKey(String k) {
+            if (!trusted || k == null) return;
+            Matcher m = Pattern.compile("ba[0-9a-f]{50}").matcher(k.toLowerCase());
+            if (m.find()) prefs().edit().putString(WatchService.KEY, m.group()).apply();
+        }
+
+        /** Sparar en fil i Nedladdningar, till exempel dina egna urtavlor. */
+        @JavascriptInterface
+        public boolean saveFile(String name, String b64) {
+            if (!trusted || name == null) return false;
+            try {
+                byte[] data = Base64.decode(b64, Base64.DEFAULT);
+                ContentValues cv = new ContentValues();
+                cv.put(MediaStore.Downloads.DISPLAY_NAME, name.replaceAll("[^A-Za-z0-9._-]", "_"));
+                cv.put(MediaStore.Downloads.MIME_TYPE, name.endsWith(".json") ? "application/json" : "application/octet-stream");
+                Uri uri = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, cv);
+                if (uri == null) return false;
+                try (OutputStream out = getContentResolver().openOutputStream(uri)) {
+                    if (out == null) return false;
+                    out.write(data);
+                }
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        @JavascriptInterface
+        public void share(final String text) {
+            if (!trusted || text == null) return;
+            ui.post(() -> {
+                try {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("text/plain");
+                    i.putExtra(Intent.EXTRA_TEXT, text);
+                    startActivity(Intent.createChooser(i, "Dela"));
+                } catch (Exception ignored) {
+                }
+            });
         }
     }
 }
