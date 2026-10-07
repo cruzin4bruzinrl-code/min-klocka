@@ -604,46 +604,43 @@ public class WatchService extends Service {
         }
     }
 
-    private String lastVolumeNote = "";
+    private int volumeTarget = -1, lastPercent = -1;
 
     /**
-     * Telefonens medievolym följer klockans reglage. Neråt direkt, uppåt bara ett steg per paket,
-     * så att ljudet aldrig hoppar till högt på en gång.
-     * Spelas ljudet i klockans egen högtalare sköter klockan volymen själv, och då rörs inte telefonen.
+     * Telefonens medievolym följer klockans reglage: läget på klockan (0 till 100) blir samma läge på telefonen.
+     * Neråt går det direkt. Uppåt glider volymen dit, ett steg var åttonde sekund, i stället för att hoppa.
+     * Spelas ljudet i klockans egen högtalare skickar klockan ingenting, och då rörs inte telefonen.
      */
     private void volume(AudioManager am, int percent) {
-        StringBuilder names = new StringBuilder();
-        boolean onWatch = false;
-        for (android.media.AudioDeviceInfo dev : am.getDevices(AudioManager.GET_DEVICES_OUTPUTS)) {
-            int t = dev.getType();
-            if (t == android.media.AudioDeviceInfo.TYPE_BLUETOOTH_A2DP || t == android.media.AudioDeviceInfo.TYPE_BLE_HEADSET || t == android.media.AudioDeviceInfo.TYPE_BLE_SPEAKER) {
-                String n = String.valueOf(dev.getProductName());
-                names.append(names.length() > 0 ? ", " : "").append(n);
-                if (n.toUpperCase(Locale.ROOT).contains("TRIA")) onWatch = true;
-            }
+        int max = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        volumeTarget = Math.round(percent * max / 100f);
+        if (percent != lastPercent) {
+            lastPercent = percent;
+            log("Klockan: volym " + percent + ", telefonen går mot " + volumeTarget + " av " + max);
         }
-        String note;
-        if (onWatch) {
-            note = "Klockan: volym " + percent + ". Ljudet spelas i klockan, så telefonen rörs inte";
-        } else {
-            int max = am.getStreamMaxVolume(AudioManager.STREAM_MUSIC), cur = am.getStreamVolume(AudioManager.STREAM_MUSIC);
-            int target = Math.round(percent * max / 100f);
-            int next = target < cur ? target : Math.min(target, cur + 1);
-            if (next != cur) {
-                try {
-                    am.setStreamVolume(AudioManager.STREAM_MUSIC, next, AudioManager.FLAG_SHOW_UI);
-                } catch (Exception e) {
-                    log("Kunde inte ändra volymen: " + e.getMessage());
-                    return;
-                }
-            }
-            note = "Klockan: volym " + percent + ", telefonen " + next + " av " + max + (names.length() > 0 ? " (ljud via " + names + ")" : "");
-        }
-        if (!note.equals(lastVolumeNote)) {
-            lastVolumeNote = note;
-            log(note);
-        }
+        h.removeCallbacks(volumeStep);
+        volumeStep.run();
     }
+
+    private final Runnable volumeStep = new Runnable() {
+        @Override
+        public void run() {
+            AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (am == null || volumeTarget < 0) return;
+            int cur = am.getStreamVolume(AudioManager.STREAM_MUSIC);
+            if (cur == volumeTarget) return;
+            int next = volumeTarget < cur ? volumeTarget : cur + 1;
+            try {
+                am.setStreamVolume(AudioManager.STREAM_MUSIC, next, AudioManager.FLAG_SHOW_UI);
+            } catch (Exception e) {
+                log("Kunde inte ändra volymen: " + e.getMessage());
+                return;
+            }
+            // Tog telefonen inte emot steget (till exempel en spärr mot högt ljud) slutar vi försöka
+            if (am.getStreamVolume(AudioManager.STREAM_MUSIC) == cur) return;
+            if (next < volumeTarget) h.postDelayed(this, 125);
+        }
+    };
 
     private void press(AudioManager am, int code) {
         long t = SystemClock.uptimeMillis();
