@@ -38,7 +38,7 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
   await p.click('#btnConnect');await connected();await p.waitForTimeout(500);
   const s83=await sent('83/');ok('hälsningen är nyckeln',s83.length===1&&s83[0]==='83/1:a1a2a3a4a5a6b1b2b3b4b5b600',s83[0]);
   const s44=await sent('4/44');ok('bindningen kommer ur nyckeln',s44[0]==='4/44:a1a2a3a4a5a6b1b2b3b4b5b601',s44[0]);
-  ok('versionen visas',await p.textContent('#stVer')==='24');
+  ok('versionen visas',await p.textContent('#stVer')==='25');
   await p.evaluate(()=>{window.__push(0x0D,7,[]);window.__push(0x0D,4,[]);window.__push(0x21,3,[1,2]);});await p.waitForTimeout(200);
   ok('musikknappar och okända paket syns i loggen',await p.evaluate(()=>{const t=document.getElementById('log').textContent;return /Knapp på klockan: nästa låt \(0d\/7\)/.test(t)&&/spela eller pausa/.test(t)&&/inte känner till: 21\/3 01 02/.test(t);}));
 
@@ -154,8 +154,19 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
   await ctx.unroute('https://aihorde.net/**');await ctx.route('https://aihorde.net/**',r=>{const q=r.request(),u=q.url();if(q.method()==='OPTIONS')return r.fulfill({status:204,headers:CORS});
     if(/\/async$/.test(u))return r.fulfill({status:202,headers:CORS,contentType:'application/json',body:'{"id":"abc"}'});
     r.fulfill({status:200,headers:CORS,contentType:'application/json',body:'{"done":false,"faulted":false,"is_possible":true,"queue_position":90,"wait_time":900}'});});
-  await p.evaluate(()=>{AIHMAX=1500;});await p.click('#btnAI');await p.waitForFunction(()=>/Kön var för lång/.test(document.getElementById('stAI').textContent),null,{timeout:20000});
-  ok('för lång kö ger besked i stället för att hänga',await p.evaluate(()=>!document.getElementById('btnAI').disabled),await p.textContent('#stAI'));
+  await p.click('#btnAI');await p.waitForFunction(()=>/ungefär 15 minuter just nu, så jag avbröt/.test(document.getElementById('stAI').textContent),null,{timeout:20000});
+  ok('orimligt lång kö avbryts direkt med besked och en annan väg',await p.evaluate(()=>!document.getElementById('btnAI').disabled&&/Välj färdig bild/.test(document.getElementById('stAI').textContent)),await p.textContent('#stAI'));
+  await p.evaluate(()=>{AIHMAX=1500;AIHLONG=5000;});await p.click('#btnAI');await p.waitForFunction(()=>/Kön var för lång/.test(document.getElementById('stAI').textContent),null,{timeout:20000});
+  ok('en kö som aldrig blir klar ger besked i stället för att hänga',await p.evaluate(()=>!document.getElementById('btnAI').disabled),await p.textContent('#stAI'));
+  // egen väg: kopiera beskrivningen och välj en färdig bild
+  await p.click('#btnAICopy');await p.waitForTimeout(300);const order=await p.evaluate(()=>navigator.clipboard.readText());
+  ok('beskrivningen går att kopiera med stil, format och placering',/^En räv som sover under ett träd\. Style: /.test(order)&&/Portrait format/.test(order)&&/No text/.test(order),order.slice(0,80));
+  await p.click('#segAILay [data-l="list"]');await p.setInputFiles('#fileAI',{name:'rav.png',mimeType:'image/png',buffer:pic});
+  await p.waitForFunction(()=>/Klar\./.test(document.getElementById('stAI').textContent),null,{timeout:20000});
+  ok('en färdig bild blir urtavla med värden ovanpå',await p.evaluate(n=>MINE.filter(m=>/^AI /.test(m.name)).length===n+2&&cur.kind==='m'&&/^data:image\/jpeg/.test(cur.def.bg.src)&&cur.def.els.some(e=>e.k==='steps'),nAI));
+  await p.screenshot({path:'ui/v12_egenbild.png'});
+  await p.setInputFiles('#fileAI',{name:'x.txt',mimeType:'text/plain',buffer:Buffer.from('hej')});await p.waitForFunction(()=>/ingen bild/.test(document.getElementById('stAI').textContent),null,{timeout:10000});
+  ok('en fil som inte är en bild ger besked',true,await p.textContent('#stAI'));
   await p.evaluate(()=>{MINE=MINE.filter(m=>!/^AI /.test(m.name));saveMine();cat='m';renderGrid();pickDial('m:'+MINE[0].id,true);});
   // --- pass från IronSplit, som ligger under samma adress
   await p.evaluate(()=>{localStorage.setItem('ironsplit.idag',JSON.stringify({d:'2026-10-07',t:'Överkropp B',day:'Torsdag',l:['Lutande bröstpress i maskin 3×8–12','Butterfly i maskin 2×12–15','Latsdrag, smalt grepp 3×8–12','Rodd i maskin, högt drag 3×8–12','Sidolyft i maskin 3×12–20','Face pull i kabel med rep 3×15–20','Bicepscurl i kabel 3×10–15','Tricepsextension över huvudet 3×10–15']}));syncPass();});

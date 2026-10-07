@@ -28,7 +28,7 @@ let pass=0,fail=0;const ok=(n,c,x)=>{c?pass++:fail++;console.log((c?'ok   ':'FEL
   let last=null;await p.exposeFunction('__report',s=>{last=Buffer.from(s,'base64');});
   await p.addInitScript(()=>{window.__nokey=true;window.__quick=false;});await p.addInitScript(fake);await p.addInitScript(native);
   await p.goto(URL0);await p.waitForFunction(()=>window.__galleryReady===true&&document.getElementById('stVer').textContent!=='–',null,{timeout:40000});
-  ok('sidan vet att den är i appen',await p.textContent('#stVer')==='24 i appen',await p.textContent('#stVer'));
+  ok('sidan vet att den är i appen',await p.textContent('#stVer')==='25 i appen',await p.textContent('#stVer'));
   ok('nyckeln hämtas från appen',await p.evaluate(()=>localStorage.getItem('minklocka.nyckel.v1')==='ba20001200b7ef01830001000dc1c2c3c4c5c6d1d2d3d4d5d600'&&document.getElementById('keyBox').hidden));
   await p.waitForFunction(()=>document.getElementById('stConn').textContent==='Ansluten',null,{timeout:30000});
   ok('ansluter av sig själv när appen har kontakt, utan tryck',true);
