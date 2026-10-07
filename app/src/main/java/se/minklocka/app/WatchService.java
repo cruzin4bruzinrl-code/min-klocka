@@ -469,6 +469,13 @@ public class WatchService extends Service {
         } else {
             log("Nyckeln saknas. Klistra in din personliga länk i appen");
         }
+        // Samma start som webbsidan gör, och som klockan setts svara på: fråga efter urtavlan, ställ tiden, läs batteriet
+        sendRaw(frame(0x16, 0x01, new byte[]{0, 0}, seq++));
+        java.util.Calendar c = java.util.Calendar.getInstance();
+        int tz = (c.get(java.util.Calendar.ZONE_OFFSET) + c.get(java.util.Calendar.DST_OFFSET)) / 3600000 * 10;
+        sendRaw(frame(0x02, 0x20, new byte[]{(byte) (c.get(java.util.Calendar.YEAR) - 2000), (byte) (c.get(java.util.Calendar.MONTH) + 1), (byte) c.get(java.util.Calendar.DAY_OF_MONTH),
+                (byte) c.get(java.util.Calendar.HOUR_OF_DAY), (byte) c.get(java.util.Calendar.MINUTE), (byte) c.get(java.util.Calendar.SECOND), 0, (byte) tz}, seq++));
+        sendRaw(frame(0x04, 0x40, new byte[0], seq++));
         setStatus("Ansluten till klockan");
         log("Ansluten. Musikknapparna på klockan styr nu telefonen");
     }
@@ -531,11 +538,27 @@ public class WatchService extends Service {
         if (rx.length > 8192) rx = new byte[0];
     }
 
+    private final java.util.HashMap<Integer, Long> seen = new java.util.HashMap<>();
+
     private void handle(int cmd, int key, byte[] d) {
         if (cmd == 0x83) {
             log("Klockan känner igen appen");
         } else if (cmd == 0x0D) {
             media(key, d);
+        } else if (cmd == 0x04 && key == 0x41 && d.length >= 1) {
+            log("Klockans batteri: " + (d[0] & 255) + " %");
+        } else if (cmd == 0x02 && key == 0x20) {
+            log("Klockans tid är ställd");
+        } else {
+            // Allt annat skrivs ut, högst en gång var femte sekund per sort, så att det går att se vad klockan skickar
+            int id = (cmd << 8) | key;
+            long now = SystemClock.uptimeMillis();
+            Long last = seen.get(id);
+            if (last == null || now - last > 5000) {
+                seen.put(id, now);
+                byte[] head = d.length > 10 ? java.util.Arrays.copyOf(d, 10) : d;
+                log("Från klockan: " + Integer.toHexString(cmd) + "/" + Integer.toHexString(key) + (d.length > 0 ? " " + hex(head) + (d.length > 10 ? " …" : "") : ""));
+            }
         }
     }
 
