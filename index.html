@@ -1782,8 +1782,13 @@ async function readBattery(){
 }
 // Klockan skickar själv mätvärden medan den mäter: puls (0A/AB), syremättnad (0A/B2) och steg (0A/AC).
 let spo2='';
+// Knappar på klockans musiksida (0D), enligt originalappens kod: 4 och 5 spela/pausa, 6 föregående, 7 nästa, 8 och 9 volym.
+// En webbsida kan inte styra andra appars musik, så här visas de bara i loggen. Oprovat på klockan.
+const MEDIAKEY={4:'spela eller pausa',5:'spela eller pausa',6:'föregående låt',7:'nästa låt',8:'volym upp',9:'volym ner'};
+const seenAt={};
 function onWatchEvent(cmd,key,d){
-  if(cmd!==0x0A)return;
+  if(cmd===0x0D){log('Knapp på klockan: '+(MEDIAKEY[key]||'okänd')+' (0d/'+key.toString(16)+(d.length?' '+hex(d,12):'')+')','ok');return;}
+  if(cmd!==0x0A){const k=cmd+'/'+key,now=Date.now();if(!seenAt[k]||now-seenAt[k]>10000){seenAt[k]=now;log('Paket från klockan som appen inte känner till: '+cmd.toString(16)+'/'+key.toString(16)+(d.length?' '+hex(d,16):''));}return;}
   const hm=(h,m)=>String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
   if(key===0xAB&&d.length>=8&&d[0]>0){
     setLiveVal('pulse',d[0]);$('stPulse').textContent=d[0];$('stPulseAt').textContent='Mätt '+hm(d[5],d[6])+(spo2?', syre '+spo2+' %':'');
@@ -2158,7 +2163,7 @@ $('edSend').addEventListener('click',async()=>{if(!ed||busy)return;const rec=edS
   cat='m';closeEditor();renderGrid();pickDial('m:'+rec.id,true);$('btnSend').click();});
 
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=18;
+const APPV=19;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
