@@ -345,13 +345,14 @@ button.row:active{background:rgba(255,255,255,.06)}
           <div class="seg" id="segSig"><button data-g="" class="on">Av</button><button data-g="intervall">Intervall</button><button data-g="tabata">Tabata</button><button data-g="pomodoro">Pomodoro</button></div></div>
       </div>
       <div class="group glass" id="grpAI">
-        <div class="block" style="border-top:0"><label for="txtAI">Skapa med AI<span class="tag">oprovat</span><small>Beskriv en bild, så ritas den åt dig och blir en urtavla med tid, puls, steg och batteri ovanpå. Beskrivningen skickas till en bildtjänst på nätet (Pollinations, och i andra hand AI Horde där man står i kö), inget om klockan följer med. Ingen av dem kräver konto, men de kan säga nej eller vara långsamma</small></label>
+        <div class="block" style="border-top:0"><label for="txtAI">Skapa med AI<span class="tag">oprovat</span><small>Beskriv en bild, så ritas den åt dig och blir en urtavla med tid, puls, steg och batteri ovanpå. Skapa bilden provar två gratistjänster utan konto (Pollinations och AI Horde), som kan säga nej eller ha lång kö. Säkrare: tryck Kopiera texten, låt en AI du själv väljer rita bilden, och tryck Välj färdig bild</small></label>
           <textarea class="tarea" id="txtAI" maxlength="240" style="min-height:70px" placeholder="En räv som sover under ett träd i höstfärger"></textarea>
           <span class="lab" style="margin:12px 0 8px">Stil</span>
           <div class="seg" id="segAIStyle"><button data-y="toon" class="on">Tecknad</button><button data-y="pixel">Pixel</button><button data-y="paint">Målad</button><button data-y="photo">Foto</button></div>
           <span class="lab" style="margin:12px 0 8px">Var värdena ska stå</span>
           <div class="seg" id="segAILay"><button data-l="ruta" class="on">Till höger</button><button data-l="brickor">Runda nertill</button><button data-l="list">List nertill</button></div>
           <div class="msg"><button id="btnAI" style="flex:1;padding:13px 0">Skapa bilden</button></div>
+          <div class="duo2" style="margin-top:10px"><button class="soft glass" id="btnAICopy">Kopiera texten</button><label class="own soft glass" style="display:flex;align-items:center;justify-content:center;color:var(--text)">Välj färdig bild<input type="file" id="fileAI" accept="image/*"></label></div>
           <p class="note" id="stAI"></p></div>
       </div>
       <div class="group glass">
@@ -2773,7 +2774,7 @@ $('edSend').addEventListener('click',async()=>{if(!ed||busy)return;const rec=edS
   cat='m';closeEditor();renderGrid();pickDial('m:'+rec.id,true);$('btnSend').click();});
 
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=24;
+const APPV=25;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
@@ -3087,6 +3088,7 @@ async function aiHorde(prompt,say){
     if(c.faulted)throw new Error('Reservtjänsten misslyckades med bilden');
     if(c.is_possible===false)throw new Error('Ingen ritare är ledig hos reservtjänsten just nu');
     if(c.done)break;
+    if(c.wait_time>AIHLONG){try{aiFetch(AIHORDE+'status/'+id,8000,{method:'DELETE',headers:AIHEAD}).catch(()=>{});}catch(e){}throw new Error('Kön hos reservtjänsten är ungefär '+Math.round(c.wait_time/60)+' minuter just nu, så jag avbröt');}
     say('Bilden står i kö hos reservtjänsten'+(c.queue_position>0?', plats '+c.queue_position:'')+(c.wait_time>0?', ungefär '+c.wait_time+' sekunder kvar':'')+'…');
   }
   let g;try{const q=await aiFetch(AIHORDE+'status/'+id,40000,{headers:AIHEAD});g=((await q.json()).generations||[])[0];}catch(e){throw new Error('Reservtjänsten gav ingen bild');}
@@ -3095,7 +3097,7 @@ async function aiHorde(prompt,say){
   if(/^https?:/.test(g.img)){let b;try{b=await(await aiFetch(g.img,40000)).blob();}catch(e){throw new Error('Bilden gick inte att hämta');}return aiFitBlob(b);}
   return aiFit('data:image/webp;base64,'+g.img);
 }
-let AIHMAX=240000,AIHPOLL=4000;
+let AIHMAX=240000,AIHPOLL=4000,AIHLONG=150;
 // Ger {src, via}. Säger den första tjänsten nej får reserven försöka.
 async function aiPicture(prompt,say){
   try{return {src:await aiPollinations(prompt),via:'Pollinations'};}
@@ -3108,17 +3110,37 @@ function aiDef(src,lay){
   if(lay==='list'){const b=BAR(246,{a:.78}),d=DATE(24,62);return {bg:bg,deco:[R(10,8,150,84,22,P,.42),...d.deco,...b.deco],els:[tm(84,14,40,'pb','#ffffff'),...d.els,...b.els]};}
   const s=STATS(144,92,{a:.7}),d=DATE(24,16);return {bg:bg,deco:[R(106,6,128,48,20,P,.42),R(12,8,74,32,16,P,.42),...d.deco,...s.deco],els:[tm(168,12,36,'pb','#ffffff'),...d.els,...s.els]};
 }
+// Gör urtavlan av en färdig bild, oavsett varifrån bilden kom
+async function aiMake(src,text,via){
+  const rec={id:newId(),name:('AI '+(text||'egen bild')).slice(0,18),def:aiDef(src,aiLay),c1:'#7c8cff',c2:'#ff5aa0',note:text?'Skapad med AI: '+text.slice(0,70):'Egen bild med värden ovanpå'};
+  await ensurePhoto(rec.def);
+  if(!addMine(rec))return false;log('Urtavla skapad ('+via+')'+(text?': '+text:''),'ok');return true;
+}
+const aiText=()=>$('txtAI').value.trim().replace(/\s+/g,' ');
+// Samma beställning i ord, att klistra in hos en AI som du själv väljer
+function aiOrder(text){return text+'. Style: '+AISTYLE[aiStyle]+'. Portrait format, taller than wide (5:6). Composition: '+AIPLACE[aiLay]+'. No text, no letters, no numbers and no clock in the picture.';}
 $('btnAI').addEventListener('click',async()=>{
-  if(aiBusy)return;const text=$('txtAI').value.trim().replace(/\s+/g,' ');if(text.length<3){toast('Beskriv bilden först',true);return;}
+  if(aiBusy)return;const text=aiText();if(text.length<3){toast('Beskriv bilden först',true);return;}
   aiBusy=true;$('btnAI').disabled=true;const say=t=>{$('stAI').textContent=t;};
   try{say('Förbereder beskrivningen…');const en=await aiEnglish(text);
     say('Ritar bilden. Det brukar ta 10 till 40 sekunder…');
-    const got=await aiPicture(en+', '+AISTYLE[aiStyle]+', vertical phone wallpaper, '+AIPLACE[aiLay],say),src=got.src;
-    const rec={id:newId(),name:('AI '+text).slice(0,18),def:aiDef(src,aiLay),c1:'#7c8cff',c2:'#ff5aa0',note:'Skapad med AI: '+text.slice(0,70)};
-    await ensurePhoto(rec.def);
-    if(addMine(rec)){say('Klar. Urtavlan ligger under Mina. Tryck Skapa bilden igen för en ny variant.');log('Urtavla skapad med AI ('+got.via+'): '+text+(en!==text?' ('+en+')':''),'ok');}
-  }catch(e){say(e.message);toast('Det gick inte att skapa bilden',true);log('Skapa med AI: '+e.message,'bad');}
+    const got=await aiPicture(en+', '+AISTYLE[aiStyle]+', vertical phone wallpaper, '+AIPLACE[aiLay],say);
+    if(await aiMake(got.src,text,got.via))say('Klar. Urtavlan ligger under Mina. Tryck Skapa bilden igen för en ny variant.');
+  }catch(e){say(e.message+'. Gör så här i stället: tryck Kopiera texten, låt en AI du själv väljer rita bilden, och tryck sedan Välj färdig bild.');toast('Det gick inte att skapa bilden',true);log('Skapa med AI: '+e.message,'bad');}
   aiBusy=false;$('btnAI').disabled=false;
+});
+$('btnAICopy').addEventListener('click',async()=>{
+  const text=aiText();if(text.length<3){toast('Beskriv bilden först',true);return;}const t=aiOrder(text);
+  try{await navigator.clipboard.writeText(t);toast('Beskrivningen är kopierad');$('stAI').textContent='Kopierad. Klistra in den hos till exempel Gemini eller Copilot, spara bilden och tryck Välj färdig bild.';}
+  catch(e){if(NATIVE&&NATIVE.share)NATIVE.share(t);else toast('Kunde inte kopiera',true);}
+});
+$('fileAI').addEventListener('change',async ev=>{
+  const f=ev.target.files&&ev.target.files[0];ev.target.value='';if(!f||aiBusy)return;
+  aiBusy=true;const say=t=>{$('stAI').textContent=t;};
+  try{say('Läser bilden…');const src=await aiFitBlob(f);
+    if(await aiMake(src,aiText(),'egen bild'))say('Klar. Urtavlan ligger under Mina. Byt Var värdena ska stå och välj bilden igen om något skymmer.');
+  }catch(e){say(e.message==='Bildtjänsten gav ingen bild'?'Filen är ingen bild':e.message);toast('Det gick inte att läsa bilden',true);}
+  aiBusy=false;
 });
 
 // ---------- version, installation och anslutning utan att fråga ----------
