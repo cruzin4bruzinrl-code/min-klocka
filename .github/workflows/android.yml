@@ -41,9 +41,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           cp app/build/outputs/apk/release/app-release.apk min-klocka.apk
-          gh release delete app --yes --cleanup-tag || true
+          TITEL="Min klocka för Android, bygge $GITHUB_RUN_NUMBER"
+          # Samma utgåva varje gång: filen byts ut. Då finns det aldrig en stund då länken saknas.
+          if gh release view app >/dev/null 2>&1; then
+            gh release upload app min-klocka.apk --clobber
+          else
+            gh release create app min-klocka.apk --target android --title "$TITEL" --notes "Installera min-klocka.apk på telefonen."
+          fi
+          gh release edit app --draft=false --latest --title "$TITEL"
+          # Kontroll: utgåvan ska vara publicerad, annars fungerar inte länken
           sleep 3
-          gh release create app min-klocka.apk --target android --latest --title "Min klocka för Android, bygge $GITHUB_RUN_NUMBER" --notes "Installera min-klocka.apk på telefonen. Appen har ingen internetbehörighet."
+          test "$(gh release view app --json isDraft -q .isDraft)" = "false"
       - name: Spara felen om bygget gick snett
         if: failure()
         run: |
