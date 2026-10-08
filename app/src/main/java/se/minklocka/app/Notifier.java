@@ -108,6 +108,8 @@ final class Notifier {
             if (recent.containsKey(k)) return;
             recent.put(k, now);
         }
+        // Klockan visar bara sorterna 0–17 och 25 (den svarar 02 03 ff ff på 02/2A). Övriga skickas som "övrigt" (10).
+        if (type > 17 && type != 25) type = 10;
         WatchService s = WatchService.instance;
         if (s == null || !WatchService.readyNow) {
             WatchService.log("Avisering kom men klockan är inte ansluten");
