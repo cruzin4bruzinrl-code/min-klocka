@@ -68,7 +68,8 @@ try{const o=JSON.parse(localStorage.getItem(DSLS)||'null');if(o&&o.list){DISP=o;
 function permsNow(){try{return NATIVE&&NATIVE.perms?JSON.parse(NATIVE.perms()):null;}catch(e){return null;}}
 window.__mkPerms=function(){
   const p=permsNow(),box=$('grpNotif');if(!box)return;
-  if(!p){$('stNotif').textContent=NATIVE?'Uppdatera appen för att få aviseringar och sms på klockan (ladda ner den nya appen under Version).':'Fungerar bara i Android-appen Min klocka.';
+  if(!p){if(NATIVE){$('stNotif').innerHTML='Din app är den gamla. Ladda ner den nya och installera den över den gamla, så kommer aviseringar och sms till klockan. <a href="https://github.com/cruzin4bruzinrl-code/min-klocka/releases/latest/download/min-klocka.apk" style="display:block;margin-top:10px;padding:13px;border-radius:16px;text-align:center;background:linear-gradient(100deg,var(--a1),var(--a2));color:#08090d;font-weight:700;text-decoration:none">Ladda ner nya appen</a>';}
+    else $('stNotif').textContent='Fungerar bara i Android-appen Min klocka.';
     $('btnNotifAccess').hidden=$('btnSmsPerm').hidden=true;$('segNotif').hidden=true;return;}
   $('btnNotifAccess').hidden=p.notif;$('btnSmsPerm').hidden=p.sms;$('segNotif').hidden=false;
   [...$('segNotif').children].forEach(b=>b.classList.toggle('on',(b.dataset.n==='1')===p.on));
