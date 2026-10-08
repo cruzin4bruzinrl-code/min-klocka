@@ -2591,8 +2591,9 @@ $('segBuiltin').addEventListener('click',async e=>{
 });
 $('btnMsg').addEventListener('click',async()=>{if(!ready())return;
   const t=$('txtMsg').value.trim().slice(0,40);if(!t){toast('Skriv ett meddelande först',true);return;}
-  // Samma form som Triacle-appen i inspelningen: "rubrik : text". Utan " : " visar klockan kanske ingenting.
-  try{const r=await ask(0x06,0x60,[0x18,...utf16le('Min klocka : '+t)],0x06,0x60,5000);log('Meddelande skickat: "'+t+'". Svar: '+(r.length?hex(r):'(tomt, som till appen)'),'ok');toast('Meddelandet skickat');}
+  // Klockan säger själv (02/2B i inspelningen) vilka sorter den visar: 0–17 och 25. Typ 24 (TikTok) som vi skickade förut finns inte med.
+  // Typ 1 är sms, som är påslaget i klockan.
+  try{const r=await ask(0x06,0x60,[0x01,...utf16le('Min klocka : '+t)],0x06,0x60,5000);log('Meddelande skickat: "'+t+'". Svar: '+(r.length?hex(r):'(tomt, som till appen)'),'ok');toast('Meddelandet skickat');}
   catch(e){log('Meddelande: '+e.message,'bad');toast('Klockan svarade inte',true);}});
 
 async function sendCurrent(){
@@ -3022,7 +3023,7 @@ let sigMode='',sigLast='',sigT=0,wakeL=null;
 function sigTick(){
   if(!sigMode)return;const d=new Date(),ph=SIG[sigMode](d.getMinutes()*60+d.getSeconds());
   if(ph===sigLast)return;const first=!sigLast;sigLast=ph;if(first||!chW||busy)return;
-  ask(0x06,0x60,[0x18,...utf16le('Min klocka : '+ph)],0x06,0x60,3000).then(()=>log('Träningssignal: '+ph)).catch(e=>log('Träningssignal: '+e.message,'bad'));
+  ask(0x06,0x60,[0x01,...utf16le('Min klocka : '+ph)],0x06,0x60,3000).then(()=>log('Träningssignal: '+ph)).catch(e=>log('Träningssignal: '+e.message,'bad'));
 }
 $('segSig').addEventListener('click',async e=>{const b=e.target.closest('[data-g]');if(!b)return;
   sigMode=b.dataset.g;sigLast='';qsa('button',$('segSig')).forEach(x=>x.classList.toggle('on',x===b));clearInterval(sigT);
