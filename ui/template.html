@@ -635,7 +635,8 @@ $('segBuiltin').addEventListener('click',async e=>{
 });
 $('btnMsg').addEventListener('click',async()=>{if(!ready())return;
   const t=$('txtMsg').value.trim().slice(0,40);if(!t){toast('Skriv ett meddelande först',true);return;}
-  try{const r=await ask(0x06,0x60,[0x18,...utf16le(t)],0x06,0x60,5000);log('Meddelande skickat: "'+t+'". Svar: '+(r.length?hex(r):'(tomt, som till appen)'),'ok');toast('Meddelandet skickat');}
+  // Samma form som Triacle-appen i inspelningen: "rubrik : text". Utan " : " visar klockan kanske ingenting.
+  try{const r=await ask(0x06,0x60,[0x18,...utf16le('Min klocka : '+t)],0x06,0x60,5000);log('Meddelande skickat: "'+t+'". Svar: '+(r.length?hex(r):'(tomt, som till appen)'),'ok');toast('Meddelandet skickat');}
   catch(e){log('Meddelande: '+e.message,'bad');toast('Klockan svarade inte',true);}});
 
 async function sendCurrent(){

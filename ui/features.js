@@ -204,7 +204,7 @@ let sigMode='',sigLast='',sigT=0,wakeL=null;
 function sigTick(){
   if(!sigMode)return;const d=new Date(),ph=SIG[sigMode](d.getMinutes()*60+d.getSeconds());
   if(ph===sigLast)return;const first=!sigLast;sigLast=ph;if(first||!chW||busy)return;
-  ask(0x06,0x60,[0x18,...utf16le(ph)],0x06,0x60,3000).then(()=>log('Träningssignal: '+ph)).catch(e=>log('Träningssignal: '+e.message,'bad'));
+  ask(0x06,0x60,[0x18,...utf16le('Min klocka : '+ph)],0x06,0x60,3000).then(()=>log('Träningssignal: '+ph)).catch(e=>log('Träningssignal: '+e.message,'bad'));
 }
 $('segSig').addEventListener('click',async e=>{const b=e.target.closest('[data-g]');if(!b)return;
   sigMode=b.dataset.g;sigLast='';qsa('button',$('segSig')).forEach(x=>x.classList.toggle('on',x===b));clearInterval(sigT);
