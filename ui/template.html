@@ -359,6 +359,25 @@ button.row:active{background:rgba(255,255,255,.06)}
         <div class="block"><span class="lab">Träningssignal<span class="tag">oprovat</span><small>Skickar KÖR och VILA till klockan i samma takt som urtavlan. Låt sidan vara öppen under passet</small></span>
           <div class="seg" id="segSig"><button data-g="" class="on">Av</button><button data-g="intervall">Intervall</button><button data-g="tabata">Tabata</button><button data-g="pomodoro">Pomodoro</button></div></div>
       </div>
+      <div class="group glass" id="grpNotif">
+        <div class="block" style="border-top:0"><span class="lab">Aviseringar och sms på klockan<span class="tag">oprovat</span><small>Appen skickar telefonens aviseringar till klockan. Sms kommer med avsändarens nummer, så att du kan svara med klockans färdiga svar. Klockan har inget tangentbord, så egna texter går inte att skriva på den</small></span>
+          <div class="seg" id="segNotif"><button data-n="1">På</button><button data-n="0">Av</button></div>
+          <button class="soft glass" id="btnNotifAccess" style="margin-top:10px">Ge lov att läsa aviseringar</button>
+          <button class="soft glass" id="btnSmsPerm" style="margin-top:10px">Ge lov för sms och kontakter</button>
+          <p class="note" id="stNotif"></p></div>
+      </div>
+      <div class="group glass" id="grpDisp">
+        <div class="block" style="border-top:0"><span class="lab">Skärm och ljusstyrka<span class="tag">oprovat</span><small>Ljust på dagen och svagt på natten, och hur länge skärmen ska vara tänd. Klockan har ingen ljussensor, så appen följer i stället tiden på dygnet. Läs först vad klockan har nu</small></span>
+          <button class="soft glass" id="btnDispRead">Läs från klockan</button>
+          <p class="note" id="stDisp"></p>
+          <div id="dispBox" hidden>
+            <span class="lab" style="margin:12px 0 8px">Ljusstyrka på dagen</span><div class="seg" id="segDay"></div>
+            <span class="lab" style="margin:12px 0 8px">Ljusstyrka på natten</span><div class="seg" id="segNight"></div>
+            <span class="lab" style="margin:12px 0 8px">Skärmen tänd</span><div class="seg" id="segScreen"></div>
+            <p class="note" id="stDispTimes"></p>
+            <div class="duo2" style="margin-top:10px"><button class="soft glass" id="btnDispOff">Stäng av och återställ</button><button class="soft glass" id="btnDispSave" style="background:linear-gradient(100deg,var(--a1),var(--a2));color:#08090d;font-weight:700">Spara och skicka</button></div>
+          </div></div>
+      </div>
       <div class="group glass" id="grpAI">
         <div class="block" style="border-top:0"><label for="txtAI">Skapa med AI<span class="tag">oprovat</span><small>Beskriv en bild, så ritas den åt dig och blir en urtavla med tid, puls, steg och batteri ovanpå. Skapa bilden provar två gratistjänster utan konto (Pollinations och AI Horde), som kan säga nej eller ha lång kö. Säkrare: tryck Kopiera texten, låt en AI du själv väljer rita bilden, och tryck Välj färdig bild</small></label>
           <textarea class="tarea" id="txtAI" maxlength="240" style="min-height:70px" placeholder="En räv som sover under ett träd i höstfärger"></textarea>

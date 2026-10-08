@@ -38,7 +38,7 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
   await p.click('#btnConnect');await connected();await p.waitForTimeout(500);
   const s83=await sent('83/');ok('hälsningen är nyckeln',s83.length===1&&s83[0]==='83/1:a1a2a3a4a5a6b1b2b3b4b5b600',s83[0]);
   const s44=await sent('4/44');ok('bindningen kommer ur nyckeln',s44[0]==='4/44:a1a2a3a4a5a6b1b2b3b4b5b601',s44[0]);
-  ok('versionen visas',await p.textContent('#stVer')==='26');
+  ok('versionen visas',await p.textContent('#stVer')==='27');
   await p.evaluate(()=>{window.__push(0x0D,7,[]);window.__push(0x0D,4,[]);window.__push(0x21,3,[1,2]);});await p.waitForTimeout(200);
   ok('musikknappar och okända paket syns i loggen',await p.evaluate(()=>{const t=document.getElementById('log').textContent;return /Knapp på klockan: nästa låt \(0d\/7\)/.test(t)&&/spela eller pausa/.test(t)&&/inte känner till: 21\/3 01 02/.test(t);}));
 
