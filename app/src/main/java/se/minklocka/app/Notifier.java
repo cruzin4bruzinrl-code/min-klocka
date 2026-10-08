@@ -95,7 +95,9 @@ final class Notifier {
     /** Skickar en avisering till klockan. Samma text inom 30 sekunder skickas inte igen. */
     static void push(Context c, int type, String title, String body) {
         String t = clean(title), b = clean(body);
-        String text = b.isEmpty() ? t : (t.isEmpty() ? b : t + " : " + b);
+        // Som originalappen: alltid "rubrik : innehåll" (samtal bara rubriken). Klockan verkar behöva " : ".
+        if (t.isEmpty()) t = "Min klocka";
+        String text = type == 0 ? t : t + " : " + b;
         if (text.isEmpty()) return;
         if (text.length() > 95) text = text.substring(0, 92) + "...";
         long now = System.currentTimeMillis();
