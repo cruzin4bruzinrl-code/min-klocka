@@ -11,6 +11,8 @@ function onNotify(ev){
 }
 function handleFrame(f){
   const cmd=f[8],key=f[10],data=f.slice(13);
+  // historik från klockan kommer i flera delar; bit 0x40 betyder att fler följer
+  if(cmd===0x0A&&typeof hcol!=='undefined'&&hcol&&key===hcol.key){hcol.parts.push(data);if(f[1]&0x40)hcol.arm();else hcol.fin();return;}
   for(let i=0;i<waiters.length;i++){
     const w=waiters[i];
     if(w.cmd===cmd&&w.key===key){waiters.splice(i,1);clearTimeout(w.timer);w.resolve(data);return;}

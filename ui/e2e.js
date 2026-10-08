@@ -5,8 +5,8 @@ const FILE=process.argv[2]||'index_v15.html';
 function fake(){
   function crc16(b){let c=0xFFFF;for(const x of b){c^=x<<8;for(let i=0;i<8;i++)c=(c&0x8000)?((c<<1)^0x1021)&0xFFFF:(c<<1)&0xFFFF;}return c;}
   let rx=new Uint8Array(0),notify=null,recv=[],wseq=1;window.__sent=[];
-  function reply(cmd,key,data){const n=data.length;const p=new Uint8Array(5+n);p[0]=cmd;p[1]=0;p[2]=key;p[3]=n>>8;p[4]=n&255;p.set(data,5);const c=crc16(p);
-    const f=new Uint8Array(8+p.length);f[0]=0xBA;f[1]=0x31;f[2]=p.length>>8;f[3]=p.length&255;f[4]=c>>8;f[5]=c&255;f[6]=wseq&255;f[7]=wseq>>8;wseq++;f.set(p,8);
+  function reply(cmd,key,data,more){const n=data.length;const p=new Uint8Array(5+n);p[0]=cmd;p[1]=0;p[2]=key;p[3]=n>>8;p[4]=n&255;p.set(data,5);const c=crc16(p);
+    const f=new Uint8Array(8+p.length);f[0]=0xBA;f[1]=more?0x71:0x31;f[2]=p.length>>8;f[3]=p.length&255;f[4]=c>>8;f[5]=c&255;f[6]=wseq&255;f[7]=wseq>>8;wseq++;f.set(p,8);
     setTimeout(()=>notify({target:{value:{buffer:f.buffer}}}),3);}
   const be=v=>[(v>>>24)&255,(v>>>16)&255,(v>>>8)&255,v&255];
   function frame(f){const cmd=f[8],key=f[10],d=f.subarray(13);
@@ -21,6 +21,14 @@ function fake(){
       if(d[1]===0x81)return reply(0x16,2,[2,0x81,1,5,6,0x6a,0x86,0xb8,0xe2,0x63,0x29,0x5e,0xb0,0x63,0x29,0x5e,0xb1,0x63,0x29,0x5e,0xb2,0x63,0x29,0x5e,0xb3,0x63,0x29,0x5e,0xb4,0x6a,0x86,0xb8,0xe2,0,6,0x40,0]);
       if(d[1]===0x84)return reply(0x16,2,[2,0x84,0,0xf0,1,0x1e,0]);}
     if(cmd===2&&key===0x20)return reply(2,0x20,[0]);
+    // historik: samma form som i trafiken från originalappen
+    if(cmd===0x0A&&key===0xA6)return reply(0x0A,0xAC,[0,0,0x14,0xb4,0x42,0x8c,0,0,0x40,0x0c,0xcc,0xcd]);
+    if(cmd===0x0A&&key===0xA0){window.__hist=(window.__hist||0)+1;const t=d[0],D=[d[1],d[2],d[3]];if(window.__nohist)return;
+      if(t===3){const a=[...D,0];let c=0;for(let h=0;h<24;h++){c+=h>7&&h<20?300+h*10:0;a.push(...be(c));}a.push(0,0,0,0,0,0,0,0);reply(0x0A,0xA3,a,true);return reply(0x0A,0xA3,[]);}
+      if(t===1)return reply(0x0A,0xA2,[...D,1,0,30,2,1,40,3,3,10,1,4,0,2,5,0,0,6,45]);
+      if(t===2||t===7){const k2=t===2?0xA4:0xAF,r=[];for(let h=0;h<24;h++)for(const m of [11,41])r.push(...D,h,m,23,t===2?(h===3&&m===11?0:60+((h*7+m)%30)):96+(h%4));
+        reply(0x0A,k2,r.slice(0,220),true);return reply(0x0A,k2,r.slice(220));}
+      return reply(0x0A,{5:0xAD,8:0xBD}[t]||0xA2,[]);}
     if(cmd===4&&key===0x40)return reply(4,0x41,[0x26,0]);
     if(cmd===4&&key===0x4A)return reply(4,0x4A,[]);
     if(cmd===6&&key===0x60)return reply(6,0x60,[]);
