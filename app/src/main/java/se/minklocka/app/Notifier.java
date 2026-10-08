@@ -165,42 +165,41 @@ final class Notifier {
         return null;
     }
 
-    private static boolean phoneish(byte[] d, int from, int n) {
-        if (n < 3 || n > 24 || from + n > d.length) return false;
-        for (int i = from; i < from + n; i++) {
-            int b = d[i] & 255;
-            if (!(b >= '0' && b <= '9') && b != '+' && b != ' ' && b != '-') return false;
-        }
-        return true;
-    }
-
     /**
-     * Svar från klockan (06/61). Enligt originalappen: [?, längd, nummer, ?, längd, text], nummer och text i UTF-8.
-     * Exakt läge är osäkert, så flera lägen provas och bara ett där längderna går jämnt ut godtas.
+     * Svar från klockan (06/61). Sett på klockan: [01, längd N, "nummer", 02, längd M, svarstext], i UTF-8.
+     * Klockan tar "numret" ur aviseringens text efter första kolonet, så fältet kan innehålla mer än numret.
+     * Här tas bara siffrorna i början, och svaret skickas bara till ett nummer som nyss skickat sms hit.
      */
     static void reply(Context c, byte[] d) {
         WatchService.log("Svar från klockan (06/61): " + WatchService.hex(d.length > 40 ? java.util.Arrays.copyOf(d, 40) : d) + (d.length > 40 ? " …" : ""));
-        String number = null, msg = null;
+        String field = null, msg = null;
         outer:
         for (int a = 0; a <= 2 && a < d.length; a++) {
             int n = d[a] & 255;
-            if (!phoneish(d, a + 1, n)) continue;
+            if (n < 1 || a + 1 + n > d.length) continue;
             for (int b = 0; b <= 2; b++) {
                 int mi = a + 1 + n + b;
                 if (mi >= d.length) break;
                 int m = d[mi] & 255;
                 if (m > 0 && mi + 1 + m == d.length) {
-                    number = new String(d, a + 1, n, StandardCharsets.UTF_8).trim();
+                    field = new String(d, a + 1, n, StandardCharsets.UTF_8);
                     msg = new String(d, mi + 1, m, StandardCharsets.UTF_8).trim();
                     break outer;
                 }
             }
         }
-        if (number == null || msg == null || msg.isEmpty()) {
+        if (field == null || msg == null || msg.isEmpty()) {
             WatchService.log("Kunde inte läsa svaret säkert. Inget sms skickades");
             tell(c, "Svaret från klockan kunde inte läsas", "Inget sms skickades. Visa loggen i Min klocka.");
             return;
         }
+        java.util.regex.Matcher mm = java.util.regex.Pattern.compile("^\\s*(\\+?[0-9][0-9 \\-]{3,22}[0-9])").matcher(field);
+        if (!mm.find()) {
+            WatchService.log("Svaret \"" + msg + "\" gällde inget telefonnummer (" + field.trim() + "). Inget sms skickades");
+            tell(c, "Svar från klockan: " + msg, "Det gällde inget sms med nummer, så inget skickades.");
+            return;
+        }
+        String number = mm.group(1).replaceAll("[ \\-]", "");
         String to = knownSender(c, number);
         if (to == null) {
             WatchService.log("Svaret gällde " + number + ", som inte nyss skickat sms hit. Inget sms skickades");
