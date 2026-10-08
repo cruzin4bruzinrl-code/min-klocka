@@ -156,6 +156,7 @@ public class MainActivity extends Activity implements WatchService.Web {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 7) begin();
+        if (requestCode == 8) js("window.__mkPerms&&__mkPerms()");
     }
 
     @Override
@@ -172,6 +173,7 @@ public class MainActivity extends Activity implements WatchService.Web {
     protected void onResume() {
         super.onResume();
         WatchService.web = this;
+        js("window.__mkPerms&&__mkPerms()");
         js("window.__mk&&__mk.state(" + WatchService.readyNow + ")");
     }
 
@@ -300,6 +302,57 @@ public class MainActivity extends Activity implements WatchService.Web {
             } catch (Exception e) {
                 return false;
             }
+        }
+
+        /** Vad appen har lov till: aviseringar, sms och ljusstyrka. */
+        @JavascriptInterface
+        public String perms() {
+            if (!trusted) return "{}";
+            String flat = android.provider.Settings.Secure.getString(getContentResolver(), "enabled_notification_listeners");
+            boolean notif = flat != null && flat.contains(getPackageName());
+            boolean sms = checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
+                    && checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
+            boolean contacts = checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+            SharedPreferences p = prefs();
+            return "{\"notif\":" + notif + ",\"sms\":" + sms + ",\"contacts\":" + contacts + ",\"on\":" + p.getBoolean(Notifier.PREF_ON, true)
+                    + ",\"bright\":" + p.getBoolean(WatchService.B_ON, false) + "}";
+        }
+
+        @JavascriptInterface
+        public void openNotifyAccess() {
+            if (!trusted) return;
+            ui.post(() -> {
+                try {
+                    startActivity(new Intent(android.provider.Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+                } catch (Exception e) {
+                    Toast.makeText(MainActivity.this, "Öppna Inställningar, Aviseringar, Åtkomst till aviseringar", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void askSms() {
+            if (!trusted) return;
+            ui.post(() -> requestPermissions(new String[]{Manifest.permission.RECEIVE_SMS, Manifest.permission.SEND_SMS, Manifest.permission.READ_CONTACTS}, 8));
+        }
+
+        @JavascriptInterface
+        public void setNotify(boolean on) {
+            if (!trusted) return;
+            prefs().edit().putBoolean(Notifier.PREF_ON, on).apply();
+        }
+
+        /** Ljusstyrka efter tid: två färdiga skrivningar (8 byte i hex) och när dagen börjar och slutar, i minuter. */
+        @JavascriptInterface
+        public void setBright(boolean on, String day, String night, int from, int to) {
+            if (!trusted) return;
+            SharedPreferences.Editor e = prefs().edit().putBoolean(WatchService.B_ON, on);
+            if (day != null && day.matches("([0-9a-f]{2}){8}")) e.putString(WatchService.B_DAY, day);
+            if (night != null && night.matches("([0-9a-f]{2}){8}")) e.putString(WatchService.B_NIGHT, night);
+            if (from >= 0 && from < 1440) e.putInt(WatchService.B_FROM, from);
+            if (to > 0 && to <= 1440) e.putInt(WatchService.B_TO, to);
+            e.apply();
+            WatchService.brightChanged();
         }
 
         @JavascriptInterface

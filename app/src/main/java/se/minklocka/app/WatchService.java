@@ -218,6 +218,7 @@ public class WatchService extends Service {
             running = true;
             log("Startar");
             begin();
+            h.postDelayed(brightTick, 60 * 1000);
         }
         return START_STICKY;
     }
@@ -527,7 +528,57 @@ public class WatchService extends Service {
         setStatus("Ansluten till klockan");
         log("Ansluten. Musikknapparna på klockan styr nu telefonen");
         setReady(true);
+        brightApplied = null;
+        h.postDelayed(this::applyBright, 5000);
     }
+
+    // ---------- skicka från appen själv (aviseringar, ljusstyrka) ----------
+    /** Skickar ett kommando till klockan. Får anropas från vilken tråd som helst. */
+    void send(final int cmd, final int key, final byte[] data) {
+        h.post(() -> {
+            if (!ready || gatt == null || chW == null) return;
+            sendRaw(frame(cmd, key, data, seq++));
+        });
+    }
+
+    // ---------- ljusstyrka efter tid på dygnet ----------
+    // Sidan läser klockans skärminställning (02/F0) och sparar två färdiga skrivningar (02/EE): en för dagen och en för natten.
+    // Allt utom ljusstyrkan är detsamma som klockan själv svarade. Här skickas rätt skrivning när det blir dag eller natt.
+    static final String B_ON = "ljus_pa", B_DAY = "ljus_dag", B_NIGHT = "ljus_natt", B_FROM = "ljus_fran", B_TO = "ljus_till";
+    private String brightApplied = null;
+
+    void applyBright() {
+        if (!ready) return;
+        SharedPreferences p = prefs();
+        if (!p.getBoolean(B_ON, false)) return;
+        java.util.Calendar c = java.util.Calendar.getInstance();
+        int now = c.get(java.util.Calendar.HOUR_OF_DAY) * 60 + c.get(java.util.Calendar.MINUTE);
+        int from = p.getInt(B_FROM, 7 * 60), to = p.getInt(B_TO, 21 * 60);
+        boolean day = now >= from && now < to;
+        String hx = p.getString(day ? B_DAY : B_NIGHT, "");
+        if (!hx.matches("([0-9a-f]{2}){8}") || hx.equals(brightApplied)) return;
+        sendRaw(frame(0x02, 0xEE, hexToBytes(hx), seq++));
+        brightApplied = hx;
+        log("Ljusstyrka för " + (day ? "dagen" : "natten") + ": " + (Integer.parseInt(hx.substring(0, 2), 16)));
+    }
+
+    /** Sidan har ändrat inställningen. Skicka om direkt. */
+    static void brightChanged() {
+        final WatchService s = instance;
+        if (s == null) return;
+        s.h.post(() -> {
+            s.brightApplied = null;
+            s.applyBright();
+        });
+    }
+
+    private final Runnable brightTick = new Runnable() {
+        @Override
+        public void run() {
+            applyBright();
+            h.postDelayed(this, 5 * 60 * 1000);
+        }
+    };
 
     // ---------- skicka ----------
     private void sendRaw(byte[] data) {
@@ -625,6 +676,10 @@ public class WatchService extends Service {
             log("Klockans batteri: " + (d[0] & 255) + " %");
         } else if (cmd == 0x02 && key == 0x20) {
             log("Klockans tid är ställd");
+        } else if (cmd == 0x06 && key == 0x61) {
+            Notifier.reply(this, d);
+        } else if (cmd == 0x02 && key == 0xEF) {
+            log("Klockan tog emot skärminställningen (" + hex(d) + ")");
         } else {
             // Allt annat skrivs ut, högst en gång var femte sekund per sort, så att det går att se vad klockan skickar
             int id = (cmd << 8) | key;
