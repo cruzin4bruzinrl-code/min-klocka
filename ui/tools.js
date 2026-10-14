@@ -148,7 +148,21 @@ function helpCard(){
   c.innerHTML='<button class="row" id="btnTour"><span class="ic">'+svg('spark')+'</span><span class="tx">Visa rundturen igen<small>Fyra bilder om hur appen fungerar</small></span></button>'+
     '<div class="block"><span class="lab">Bra att veta<small>Etiketten <i class="tg">ny</i> betyder att funktionen inte är provad på din klocka än. Loggen här under visar vad appen och klockan säger till varandra, och är till hjälp om något krånglar.</small></span></div>';
   v.insertBefore(c,v.firstChild);$('btnTour').onclick=()=>tour(true);
+  // teman
+  const th=document.createElement('div');th.className='group glass';th.id='themeCard';
+  th.innerHTML='<div class="block" style="border-top:0"><span class="lab">Tema<small>Välj färger för appen. Urtavlans färger följer den urtavla du valt</small></span><div class="themes">'+
+    THEMES.map(t=>'<button data-th="'+t[0]+'"><span class="sw"><i style="background:'+t[2]+'"></i><i style="background:'+t[3]+'"></i><i style="background:'+t[4]+'"></i></span>'+t[1]+'</button>').join('')+'</div></div>';
+  v.insertBefore(th,c.nextSibling);
+  th.querySelector('.themes').onclick=e=>{const b=e.target.closest('button');if(!b)return;setTheme(b.dataset.th);};
+  markTheme();
 }
+const THEMES=[['ljus','Ljus','#fdf7ff','#eaddff','#6750a4'],['mint','Mint','#f3fbf6','#c3eed6','#1b7f55'],['persika','Persika','#fff8f4','#ffdbcc','#b5532f'],['hav','Hav','#f4f9fd','#cfe5ff','#0b6aa2'],['mork','Mörk','#141218','#4f378b','#cfbcff'],['urtavla','Urtavlans färger','#07080c','#ff5aa0','#3ba0ff']];
+function markTheme(){const t=document.documentElement.dataset.theme;document.querySelectorAll('.themes button').forEach(b=>b.classList.toggle('on',b.dataset.th===t));
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()||'#07080c';}
+function setTheme(t){const r=document.documentElement;r.dataset.theme=t;lsSet('minklocka.tema.v1',t);
+  if(t==='urtavla'&&typeof cur!=='undefined'&&cur){r.style.setProperty('--a1',cur.c1||'#7c8cff');r.style.setProperty('--a2',cur.c2||'#ff5aa0');}else{r.style.removeProperty('--a1');r.style.removeProperty('--a2');}
+  markTheme();if(typeof hlRender==='function')hlRender();toast('Tema: '+THEMES.find(x=>x[0]===t)[1]);}
+window.setTheme=setTheme;
 function dialsHint(){
   const v=$('view-dials');if(!v||CLASSIC||lsGet('minklocka.tips.urtavlor',false))return;
   const h=document.createElement('div');h.className='hint glass';

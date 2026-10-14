@@ -122,7 +122,7 @@ function hlCanvas(id){
   c.width=w*dpr;c.height=h*dpr;const x=c.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,w,h);return {x:x,w:w,h:h};
 }
 function hlAxis(g,top){
-  const x=g.x,L=6,R=g.w-6,B=g.h-18;x.strokeStyle='rgba(255,255,255,.10)';x.lineWidth=1;x.beginPath();x.moveTo(L,B+.5);x.lineTo(R,B+.5);x.stroke();
+  const x=g.x,L=6,R=g.w-6,B=g.h-18;x.strokeStyle=hlCss('--edge','rgba(255,255,255,.10)');x.lineWidth=1;x.beginPath();x.moveTo(L,B+.5);x.lineTo(R,B+.5);x.stroke();
   x.fillStyle=hlCss('--dim','#9aa0b4');x.font='500 11px '+hlCss('--font','system-ui');x.textBaseline='top';
   [0,6,12,18,24].forEach(h=>{const px=L+(R-L)*h/24;x.textAlign=h===0?'left':h===24?'right':'center';x.fillText(String(h).padStart(2,'0'),px,B+5);});
   if(top){x.textAlign='right';x.textBaseline='top';x.fillText(top,R,0);}

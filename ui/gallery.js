@@ -55,7 +55,7 @@ function showFace(d){
   const a=$('faceA'),b=$('faceB');const inn=faceFlip?a:b,out=faceFlip?b:a;faceFlip=!faceFlip;
   try{paintFace(d,inn,nowT());}catch(e){log('Kunde inte rita '+d.name+': '+e.message,'bad');}
   heroDial=d;heroCv=inn;inn.classList.add('on');out.classList.remove('on');
-  document.documentElement.style.setProperty('--a1',d.c1||'#7c8cff');document.documentElement.style.setProperty('--a2',d.c2||'#ff5aa0');
+  if(document.documentElement.dataset.theme==='urtavla'){document.documentElement.style.setProperty('--a1',d.c1||'#7c8cff');document.documentElement.style.setProperty('--a2',d.c2||'#ff5aa0');}   // bara temat Urtavlans färger följer vald urtavla
   $('heroName').textContent=d.name;$('heroDesc').textContent=d.desc||'';
 }
 function renderGrid(){
