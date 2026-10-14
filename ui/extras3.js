@@ -195,3 +195,50 @@ Object.assign(BATTPIC,{
       out.push(cv);}
     return out;}
 });
+
+// ================= Bilder som byter med värdet =================
+// Siffrorna i steg och tid är bara bilder för klockan. Byts bilderna mot tio lägen av en rörelse
+// blir sista siffran en animation: stegräknarens sista plats byter läge för varje steg du tar.
+// Samma filformat som vanliga siffror, bara andra bilder.
+Object.assign(PICFONT,{
+  run(c,ch,x,y,w,h,col){   // löpare i tio lägen, en hel löpcykel
+    const d=+ch;if(!(d>=0))return;const a=d/10*Math.PI*2,lw=Math.max(2,w*.15),cx=x+w/2;
+    const head=h*.12,hip=y+h*.56,sh=y+h*.3,leg=h*.21,arm=h*.16;
+    c.strokeStyle=c.fillStyle=Array.isArray(col)?col[0]:col;c.lineWidth=lw;c.lineCap=c.lineJoin='round';
+    const bob=Math.abs(Math.sin(a))*h*.03,lean=w*.08;
+    const seg=(px,py,ang,len)=>[px+Math.sin(ang)*len,py+Math.cos(ang)*len];
+    const limb=(px,py,a1,l1,a2,l2)=>{const k=seg(px,py,a1,l1),f=seg(k[0],k[1],a2,l2);c.beginPath();c.moveTo(px,py);c.lineTo(k[0],k[1]);c.lineTo(f[0],f[1]);c.stroke();};
+    const hy=hip-bob,sy=sh-bob;
+    [0,Math.PI].forEach(p=>{const s=Math.sin(a+p);limb(cx,hy,s*.75,leg,s*.75-(s>0?0:1.1)*Math.abs(s)-.15,leg);});   // ben
+    c.beginPath();c.moveTo(cx,hy);c.lineTo(cx+lean,sy);c.stroke();   // kropp
+    [0,Math.PI].forEach(p=>{const s=Math.sin(a+p+Math.PI);limb(cx+lean,sy+lw*.3,s*.9,arm,s*.9+1.3,arm*.8);});   // armar
+    c.beginPath();c.arc(cx+lean*1.3,sy-head*1.15,head,0,7);c.fill();
+  },
+  grow(c,ch,x,y,w,h,col){   // en planta i tio steg, från frö till blomma
+    const d=+ch;if(!(d>=0))return;const cx=x+w/2,bot=y+h-1,col0=Array.isArray(col)?col[0]:col;
+    c.fillStyle=c.strokeStyle=col0;c.lineCap='round';
+    c.beginPath();c.ellipse(cx,bot-h*.03,w*.2,h*.035,0,0,7);c.fill();   // frö eller jord
+    if(d===0)return;
+    const top=bot-h*(.1+.075*d),lw=Math.max(2,w*.09);c.lineWidth=lw;
+    c.beginPath();c.moveTo(cx,bot-h*.04);c.quadraticCurveTo(cx+w*.1,(bot+top)/2,cx,top);c.stroke();
+    const leaves=Math.min(4,Math.ceil(d/2));
+    for(let i=0;i<leaves;i++){const ly=bot-h*.12-i*(bot-top-h*.08)/Math.max(1,leaves),side=i%2?-1:1,lz=w*(.2+.025*Math.min(d,8));
+      c.beginPath();c.ellipse(cx+side*lz*.75,ly,lz*.7,lz*.3,side*-.5,0,7);c.fill();}
+    if(d>=7){const r=w*(d===7?.12:d===8?.2:.3);
+      if(d===9){for(let i=0;i<8;i++){const an=i/8*Math.PI*2;c.beginPath();c.ellipse(cx+Math.cos(an)*r*.95,top+Math.sin(an)*r*.95,r*.55,r*.28,an,0,7);c.fill();}
+        c.save();c.globalCompositeOperation='destination-out';c.beginPath();c.arc(cx,top,r*.42,0,7);c.fill();c.restore();c.beginPath();c.arc(cx,top,r*.3,0,7);c.fill();}
+      else{c.beginPath();c.ellipse(cx,top,r*.6,r,0,0,7);c.fill();}}
+  },
+  dance(c,ch,x,y,w,h){   // dansare i tio poser, i egna färger
+    const d=+ch;if(!(d>=0))return;const cols=['#ff4fd8','#3ee6ff','#ffd23f','#7dff6a','#ff7a3d','#b48cff','#ff4f6d','#4fffb0','#ffe14f','#5aa8ff'];
+    const col=cols[d],cx=x+w/2,lw=Math.max(2,w*.14),head=h*.1;c.strokeStyle=c.fillStyle=col;c.lineWidth=lw;c.lineCap=c.lineJoin='round';
+    c.save();c.shadowColor=col;c.shadowBlur=w*.25;
+    const P=[[-.4,.4,-.25,.25,0],[-2.6,.8,-.1,.5,.1],[-.8,2.7,-.5,.1,-.1],[-1.6,1.6,-.35,.35,0],[-1.3,1.3,-.9,.3,.15],[-.2,2.9,-.2,.9,-.12],[-2.9,-2.2,-.4,.6,.08],[2.2,2.9,-.6,.4,-.08],[-1.6,.2,-.25,1.3,0],[-2.6,2.6,-.6,.6,0]][d];   // armar: 0 rakt upp; ben: 0 rakt ner
+    const hip=y+h*.6,sh=y+h*.33,ox=P[4]*w;
+    const arm=(ang)=>{c.beginPath();c.moveTo(cx+ox,sh);c.lineTo(cx+ox+Math.sin(ang)*h*.2,sh-Math.cos(ang)*h*.2);c.stroke();};
+    const legf=(ang)=>{c.beginPath();c.moveTo(cx,hip);c.lineTo(cx+Math.sin(ang)*h*.36,hip+Math.cos(ang)*h*.36);c.stroke();};
+    legf(P[2]);legf(P[3]);c.beginPath();c.moveTo(cx,hip);c.lineTo(cx+ox,sh);c.stroke();arm(P[0]);arm(P[1]);
+    c.beginPath();c.arc(cx+ox*1.2,sh-head*1.3,head,0,7);c.fill();c.restore();
+  }
+});
+FONTS.run={n:'Löpare',css:null,pic:.62};FONTS.grow={n:'Planta',css:null,pic:.5};FONTS.dance={n:'Dansare',css:null,pic:.5};
