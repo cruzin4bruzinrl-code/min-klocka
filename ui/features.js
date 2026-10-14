@@ -228,10 +228,21 @@ function sunTimes(lat,lon,d){
 }
 const newId=()=>(0x86B20000+Math.floor(Math.random()*0xFFFF))>>>0;
 function noteDef(lines){return {bg:{t:'solid',c:'#ffd84a'},deco:[{k:'rect',x:0,y:0,w:240,h:46,r:0,c:'#f2c230'},{k:'note',lines:lines,x:120,y:54,w:212,h:216,s:44,f:'pb',c:'#1b1a12'}],els:[{k:'time',x:120,y:8,s:28,f:'pb',c:'#1b1a12'}]};}
+// Lappen är en och samma urtavla som skrivs över. Texten finns kvar i rutan, så du ändrar bara det som behövs.
+const NOTE_ID=0x86B2F005,NOTELS='minklocka.lapp.v1';
+(function fillNote(n){try{const t=localStorage.getItem(NOTELS);if(t!=null){$('txtNote').value=t;return;}
+  if(!window.__galleryReady){if(n<60)setTimeout(()=>fillNote(n+1),300);return;}
+  const old=MINE.find(m=>/^Lapp /.test(m.name)&&m.def&&m.def.deco&&m.def.deco.some(d=>d.k==='note'));if(old&&!$('txtNote').value)$('txtNote').value=old.def.deco.find(d=>d.k==='note').lines.join('\n');}catch(e){}})(0);
+$('txtNote').addEventListener('input',()=>{try{localStorage.setItem(NOTELS,$('txtNote').value);}catch(e){}});
 $('btnNote').addEventListener('click',()=>{
   const lines=$('txtNote').value.split('\n').map(t=>t.trim().slice(0,24)).filter(t=>t).slice(0,9);
   if(!lines.length){toast('Skriv något på lappen först',true);return;}
-  addMine({id:newId(),name:('Lapp '+lines[0]).slice(0,18),def:noteDef(lines),c1:'#ffd84a',c2:'#f2a030',note:'Lapp: '+lines.join(', ').slice(0,60)});log('Lapp skapad: '+lines.length+' rader');});
+  try{localStorage.setItem(NOTELS,$('txtNote').value);}catch(e){}
+  const had=MINE.some(m=>m.id===NOTE_ID);
+  if(!addMine({id:NOTE_ID,name:('Lapp '+lines[0]).slice(0,18),def:noteDef(lines),c1:'#ffd84a',c2:'#f2a030',note:'Lapp: '+lines.join(', ').slice(0,60)},true))return;
+  log((had?'Lappen uppdaterad: ':'Lapp skapad: ')+lines.length+' rader');
+  if(connected&&!busy){toast(had?'Lappen är uppdaterad. Skickar till klockan…':'Lappen är skapad. Skickar till klockan…');setTimeout(()=>$('btnSend').click(),300);}
+  else toast((had?'Lappen är uppdaterad':'Lappen är skapad')+'. Anslut klockan för att skicka den');});
 function todayDef(d,cnt,sun){
   const deco=[{k:'text',txt:DAYS[d.getDay()],x:120,y:16,s:25,f:'pb',c:'#ffc83c',al:'c',tr:1},{k:'text',txt:d.getDate()+' '+MONTHS[d.getMonth()].toUpperCase()+'  V '+isoWeek(d),x:120,y:50,s:15,f:'pb',c:'#c9cee0',al:'c',tr:.5},
     {k:'line',x:30,y:162,x2:210,y2:162,c:'#ffffff',w:1,a:.2}];
