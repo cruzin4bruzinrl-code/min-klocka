@@ -189,7 +189,11 @@ public class MainActivity extends Activity implements WatchService.Web {
 
     @Override
     public void onBackPressed() {
-        // Tillbaka lägger appen i bakgrunden. Kontakten med klockan fortsätter.
+        // Är ett verktyg öppet stänger tillbaka det. Annars läggs appen i bakgrunden; kontakten med klockan fortsätter.
+        if (trusted && wv != null && wv.canGoBack()) {
+            wv.goBack();
+            return;
+        }
         moveTaskToBack(true);
     }
 
