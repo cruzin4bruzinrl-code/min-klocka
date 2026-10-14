@@ -234,8 +234,56 @@ const NOTE_ID=0x86B2F005,NOTELS='minklocka.lapp.v1';
   if(!window.__galleryReady){if(n<60)setTimeout(()=>fillNote(n+1),300);return;}
   const old=MINE.find(m=>/^Lapp /.test(m.name)&&m.def&&m.def.deco&&m.def.deco.some(d=>d.k==='note'));if(old&&!$('txtNote').value)$('txtNote').value=old.def.deco.find(d=>d.k==='note').lines.join('\n');}catch(e){}})(0);
 $('txtNote').addEventListener('input',()=>{try{localStorage.setItem(NOTELS,$('txtNote').value);}catch(e){}});
+// ---------- påminnelser för lappens rader ----------
+// Varje rad kan få en tid. Appen påminner på klockan (och i telefonen) då, även om appen är stängd.
+const REMLS='minklocka.lapp.pam.v1',REMSHOW='minklocka.lapp.visatid.v1';
+let REM=lsGet(REMLS,[]);if(!Array.isArray(REM))REM=[];
+let remShow=lsGet(REMSHOW,true)!==false,remFor=null;
+const noteLinesNow=()=>$('txtNote').value.split('\n').map(t=>t.trim()).filter(t=>t);
+const remOf=t=>REM.find(r=>r.t===t);
+function remFmt(at,short){const d=new Date(at),n=new Date(),hm=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  const same=d.toDateString()===n.toDateString(),tm=new Date(n);tm.setDate(n.getDate()+1);
+  if(same)return short?hm:'idag '+hm;if(d.toDateString()===tm.toDateString())return short?'imorgon '+hm:'imorgon '+hm;
+  return (short?'':['sön','mån','tis','ons','tors','fre','lör'][d.getDay()]+' ')+d.getDate()+'/'+(d.getMonth()+1)+' '+hm;}
+function remSync(prune){
+  // gamla påminnelser, och när lappen sparas även rader som inte längre finns, tas bort
+  const lines=new Set(noteLinesNow()),now=Date.now();REM=REM.filter(r=>(!prune||lines.has(r.t))&&r.at>now-12*3600e3);lsSet(REMLS,REM);
+  if(NATIVE&&NATIVE.setReminders)NATIVE.setReminders(JSON.stringify(REM.filter(r=>r.at>now).map(r=>({t:r.t,at:r.at}))));
+}
+function remRender(){
+  const box=$('remList');if(!box)return;box.innerHTML='';const now=Date.now();
+  noteLinesNow().slice(0,24).forEach(t=>{const r=remOf(t),row=document.createElement('div');row.className='rr'+(r&&r.at<now?' past':'');
+    const tx=document.createElement('span');tx.className='rt';tx.textContent=t;
+    const b=document.createElement('button');b.className='rb'+(r?' on':'');b.textContent=r?'⏰ '+remFmt(r.at):'⏰ Påminn';b.onclick=()=>remAsk(t);
+    row.appendChild(tx);row.appendChild(b);
+    if(r){const x=document.createElement('button');x.className='rx';x.textContent='✕';x.title='Ta bort påminnelsen';x.onclick=()=>{REM=REM.filter(q=>q.t!==t);remSync();remRender();toast('Påminnelsen är borttagen');};row.appendChild(x);}
+    box.appendChild(row);});
+  $('stRem').textContent=!NATIVE?'Påminnelser fungerar bara i Android-appen Min klocka':(NATIVE.setReminders?'Tryck på ⏰ vid en rad för att bli påmind på klockan, när du vill':'Uppdatera appen för att få påminnelser (ladda ner nya appen under Aviseringar och sms)');
+  [...$('segRemShow').children].forEach(b=>b.classList.toggle('on',(b.dataset.v==='1')===remShow));
+}
+function remAsk(t){
+  remFor=t;const p=$('remPick'),r=remOf(t),d=r?new Date(r.at):new Date(Date.now()+3600e3);d.setSeconds(0,0);
+  const loc=new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,16);p.value=loc;
+  try{p.showPicker();}catch(e){p.style.pointerEvents='auto';p.focus();p.click();}
+}
+$('remPick').addEventListener('change',()=>{
+  const v=$('remPick').value;if(!v||!remFor)return;const at=new Date(v).getTime();
+  if(!(at>Date.now())){toast('Välj en tid som inte har passerat',true);return;}
+  REM=REM.filter(q=>q.t!==remFor);REM.push({t:remFor,at:at});remSync();remRender();
+  toast('Du blir påmind '+remFmt(at));log('Påminnelse: "'+remFor+'" '+remFmt(at));remFor=null;
+});
+$('segRemShow').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;remShow=b.dataset.v==='1';lsSet(REMSHOW,remShow);remRender();});
+$('txtNote').addEventListener('input',()=>{clearTimeout(remRender._t);remRender._t=setTimeout(remRender,250);});
+window.__mkRemFired=t=>{remRender();};
+(function waitFill(n){if($('txtNote').value||n>70){remRender();return;}setTimeout(()=>waitFill(n+1),300);})(0);
+setTimeout(()=>{remSync(false);remRender();},1500);
+// Raden som den syns på lappen: med tiden efter om det är valt
+// På lappen står datumet alltid ut ("15/10 14:30"), eftersom lappen inte ändras av sig själv när dagen byts
+const remAbs=at=>{const d=new Date(at);return d.getDate()+'/'+(d.getMonth()+1)+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');};
+function noteLine(t){const r=remOf(t);return (remShow&&r&&r.at>Date.now()-3600e3?t.slice(0,24)+'  '+remAbs(r.at):t).slice(0,36);}
 $('btnNote').addEventListener('click',()=>{
-  const all=$('txtNote').value.split('\n').map(t=>t.trim()).filter(t=>t),lines=all.map(t=>t.slice(0,30)).slice(0,24);
+  remSync(true);remRender();
+  const all=noteLinesNow(),lines=all.map(noteLine).slice(0,24);
   if(!lines.length){toast('Skriv något på lappen först',true);return;}
   if(all.length>24)toast('Bara de 24 första raderna får plats',true);
   try{localStorage.setItem(NOTELS,$('txtNote').value);}catch(e){}

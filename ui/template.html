@@ -232,6 +232,7 @@ button.row:active{background:rgba(255,255,255,.06)}
 .msg input[type=number]{flex:0 0 96px}
 .msg input[type=date]{flex:0 0 150px;color-scheme:dark}
 .note{color:var(--dim);font-size:12.5px;margin:8px 0 0}
+#remList .rr{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid rgba(255,255,255,.06)}#remList .rr:first-child{border-top:0}#remList .rt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#remList .rb{flex:none;padding:7px 11px;border-radius:12px;background:rgba(255,255,255,.07);font-size:13px;font-variant-numeric:tabular-nums}#remList .rb.on{background:linear-gradient(100deg,var(--a1),var(--a2));color:#08090d;font-weight:700}#remList .rx{flex:none;width:30px;height:30px;border-radius:10px;background:rgba(255,255,255,.07)}#remList .past{opacity:.5}
 .tag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:7px;font-size:10.5px;font-weight:700;color:#08090d;background:#ffc857;vertical-align:2px}
 #acts{margin-top:10px}
 .cats button:disabled{opacity:.4}
@@ -392,6 +393,9 @@ button.row:active{background:rgba(255,255,255,.06)}
       <div class="group glass">
         <div class="block" style="border-top:0"><label for="txtNote">Lapp på handleden<small>Din text som urtavla, så stor som får plats. Upp till 24 rader. Fler än 9 rader blir två spalter. Ändra texten och tryck igen, så skrivs samma lapp över</small></label>
           <textarea class="tarea" id="txtNote" maxlength="800" rows="8" placeholder="Mjölk&#10;Bröd&#10;Hämta paket"></textarea>
+          <span class="lab" style="margin:12px 0 6px">Påminnelser och tider<small id="stRem">Tryck på klockan vid en rad för att bli påmind på klockan, när du vill</small></span>
+          <div id="remList"></div><input type="datetime-local" id="remPick" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px">
+          <div class="seg" id="segRemShow" style="margin-top:8px"><button data-v="1" class="on">Visa tiden på lappen</button><button data-v="0">Bara texten</button></div>
           <div class="msg"><button id="btnNote" style="flex:1;padding:13px 0">Uppdatera lappen och skicka</button></div></div>
         <div class="block" id="blkPass" hidden><span class="lab">Passet från IronSplit<small id="stPass"></small></span>
           <div class="msg"><button id="btnPass" style="flex:1;padding:13px 0">Skapa urtavla av passet</button></div></div>
