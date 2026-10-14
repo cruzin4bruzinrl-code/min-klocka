@@ -235,8 +235,9 @@ const NOTE_ID=0x86B2F005,NOTELS='minklocka.lapp.v1';
   const old=MINE.find(m=>/^Lapp /.test(m.name)&&m.def&&m.def.deco&&m.def.deco.some(d=>d.k==='note'));if(old&&!$('txtNote').value)$('txtNote').value=old.def.deco.find(d=>d.k==='note').lines.join('\n');}catch(e){}})(0);
 $('txtNote').addEventListener('input',()=>{try{localStorage.setItem(NOTELS,$('txtNote').value);}catch(e){}});
 $('btnNote').addEventListener('click',()=>{
-  const lines=$('txtNote').value.split('\n').map(t=>t.trim().slice(0,24)).filter(t=>t).slice(0,9);
+  const all=$('txtNote').value.split('\n').map(t=>t.trim()).filter(t=>t),lines=all.map(t=>t.slice(0,30)).slice(0,24);
   if(!lines.length){toast('Skriv något på lappen först',true);return;}
+  if(all.length>24)toast('Bara de 24 första raderna får plats',true);
   try{localStorage.setItem(NOTELS,$('txtNote').value);}catch(e){}
   const had=MINE.some(m=>m.id===NOTE_ID);
   if(!addMine({id:NOTE_ID,name:('Lapp '+lines[0]).slice(0,18),def:noteDef(lines),c1:'#ffd84a',c2:'#f2a030',note:'Lapp: '+lines.join(', ').slice(0,60)},true))return;

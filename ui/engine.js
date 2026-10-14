@@ -225,9 +225,17 @@ function drawDeco(ctx,d){
       if(d.tan){const deg=k*360/n;ctx.save();ctx.translate(x,y);ctx.rotate((deg>90&&deg<270?deg+180:deg)*Math.PI/180);ctx.fillText(t,0,1);ctx.restore();}else ctx.fillText(t,x,y+1);});}
   else if(d.k==='stripes'){ctx.beginPath();ctx.arc(PX,PY,d.r||116,0,7);ctx.clip();ctx.fillStyle=d.c;const per=d.per||6;for(let x=PX-120;x<PX+120;x+=per)ctx.fillRect(x,0,per/2,DH);}
   else if(d.k==='qr'){drawQR(ctx,d.txt||'',d.x,d.y,d.size);}
-  else if(d.k==='note'){const L=(d.lines||[]).filter(t=>t!==undefined).slice(0,9),W=d.w||208,H=d.h||180;let s=d.s||34;ctx.textBaseline='top';
-    const wid=q=>{ctx.font=FONTS[d.f||'pb'].css(q);return Math.max(1,...L.map(t=>ctx.measureText(t).width));};while(s>9&&(wid(s)>W||L.length*s*1.22>H))s-=1;
-    const y0=(d.y||40)+(H-L.length*s*1.22)/2;L.forEach((t,k)=>text(ctx,t,d.x||120,y0+k*s*1.22,s,d.f||'pb',d.c||'#ffffff','c',0));}
+  else if(d.k==='note'){const L=(d.lines||[]).filter(t=>t!==undefined).slice(0,24),W=d.w||208,H=d.h||180,cx=d.x||120;ctx.textBaseline='top';
+    const wid=(q,A)=>{ctx.font=FONTS[d.f||'pb'].css(q);return Math.max(1,...A.map(t=>ctx.measureText(t).width));};
+    const fit=(A,w)=>{let q=d.s||34;while(q>9&&(wid(q,A)>w||A.length*q*1.22>H))q-=1;return q;};
+    let s=fit(L,W);
+    // Ryms det inte stort i en spalt blir det två spalter, vänsterställda (fler än 9 rader eller för liten text)
+    if(L.length>9||(s<16&&L.length>4)){const n=Math.ceil(L.length/2),A=L.slice(0,n),B=L.slice(n),FW=Math.min(228,W+20),G=14;
+      let s2=d.s||34;while(s2>9&&(wid(s2,A)+wid(s2,B)+G>FW||n*s2*1.22>H))s2-=1;   // spalterna får den bredd de behöver
+      if(L.length>9||s2>s){const y0=(d.y||40)+(H-n*s2*1.22)/2,wa=wid(s2,A),wb=wid(s2,B),xl=Math.round(cx-(wa+G+wb)/2),xr=xl+wa+G;
+        A.forEach((t,k)=>text(ctx,t,xl,y0+k*s2*1.22,s2,d.f||'pb',d.c||'#ffffff','l',0));B.forEach((t,k)=>text(ctx,t,xr,y0+k*s2*1.22,s2,d.f||'pb',d.c||'#ffffff','l',0));
+        ctx.globalAlpha=.25;ctx.fillStyle=d.c||'#ffffff';ctx.fillRect(xl+wa+G/2-.75,y0,1.5,n*s2*1.22);ctx.globalAlpha=1;s=0;}}
+    if(s){const y0=(d.y||40)+(H-L.length*s*1.22)/2;L.forEach((t,k)=>text(ctx,t,cx,y0+k*s*1.22,s,d.f||'pb',d.c||'#ffffff','c',0));}}
   else if(d.k==='toon'&&TOONS[d.n]){ctx.globalAlpha=1;TOONS[d.n](ctx,d);}
   else if(d.k==='arcg'){const n=48;ctx.lineWidth=d.w||6;ctx.lineCap='round';for(let k=0;k<n;k++){const a0=(d.a0+(d.a1-d.a0)*k/n-90)*Math.PI/180,a1=(d.a0+(d.a1-d.a0)*(k+1)/n-90)*Math.PI/180;ctx.strokeStyle=lerpHex(d.c,d.c2||d.c,k/(n-1));ctx.beginPath();ctx.arc(d.x,d.y,d.r,a0,a1+.01);ctx.stroke();}}
   else if(d.k==='glow'){const g=ctx.createRadialGradient(d.x,d.y,0,d.x,d.y,d.r);g.addColorStop(0,rgba(d.c,d.i||.5));g.addColorStop(1,rgba(d.c,0));ctx.fillStyle=g;ctx.fillRect(0,0,DW,DH);}
