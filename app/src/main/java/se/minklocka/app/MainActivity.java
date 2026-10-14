@@ -355,6 +355,13 @@ public class MainActivity extends Activity implements WatchService.Web {
             WatchService.brightChanged();
         }
 
+        /** Lappens påminnelser: [{t, at}] med tiden i millisekunder. */
+        @JavascriptInterface
+        public void setReminders(String json) {
+            if (!trusted) return;
+            Reminders.set(MainActivity.this, json);
+        }
+
         @JavascriptInterface
         public void share(final String text) {
             if (!trusted || text == null) return;

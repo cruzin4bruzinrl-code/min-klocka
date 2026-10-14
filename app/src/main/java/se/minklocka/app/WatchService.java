@@ -530,6 +530,7 @@ public class WatchService extends Service {
         setReady(true);
         brightApplied = null;
         h.postDelayed(this::applyBright, 5000);
+        h.postDelayed(() -> Reminders.flush(this), 3000);
     }
 
     // ---------- skicka från appen själv (aviseringar, ljusstyrka) ----------
