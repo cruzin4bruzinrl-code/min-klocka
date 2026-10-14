@@ -1,5 +1,5 @@
 // ---------- galleri: digitala (ritas här), analoga (färdiga filer) och egna ----------
-const FONTLOAD=['500 20px PoppinsApp','700 20px PoppinsApp','300 20px PoppinsLight','700 20px LoraBold','700 20px MonoBold'];
+const FONTLOAD=['500 20px PoppinsApp','700 20px PoppinsApp','300 20px PoppinsLight','700 20px LoraBold','700 20px MonoBold','700 20px CondBold'];
 const LSKEY='minklocka.mina.v1';
 let MINE=[], cat='all', cur=null, photoCache={};
 // Förhandsvisningen går som en riktig klocka: rätt tid varje sekund, och riktiga värden från klockan där de finns.

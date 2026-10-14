@@ -603,6 +603,7 @@ body.sheet-open .view.on *{animation-play-state:paused}
       <div class="group glass">
         <div class="block" style="border-top:0"><label for="txtNote">Lapp på handleden<small>Din text som urtavla, så stor som får plats. Upp till 24 rader. Fler än 9 rader blir två spalter. Ändra texten och tryck igen, så skrivs samma lapp över</small></label>
           <textarea class="tarea" id="txtNote" maxlength="800" rows="8" placeholder="Mjölk&#10;Bröd&#10;Hämta paket"></textarea>
+          <p class="note" id="stNoteSize"></p>
           <span class="lab" style="margin:12px 0 6px">Påminnelser och tider<small id="stRem">Tryck på klockan vid en rad för att bli påmind på klockan, när du vill</small></span>
           <div id="remList"></div><input type="datetime-local" id="remPick" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px">
           <div class="seg" id="segRemShow" style="margin-top:8px"><button data-v="1" class="on">Visa tiden på lappen</button><button data-v="0">Bara texten</button></div>

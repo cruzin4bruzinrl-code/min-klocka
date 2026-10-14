@@ -227,7 +227,15 @@ function sunTimes(lat,lon,d){
   return [f(720-4*(lon+ha)-eq+tz),f(720-4*(lon-ha)-eq+tz)];
 }
 const newId=()=>(0x86B20000+Math.floor(Math.random()*0xFFFF))>>>0;
-function noteDef(lines){return {bg:{t:'solid',c:'#ffd84a'},deco:[{k:'rect',x:0,y:0,w:240,h:46,r:0,c:'#f2c230'},{k:'note',lines:lines,x:120,y:54,w:212,h:216,s:44,f:'pb',c:'#1b1a12'}],els:[{k:'time',x:120,y:8,s:28,f:'pb',c:'#1b1a12'}]};}
+// Få rader: stor rund text som förut. Många rader: smal stil, tunnare rubrik och tätare rader, så att texten blir större
+function noteDef(lines){
+  if(lines.length<=5)return {bg:{t:'solid',c:'#ffd84a'},deco:[{k:'rect',x:0,y:0,w:240,h:46,r:0,c:'#f2c230'},{k:'note',lines:lines,x:120,y:54,w:212,h:216,s:44,f:'pb',c:'#1b1a12'}],els:[{k:'time',x:120,y:8,s:28,f:'pb',c:'#1b1a12'}]};
+  return {bg:{t:'solid',c:'#ffd84a'},deco:[{k:'rect',x:0,y:0,w:240,h:30,r:0,c:'#f2c230'},{k:'note',lines:lines,x:120,y:34,w:228,h:248,s:64,f:'cb',lh:1.08,c:'#1b1a12'}],els:[{k:'time',x:120,y:5,s:20,f:'pb',c:'#1b1a12'}]};
+}
+// Hur stor texten blir på klockan, medan du skriver
+function noteSizeInfo(lines){if(!lines.length)return '';const d=noteDef(lines).deco[1],o=noteLayout(ctxOf(mk(4,4)),d);
+  const px=o.s,w=px>=26?'stor':px>=19?'lagom':px>=15?'liten':'mycket liten';
+  return 'Texten blir '+w+' på klockan ('+px+' px'+(o.cols===2?', två spalter':'')+').'+(px<19?' Kortare ord eller färre rader ger större text.':'');}
 // Lappen är en och samma urtavla som skrivs över. Texten finns kvar i rutan, så du ändrar bara det som behövs.
 const NOTE_ID=0x86B2F005,NOTELS='minklocka.lapp.v1';
 (function fillNote(n){try{const t=localStorage.getItem(NOTELS);if(t!=null){$('txtNote').value=t;return;}
@@ -251,7 +259,8 @@ function remSync(prune){
   if(NATIVE&&NATIVE.setReminders)NATIVE.setReminders(JSON.stringify(REM.filter(r=>r.at>now).map(r=>({t:r.t,at:r.at}))));
 }
 function remRender(){
-  const box=$('remList');if(!box)return;box.innerHTML='';const now=Date.now();
+  const box=$('remList');if(!box)return;
+  try{$('stNoteSize').textContent=noteSizeInfo(noteLinesNow().slice(0,24).map(t=>noteLine(t)));}catch(e){}box.innerHTML='';const now=Date.now();
   noteLinesNow().slice(0,24).forEach(t=>{const r=remOf(t),row=document.createElement('div');row.className='rr'+(r&&r.at<now?' past':'');
     const tx=document.createElement('span');tx.className='rt';tx.textContent=t;
     const b=document.createElement('button');b.className='rb'+(r?' on':'');b.textContent=r?'⏰ '+remFmt(r.at):'⏰ Påminn';b.onclick=()=>remAsk(t);
