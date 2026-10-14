@@ -20,6 +20,22 @@ public class NotifyService extends NotificationListenerService {
         connected = false;
     }
 
+    private static String lastNav = "";
+
+    private void navigation(Notification n) {
+        Bundle x = n.extras;
+        if (x == null) return;
+        CharSequence title = x.getCharSequence(Notification.EXTRA_TITLE);
+        CharSequence text = x.getCharSequence(Notification.EXTRA_TEXT);
+        String t = title == null ? "" : title.toString(), b = text == null ? "" : text.toString();
+        if (t.isEmpty() && b.isEmpty()) return;
+        String key = (t + "|" + b).replaceAll("[0-9.,]+\\s*(m|km|min|h)\\b", "#").replaceAll("[0-9]", "");
+        if (key.equals(lastNav)) return;
+        lastNav = key;
+        WatchService.log("Vägbeskrivning till klockan");
+        Notifier.push(this, 10, t, b);
+    }
+
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         try {
@@ -27,7 +43,14 @@ public class NotifyService extends NotificationListenerService {
             String pkg = sbn.getPackageName();
             if (pkg == null || pkg.equals(getPackageName()) || pkg.equals("android") || pkg.equals("com.android.systemui")) return;
             Notification n = sbn.getNotification();
-            if (n == null || sbn.isOngoing()) return;
+            if (n == null) return;
+            // Vägbeskrivning från Google Maps eller Waze: den avisering som hela tiden uppdateras under färden.
+            // Klockan får nästa instruktion när den byts, inte varje gång avståndet räknas ner.
+            if (sbn.isOngoing() && (pkg.equals("com.google.android.apps.maps") || pkg.equals("com.waze"))) {
+                navigation(n);
+                return;
+            }
+            if (sbn.isOngoing()) return;
             if ((n.flags & Notification.FLAG_GROUP_SUMMARY) != 0) return;
             String cat = n.category;
             if (Notification.CATEGORY_TRANSPORT.equals(cat) || Notification.CATEGORY_PROGRESS.equals(cat) || Notification.CATEGORY_SERVICE.equals(cat)) return;
