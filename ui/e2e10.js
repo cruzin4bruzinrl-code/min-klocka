@@ -9,11 +9,21 @@ let pass=0,fail=0;const ok=(n,c,x)=>{c?pass++:fail++;console.log((c?'ok   ':'FEL
   const errs=[];p.on('pageerror',e=>errs.push(e.message));let n=0;await p.exposeFunction('__report',s=>{n++;});
   await p.addInitScript(()=>{window.__newTools=true;});await p.addInitScript(fake);
   await p.goto(U+'#k=ba20001200b7ef01830001000da1a2a3a4a5a6b1b2b3b4b5b600');await p.waitForFunction(()=>window.__galleryReady===true,null,{timeout:40000});
-  await p.waitForSelector('#tour .tr-next',{timeout:5000});ok('rundturen visas första gången',true);
-  for(let i=0;i<4;i++){await p.click('#tour .tr-next');await p.waitForTimeout(150);}
-  await p.waitForTimeout(500);ok('rundturen går att gå igenom och stängs',await p.evaluate(()=>!document.getElementById('tour')&&lsGet('minklocka.rundtur.v1',false)===true));
+  await p.waitForSelector('#tour .tr-next',{timeout:5000});ok('guiden visas första gången',true);
+  const nst=await p.evaluate(()=>window.__obSteps());ok('guiden har steg för anslutning, urtavla och tema (utan app inget steg för lov)',nst===5,nst);
+  await p.click('#tour .tr-next');await p.waitForTimeout(250);
+  ok('steget anslut har en knapp i webbläsaren',await p.evaluate(()=>!!document.querySelector('#tour [data-a="conn"]')));
+  await p.click('#tour .tr-next');await p.waitForTimeout(400);
+  ok('urtavlor att välja bland, ritade',await p.evaluate(()=>document.querySelectorAll('#tour .ob-faces canvas').length===6));
+  await p.click('#tour .ob-faces button[data-k="astronauten"]');await p.waitForTimeout(200);
+  ok('ett tryck väljer urtavlan',await p.evaluate(()=>cur&&cur.key==='astronauten'));
+  await p.click('#tour .tr-back');await p.waitForTimeout(200);ok('tillbaka fungerar',await p.evaluate(()=>!!document.querySelector('#tour [data-a="conn"]')));
+  await p.click('#tour .tr-next');await p.click('#tour .tr-next');await p.waitForTimeout(250);
+  await p.click('#tour .themes button[data-th="mint"]');await p.waitForTimeout(200);ok('tema väljs i guiden',await p.evaluate(()=>document.documentElement.dataset.theme==='mint'));
+  await p.click('#tour .tr-next');await p.waitForTimeout(200);await p.click('#tour .tr-next');
+  await p.waitForTimeout(500);ok('guiden går att gå igenom och stängs',await p.evaluate(()=>!document.getElementById('tour')&&lsGet('minklocka.start.v2',false)===true));
   await p.reload();await p.waitForFunction(()=>window.__galleryReady===true,null,{timeout:40000});await p.waitForTimeout(1300);
-  ok('rundturen visas inte igen',await p.evaluate(()=>!document.getElementById('tour')));
+  ok('guiden visas inte igen',await p.evaluate(()=>!document.getElementById('tour')));
   await p.click('#btnConnect');await p.waitForFunction(()=>document.getElementById('stConn').textContent==='Ansluten'&&!busy,null,{timeout:40000});
   await p.waitForFunction(()=>/Hämtat|svarade/.test($('hlState').textContent)&&!busy&&!hlBusy,null,{timeout:30000});
   await p.click('#tabs [data-v="tools"]');await p.waitForTimeout(700);
@@ -41,7 +51,7 @@ let pass=0,fail=0;const ok=(n,c,x)=>{c?pass++:fail++;console.log((c?'ok   ':'FEL
   await p.click('#tabs [data-v="dials"]');ok('tips om hur man byter urtavla',await p.evaluate(()=>!!document.querySelector('#view-dials .hint')));
   await p.click('#view-dials .hint-x');await p.waitForTimeout(400);await p.reload();await p.waitForFunction(()=>window.__galleryReady===true,null,{timeout:40000});
   ok('tipset kommer inte tillbaka',await p.evaluate(()=>!document.querySelector('#view-dials .hint')));
-  await p.click('#tabs [data-v="log"]');await p.click('#btnTour');await p.waitForTimeout(300);ok('rundturen går att se igen',await p.evaluate(()=>!!document.getElementById('tour')));
+  await p.click('#tabs [data-v="log"]');await p.click('#btnTour');await p.waitForTimeout(300);ok('guiden går att se igen',await p.evaluate(()=>!!document.getElementById('tour')));
   ok('inga sidfel',errs.length===0,JSON.stringify(errs));
   console.log('\n'+pass+' ok, '+fail+' fel');await b.close();srv.close();process.exit(fail?1:0);
 })().catch(e=>{console.error('E2E-FEL',e);process.exit(1);});

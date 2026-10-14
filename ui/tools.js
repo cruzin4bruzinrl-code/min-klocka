@@ -119,7 +119,9 @@ function closeTool(fromPop){
 }
 window.openTool=openTool;window.closeTool=closeTool;
 // byter appen flik (till exempel till Urtavlor efter Skapa) stängs bladet först
-if(!CLASSIC&&typeof showTab==='function'){const st=showTab;showTab=function(v){if(open)closeTool();return st.apply(this,arguments);};}
+if(typeof showTab==='function'){const st=showTab;showTab=function(v){if(open)closeTool();const sl=$('tabSlide'),was=document.querySelector('#tabs button.on');const r=st.apply(this,arguments);
+  // flytande glas: markören töjs ut när den byter flik
+  if(sl&&was&&was.dataset.v!==v){sl.classList.remove('goo');void sl.offsetWidth;sl.classList.add('goo');}return r;};}
 // ---------- rundtur första gången ----------
 const TOUR=[
   {h:'Välkommen till Min klocka',p:'Telefonen pratar med klockan över Bluetooth. Håll dem nära varandra, så ansluter appen av sig själv.',art:'link'},
@@ -129,23 +131,70 @@ const TOUR=[
 ];
 function tourArt(a){
   if(a==='link')return '<svg viewBox="0 0 220 140" class="ta"><g class="ta-ph"><rect x="22" y="22" width="56" height="98" rx="12"/><rect x="29" y="31" width="42" height="76" rx="6" class="scr"/></g><g class="ta-wv"><path class="w1" d="M100 58q10 13 0 26"/><path class="w2" d="M110 50q16 21 0 42"/><path class="w3" d="M120 42q22 29 0 58"/></g><g class="ta-w"><rect x="146" y="38" width="54" height="66" rx="15"/><rect x="152" y="44" width="42" height="54" rx="10" class="scr"/><text x="173" y="77" text-anchor="middle" class="tt2">12:30</text></g></svg>';
-  if(a==='faces')return '<svg viewBox="0 0 220 140" class="ta">'+[0,1,2,3,4,5].map(i=>{const x=22+(i%3)*62,y=14+Math.floor(i/3)*62;const c=['#3ba0ff','#ff5aa0','#ffd23f','#3ee6a0','#b48cff','#ff8a3c'][i];return '<rect class="tf" style="animation-delay:'+(i*.12)+'s" x="'+x+'" y="'+y+'" width="52" height="54" rx="12" fill="'+c+'" stroke="none"/>';}).join('')+'<circle class="tap" cx="139" cy="41" r="12"/></svg>';
+  if(a==='faces')return '<svg viewBox="0 0 220 140" class="ta">'+[0,1,2,3,4,5].map(i=>{const x=22+(i%3)*62,y=14+Math.floor(i/3)*62;const c=['#3ba0ff','#ff5aa0','#ffd23f','#3ee6a0','#b48cff','#ff8a3c'][i];return '<rect class="tf" style="animation-delay:'+(i*.12)+'s;fill:'+c+';stroke:none" x="'+x+'" y="'+y+'" width="52" height="54" rx="12"/>';}).join('')+'<circle class="tap" cx="139" cy="41" r="12"/></svg>';
   if(a==='tools')return '<svg viewBox="0 0 220 140" class="ta">'+['note','bell','sun','spark'].map((g,i)=>'<g class="tt3" style="animation-delay:'+(i*.15)+'s" transform="translate('+(20+i*50)+' 46)"><rect x="0" y="0" width="40" height="40" rx="12" class="tbx"/><g transform="translate(8 8)">'+svg(g).replace('<svg','<svg width="24" height="24"')+'</g></g>').join('')+'</svg>';
   return '<svg viewBox="0 0 220 140" class="ta"><g class="ta-w"><rect x="83" y="34" width="54" height="66" rx="15"/><rect x="89" y="40" width="42" height="54" rx="10" class="scr"/></g><g class="fl f1" transform="translate(40 30)">'+svg('music').replace('<svg','<svg width="26" height="26"')+'</g><g class="fl f2" transform="translate(156 36)">'+svg('bell').replace('<svg','<svg width="26" height="26"')+'</g><g class="fl f3" transform="translate(48 92)">'+svg('heart').replace('<svg','<svg width="26" height="26"')+'</g><g class="fl f4" transform="translate(150 94)">'+svg('bubble').replace('<svg','<svg width="26" height="26"')+'</g></svg>';
 }
+// ---------- kom igång: en guide för den som är ny, steg för steg ----------
+// Varje steg gör något på riktigt: ger lov, ansluter klockan, skickar en första urtavla och väljer tema.
+const OBKEY='minklocka.start.v2';
 function tour(force){
-  if(CLASSIC&&!force)return;if(!force&&lsGet('minklocka.rundtur.v1',false))return;
-  let i=0;const o=document.createElement('div');o.id='tour';
-  const paint=()=>{const s=TOUR[i];o.innerHTML='<div class="tr-card"><div class="tr-art">'+tourArt(s.art)+'</div><h2>'+s.h+'</h2><p>'+s.p+'</p><div class="tr-dots">'+TOUR.map((_,j)=>'<i class="'+(j===i?'on':'')+'"></i>').join('')+'</div><div class="tr-btns"><button class="tr-skip">Hoppa över</button><button class="tr-next">'+(i===TOUR.length-1?'Kom igång':'Nästa')+'</button></div></div>';
-    o.querySelector('.tr-skip').onclick=done;o.querySelector('.tr-next').onclick=()=>{if(i<TOUR.length-1){i++;paint();}else done();};};
-  const done=()=>{lsSet('minklocka.rundtur.v1',true);o.classList.add('out');setTimeout(()=>o.remove(),350);};
+  if(CLASSIC&&!force)return;if(!force&&lsGet(OBKEY,false))return;if($('tour'))return;
+  const N=window.MinKlockaNative||null,hasPerm=!!(N&&N.perms);
+  const perm=()=>{try{return JSON.parse(N.perms());}catch(e){return {};}};
+  const PICKS=['rutnat','astronauten','marschen','solrosen','dansgolvet','sovkatten'];
+  const steps=[
+    {k:'hej',art:()=>tourArt('link'),h:'Hej! Nu kopplar vi ihop din klocka',p:'Det tar en minut. Du kan hoppa över allt och göra det senare under Mer.',next:'Kom igång'},
+    hasPerm&&{k:'lov',art:()=>tourArt('bg'),h:'Låt klockan få veta saker',p:'Med lov kan appen skicka aviseringar och sms till klockan, och du kan svara från den.',body:()=>{const p=perm();
+      return '<div class="ob-list"><div class="ob-row'+(p.notif?' ok':'')+'"><span>'+svg('bell')+'</span><b>Aviseringar<small>Allt som plingar i telefonen</small></b>'+(p.notif?'<i>✓</i>':'<button data-a="notif">Ge lov</button>')+'</div>'+
+        '<div class="ob-row'+(p.sms?' ok':'')+'"><span>'+svg('bubble')+'</span><b>Sms<small>Svara med klockans färdiga svar</small></b>'+(p.sms?'<i>✓</i>':'<button data-a="sms">Ge lov</button>')+'</div></div>';},
+      bind:(o,re)=>{o.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{if(b.dataset.a==='notif')N.openNotifyAccess();else N.askSms();});return setInterval(re,1200);}},
+    {k:'koppla',art:()=>connArt(),h:'Anslut klockan',p:'',body:()=>{
+      const on=typeof connected!=='undefined'&&connected,nokey=$('keyBox')&&!$('keyBox').hidden;
+      if(on)return '<p class="ob-st ok">Klockan är ansluten. Bra!</p>';
+      return '<p class="ob-st">'+(N?'Appen letar efter klockan. Håll den nära telefonen och se till att Bluetooth är på.':'Tryck på knappen och välj klockan i listan.')+'</p>'+
+        (N?'':'<button class="ob-big" data-a="conn">Anslut klockan</button>')+(nokey?'<p class="ob-st warn">Din personliga nyckel saknas. Öppna din personliga länk en gång, så känner klockan igen appen.</p>':'');},
+      bind:(o,re)=>{const b=o.querySelector('[data-a="conn"]');if(b)b.onclick=()=>{$('btnConnect').click();};let was=typeof connected!=='undefined'&&connected;
+        return setInterval(()=>{const now=typeof connected!=='undefined'&&connected;if(now!==was){was=now;re();}},700);}},
+    {k:'urtavla',art:()=>'',h:'Välj en första urtavla',p:'Tryck på en du gillar. Du kan byta när du vill under Urtavlor.',body:()=>{
+      const on=typeof connected!=='undefined'&&connected;
+      return '<div class="ob-faces">'+PICKS.map(k=>'<button data-k="'+k+'"><canvas width="120" height="143"></canvas></button>').join('')+'</div>'+
+        (on?'<button class="ob-big" data-a="send">Skicka till klockan</button><p class="ob-st" id="obProg"></p>':'<p class="ob-st">Anslut klockan för att skicka den. Den du valt ligger kvar under Urtavlor.</p>');},
+      bind:(o,re)=>{const ds=typeof allDials==='function'?allDials():[];
+        o.querySelectorAll('.ob-faces button').forEach((b,i)=>{const d=ds.find(x=>x.key===b.dataset.k);const cv=b.querySelector('canvas');b.style.animationDelay=(i*70)+'ms';
+          if(d){try{paintFace(d,cv,nowT());}catch(e){}if(cur&&cur.key===d.key)b.classList.add('on');}
+          b.onclick=()=>{if(!d)return;pickDial(d.gk,true);o.querySelectorAll('.ob-faces button').forEach(x=>x.classList.toggle('on',x===b));};});
+        const sb=o.querySelector('[data-a="send"]');if(sb)sb.onclick=()=>{$('btnSend').click();};
+        return setInterval(()=>{const pr=o.querySelector('#obProg');if(pr)pr.textContent=$('stProg').textContent;},400);}},
+    {k:'tema',art:()=>'',h:'Välj utseende',p:'Ljust, mörkt eller i urtavlans färger. Du kan ändra under Mer.',body:()=>'<div class="themes ob-th">'+THEMES.map(t=>'<button data-th="'+t[0]+'"><span class="sw"><i style="background:'+t[2]+'"></i><i style="background:'+t[3]+'"></i><i style="background:'+t[4]+'"></i></span>'+t[1]+'</button>').join('')+'</div>',
+      bind:(o)=>{o.querySelector('.themes').onclick=e=>{const b=e.target.closest('button');if(b){setTheme(b.dataset.th);o.querySelectorAll('.themes button').forEach(x=>x.classList.toggle('on',x===b));}};
+        const t=document.documentElement.dataset.theme;o.querySelectorAll('.themes button').forEach(x=>x.classList.toggle('on',x.dataset.th===t));}},
+    {k:'klar',art:()=>doneArt(),h:'Klart!',p:'',body:()=>'<div class="ob-list tips"><div class="ob-row"><span>'+svg('watch')+'</span><b>Urtavlor<small>Tryck på en och sedan Skicka</small></b></div><div class="ob-row"><span>'+svg('note')+'</span><b>Verktyg<small>Lapp med påminnelser, meddelanden, väder och mer</small></b></div><div class="ob-row"><span>'+svg('music')+'</span><b>Musik<small>Klockans musikknappar styr telefonen</small></b></div></div>',next:'Börja använda'}
+  ].filter(Boolean);
+  let i=0,timer=0;const o=document.createElement('div');o.id='tour';
+  const done=()=>{clearInterval(timer);lsSet(OBKEY,true);lsSet('minklocka.rundtur.v1',true);o.classList.add('out');setTimeout(()=>o.remove(),350);};
+  const paint=(soft)=>{clearInterval(timer);const s=steps[i];
+    o.innerHTML='<div class="tr-card'+(soft?' soft':'')+'"><div class="tr-prog">'+steps.map((_,j)=>'<i class="'+(j<i?'done':j===i?'on':'')+'"></i>').join('')+'</div>'+
+      (s.art&&s.art()?'<div class="tr-art">'+s.art()+'</div>':'')+'<h2>'+s.h+'</h2>'+(s.p?'<p>'+s.p+'</p>':'')+(s.body?'<div class="tr-body">'+s.body()+'</div>':'')+
+      '<div class="tr-btns">'+(i>0?'<button class="tr-back" aria-label="Tillbaka">‹</button>':'')+(i<steps.length-1?'<button class="tr-skip">'+(i===0?'Hoppa över':'Senare')+'</button>':'')+'<button class="tr-next">'+(s.next||'Nästa')+'</button></div></div>';
+    o.querySelector('.tr-next').onclick=()=>{if(i<steps.length-1){i++;paint();}else done();};
+    const sk=o.querySelector('.tr-skip');if(sk)sk.onclick=i===0?done:()=>{i++;paint();};
+    const bk=o.querySelector('.tr-back');if(bk)bk.onclick=()=>{i--;paint();};
+    // steget ritas bara om när något faktiskt har ändrats, annars blinkar det
+    let last=s.body?s.body():'';if(s.bind)timer=s.bind(o,()=>{const h=s.body?s.body():'';if(h!==last)paint(true);})||0;};
   paint();document.body.appendChild(o);
 }
+function connArt(){const on=typeof connected!=='undefined'&&connected;
+  return '<svg viewBox="0 0 220 140" class="ta'+(on?' ok':'')+'"><g class="ta-ph"><rect x="22" y="22" width="56" height="98" rx="12"/><rect x="29" y="31" width="42" height="76" rx="6" class="scr"/></g>'+
+    (on?'<circle class="okc" cx="112" cy="71" r="18"/><path class="okm" d="M103 71l6 6 12-13"/>':'<g class="ta-wv"><path class="w1" d="M100 58q10 13 0 26"/><path class="w2" d="M110 50q16 21 0 42"/><path class="w3" d="M120 42q22 29 0 58"/></g>')+
+    '<g class="ta-w"><rect x="146" y="38" width="54" height="66" rx="15"/><rect x="152" y="44" width="42" height="54" rx="10" class="scr"/><text x="173" y="77" text-anchor="middle" class="tt2">'+new Date().toTimeString().slice(0,5)+'</text></g></svg>';}
+function doneArt(){return '<svg viewBox="0 0 220 140" class="ta conf">'+Array.from({length:18},(_,k)=>{const x=20+(k*37)%180,c=['var(--a1)','var(--a2)','#ffc857','#3ee6a0'][k%4];return '<rect class="cf" style="animation-delay:'+(k*.07)+'s;fill:'+c+';stroke:none" x="'+x+'" y="10" width="7" height="12" rx="2" transform="rotate('+(k*23%60-30)+' '+x+' 16)"/>';}).join('')+
+  '<circle class="okc big" cx="110" cy="74" r="30"/><path class="okm big" d="M95 74l10 10 20-22"/></svg>';}
 window.startTour=()=>tour(true);
 // hjälp i Mer-fliken
 function helpCard(){
   const v=$('view-log');if(!v||$('helpCard'))return;const c=document.createElement('div');c.id='helpCard';c.className='group glass';
-  c.innerHTML='<button class="row" id="btnTour"><span class="ic">'+svg('spark')+'</span><span class="tx">Visa rundturen igen<small>Fyra bilder om hur appen fungerar</small></span></button>'+
+  c.innerHTML='<button class="row" id="btnTour"><span class="ic">'+svg('spark')+'</span><span class="tx">Kom igång-guiden<small>Ge lov, anslut klockan, välj urtavla och tema</small></span></button>'+
     '<div class="block"><span class="lab">Bra att veta<small>Etiketten <i class="tg">ny</i> betyder att funktionen inte är provad på din klocka än. Loggen här under visar vad appen och klockan säger till varandra, och är till hjälp om något krånglar.</small></span></div>';
   v.insertBefore(c,v.firstChild);$('btnTour').onclick=()=>tour(true);
   // teman
@@ -173,6 +222,7 @@ function dialsHint(){
 build();helpCard();dialsHint();
 const tb=document.querySelector('#tabs [data-v="log"]');if(tb)tb.lastChild.textContent='Mer';
 setTimeout(()=>tour(false),900);
+window.__obSteps=()=>$('tour')?$('tour').querySelectorAll('.tr-prog i').length:0;
 // studs på alla knappar
 document.addEventListener('pointerdown',e=>{const b=e.target.closest('button,.seg button,.soft,label.own');if(b&&!b.closest('#tabs'))bounce(b);},{passive:true});
 })();

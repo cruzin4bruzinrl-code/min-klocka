@@ -82,7 +82,7 @@ function pickDial(gk,quiet){
   qsa('.chip',$('dialGrid')).forEach(c=>c.classList.toggle('on',c.dataset.k===d.gk));hint();syncActs();
   if(!quiet)log('Urtavla vald: '+d.name+(statusOf(d)==='ny'?' (inte provad på klockan än)':''));
 }
-$('dialGrid').addEventListener('click',e=>{if(busy)return;const n=e.target.closest('[data-new]');if(n){openEditor(null);return;}if(e.target.closest('[data-ai]')){openAI();return;}const b=e.target.closest('[data-k]');if(b)pickDial(b.dataset.k);});
+$('dialGrid').addEventListener('click',e=>{if(busy&&!(typeof hlBusy!=='undefined'&&hlBusy))return;/* under hämtning av historik går det ändå att välja */const n=e.target.closest('[data-new]');if(n){openEditor(null);return;}if(e.target.closest('[data-ai]')){openAI();return;}const b=e.target.closest('[data-k]');if(b)pickDial(b.dataset.k);});
 $('cats').addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;cat=b.dataset.c;renderGrid();});
 $('btnEdit').addEventListener('click',()=>{if(cur&&cur.def&&!busy)openEditor(cur);});
 $('btnDelete').addEventListener('click',()=>{if(!cur||cur.kind!=='m'||busy)return;const n=cur.name;MINE=MINE.filter(m=>m.id!==cur.id);saveMine();delete FAV[cur.gk];delete RES[cur.gk];lsSet(FAVLS,FAV);lsSet(RESLS,RES);renderGrid();pickDial(allDials()[0].gk,true);toast(n+' är borttagen');log('Egen urtavla borttagen: '+n);});
