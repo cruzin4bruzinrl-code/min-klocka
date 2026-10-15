@@ -691,7 +691,6 @@ public class WatchService extends Service {
             // Hitta telefonen (sett i loggen: 05/51 01). Annat värde: sluta ringa.
             if (d.length > 0 && d[0] == 1) {
                 FindPhone.start(this);
-                openActivity(MainActivity.class);
             } else FindPhone.stop(this);
         } else if (cmd == 0x04 && (key == 0x46 || key == 0x47 || key == 0x48)) {
             // Kameran på klockan: 46 öppna, 47 ta bild, 48 stäng (sett i loggen, namnen från originalappen)
