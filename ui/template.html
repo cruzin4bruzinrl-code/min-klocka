@@ -699,6 +699,8 @@ const MEDIAKEY={4:'spela eller pausa',5:'spela eller pausa',6:'föregående låt
 const seenAt={};
 function onWatchEvent(cmd,key,d){
   if(cmd===0x0D){log('Knapp på klockan: '+(MEDIAKEY[key]||'okänd')+' (0d/'+key.toString(16)+(d.length?' '+hex(d,12):'')+')','ok');return;}
+  const KNOWN={'5/81':'Klockan letar efter telefonen','4/70':'Klockan öppnade kameran','4/71':'Klockan tog en bild','4/72':'Klockan stängde kameran'};
+  if(KNOWN[cmd+'/'+key]){log(KNOWN[cmd+'/'+key]+(d.length?' ('+hex(d)+')':''),'ok');return;}
   if(cmd!==0x0A){const k=cmd+'/'+key,now=Date.now();if(!seenAt[k]||now-seenAt[k]>10000){seenAt[k]=now;log('Paket från klockan som appen inte känner till: '+cmd.toString(16)+'/'+key.toString(16)+(d.length?' '+hex(d,16):''));}return;}
   const hm=(h,m)=>String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
   if(key===0xAB&&d.length>=8&&d[0]>0){

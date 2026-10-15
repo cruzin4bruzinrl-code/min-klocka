@@ -72,6 +72,8 @@ window.__mkPerms=function(){
     else $('stNotif').textContent='Fungerar bara i Android-appen Min klocka.';
     $('btnNotifAccess').hidden=$('btnSmsPerm').hidden=true;$('segNotif').hidden=true;return;}
   $('btnNotifAccess').hidden=p.notif;$('btnSmsPerm').hidden=p.sms;$('segNotif').hidden=false;
+  let ob=$('btnOverlay');if(!ob){ob=document.createElement('button');ob.className='soft glass';ob.id='btnOverlay';ob.style.marginTop='10px';ob.textContent='Ge lov att visas ovanpå andra appar (kameran från klockan)';ob.onclick=()=>{if(NATIVE.openOverlay)NATIVE.openOverlay();};$('btnSmsPerm').after(ob);}
+  ob.hidden=p.overlay!==false;
   [...$('segNotif').children].forEach(b=>b.classList.toggle('on',(b.dataset.n==='1')===p.on));
   $('stNotif').textContent=(p.notif?'✓ Aviseringar skickas till klockan. ':'Aviseringar: ge appen lov först. ')+(p.sms?'✓ Sms skickas med avsändarens nummer, och svar från klockan blir sms.':'Sms: ge appen lov för att kunna svara från klockan.')+(p.on?'':' (Avstängt just nu.)');
 };

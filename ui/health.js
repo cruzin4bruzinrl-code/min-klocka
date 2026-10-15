@@ -90,7 +90,17 @@ async function hlSync(manual){
   }catch(e){say('Kunde inte hämta: '+e.message);log('Historik: '+e.message,'bad');}
   busy=false;hlBusy=false;$('btnHlSync').disabled=false;hlRender();
 }
-function hlAfterConnect(){setTimeout(()=>hlSync(false),1200);}
+function hlAfterConnect(){setTimeout(()=>hlSync(false),1200);setTimeout(()=>autoWeather(false),9000);}
+// Klockans väderapp visar "Anslut APP" tills den fått väder. Har du valt en ort skickas vädret själv när klockan ansluter och var tredje timme.
+let wxLast=0;
+async function autoWeather(force){
+  const pl=lsGet(PLLS,null);if(!pl||typeof pl.lat!=='number'||!chW)return;
+  if(!force&&Date.now()-wxLast<3*3600e3)return;
+  if(busy){setTimeout(()=>autoWeather(force),20000);return;}
+  try{const days=await loadWeather(pl);if(busy||!chW)return;const ok=await sendWeather(days,pl.name==='Här'?'':pl.name);if(ok)wxLast=Date.now();log('Väder skickat automatiskt för '+pl.name+(ok?'':' (klockan svarade inte)'),ok?'ok':'bad');}
+  catch(e){log('Automatiskt väder: '+e.message,'bad');}
+}
+setInterval(()=>autoWeather(false),30*60*1000);
 setInterval(()=>{if(chW&&!busy&&!hlBusy&&document.visibilityState==='visible')hlSync(false);},20*60*1000);
 
 // ---------- visning ----------
