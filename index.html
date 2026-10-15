@@ -2725,6 +2725,8 @@ const MEDIAKEY={4:'spela eller pausa',5:'spela eller pausa',6:'föregående låt
 const seenAt={};
 function onWatchEvent(cmd,key,d){
   if(cmd===0x0D){log('Knapp på klockan: '+(MEDIAKEY[key]||'okänd')+' (0d/'+key.toString(16)+(d.length?' '+hex(d,12):'')+')','ok');return;}
+  const KNOWN={'5/81':'Klockan letar efter telefonen','4/70':'Klockan öppnade kameran','4/71':'Klockan tog en bild','4/72':'Klockan stängde kameran'};
+  if(KNOWN[cmd+'/'+key]){log(KNOWN[cmd+'/'+key]+(d.length?' ('+hex(d)+')':''),'ok');return;}
   if(cmd!==0x0A){const k=cmd+'/'+key,now=Date.now();if(!seenAt[k]||now-seenAt[k]>10000){seenAt[k]=now;log('Paket från klockan som appen inte känner till: '+cmd.toString(16)+'/'+key.toString(16)+(d.length?' '+hex(d,16):''));}return;}
   const hm=(h,m)=>String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
   if(key===0xAB&&d.length>=8&&d[0]>0){
@@ -3668,7 +3670,17 @@ async function hlSync(manual){
   }catch(e){say('Kunde inte hämta: '+e.message);log('Historik: '+e.message,'bad');}
   busy=false;hlBusy=false;$('btnHlSync').disabled=false;hlRender();
 }
-function hlAfterConnect(){setTimeout(()=>hlSync(false),1200);}
+function hlAfterConnect(){setTimeout(()=>hlSync(false),1200);setTimeout(()=>autoWeather(false),9000);}
+// Klockans väderapp visar "Anslut APP" tills den fått väder. Har du valt en ort skickas vädret själv när klockan ansluter och var tredje timme.
+let wxLast=0;
+async function autoWeather(force){
+  const pl=lsGet(PLLS,null);if(!pl||typeof pl.lat!=='number'||!chW)return;
+  if(!force&&Date.now()-wxLast<3*3600e3)return;
+  if(busy){setTimeout(()=>autoWeather(force),20000);return;}
+  try{const days=await loadWeather(pl);if(busy||!chW)return;const ok=await sendWeather(days,pl.name==='Här'?'':pl.name);if(ok)wxLast=Date.now();log('Väder skickat automatiskt för '+pl.name+(ok?'':' (klockan svarade inte)'),ok?'ok':'bad');}
+  catch(e){log('Automatiskt väder: '+e.message,'bad');}
+}
+setInterval(()=>autoWeather(false),30*60*1000);
 setInterval(()=>{if(chW&&!busy&&!hlBusy&&document.visibilityState==='visible')hlSync(false);},20*60*1000);
 
 // ---------- visning ----------
@@ -3812,6 +3824,8 @@ window.__mkPerms=function(){
     else $('stNotif').textContent='Fungerar bara i Android-appen Min klocka.';
     $('btnNotifAccess').hidden=$('btnSmsPerm').hidden=true;$('segNotif').hidden=true;return;}
   $('btnNotifAccess').hidden=p.notif;$('btnSmsPerm').hidden=p.sms;$('segNotif').hidden=false;
+  let ob=$('btnOverlay');if(!ob){ob=document.createElement('button');ob.className='soft glass';ob.id='btnOverlay';ob.style.marginTop='10px';ob.textContent='Ge lov att visas ovanpå andra appar (kameran från klockan)';ob.onclick=()=>{if(NATIVE.openOverlay)NATIVE.openOverlay();};$('btnSmsPerm').after(ob);}
+  ob.hidden=p.overlay!==false;
   [...$('segNotif').children].forEach(b=>b.classList.toggle('on',(b.dataset.n==='1')===p.on));
   $('stNotif').textContent=(p.notif?'✓ Aviseringar skickas till klockan. ':'Aviseringar: ge appen lov först. ')+(p.sms?'✓ Sms skickas med avsändarens nummer, och svar från klockan blir sms.':'Sms: ge appen lov för att kunna svara från klockan.')+(p.on?'':' (Avstängt just nu.)');
 };
