@@ -457,7 +457,7 @@ async function autoConnect(){
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncPass();if(!document.hidden&&wantConn&&!connected&&device&&!reconnBusy&&!rescuing){reconnN=Math.min(reconnN,2);planReconnect();}
   if(!document.hidden&&sigMode&&!wakeL&&navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>{wakeL=l;}).catch(()=>{});});
 async function afterInit(){
-  $('stVer').textContent=APPV+(NATIVE?' i appen':'');syncPass();
+  $('stVer').textContent=APPV+(NATIVE?' i appen'+(NATIVE.appBuild?', bygge '+NATIVE.appBuild():', gammal app'):'');syncPass();
   if(NATIVE){
     // Appen och sidan delar nyckeln, så att den bara behöver läggas in på ett ställe
     try{const nk=NATIVE.getKey();if(!pairKey()&&nk)storeKey(nk);else if(pairKey()&&!nk)NATIVE.setKey(pairKey());}catch(e){}
