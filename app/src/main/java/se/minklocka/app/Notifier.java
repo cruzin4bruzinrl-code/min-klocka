@@ -121,6 +121,7 @@ final class Notifier {
         System.arraycopy(u, 0, d, 1, u.length);
         s.send(0x06, 0x60, d);
         WatchService.log("Avisering till klockan (typ " + type + ", " + text.length() + " tecken)");
+        WatchService.expectReply();
     }
 
     static String digits(String n) {

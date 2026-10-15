@@ -219,6 +219,7 @@ public class WatchService extends Service {
             log("Startar");
             begin();
             h.postDelayed(brightTick, 60 * 1000);
+            h.postDelayed(watchdog, 30 * 1000);
         }
         return START_STICKY;
     }
@@ -528,6 +529,8 @@ public class WatchService extends Service {
         setStatus("Ansluten till klockan");
         log("Ansluten. Musikknapparna på klockan styr nu telefonen");
         setReady(true);
+        lastRx = SystemClock.uptimeMillis();
+        probeAt = 0;
         brightApplied = null;
         h.postDelayed(this::applyBright, 5000);
         h.postDelayed(() -> Reminders.flush(this), 3000);
@@ -653,7 +656,60 @@ public class WatchService extends Service {
     private long lastWrite;
 
     // ---------- ta emot ----------
+    // ---------- vakt: märker när klockan tyst slutat svara ----------
+    // Loggen 15/10 visade att kontakten kan dö utan att Android märker det: appen står kvar som ansluten
+    // men klockan svarar inte, och då når inte heller Hitta telefonen eller kameran appen.
+    private long lastRx = 0, probeAt = 0;
+    private int silentRestarts = 0;
+
+    private final Runnable watchdog = new Runnable() {
+        @Override
+        public void run() {
+            checkAlive(false);
+            h.postDelayed(this, 30 * 1000);
+        }
+    };
+
+    /** Frågar klockan om batteriet om den varit tyst länge (eller direkt när soon=true). Svarar den inte, ansluts den om. */
+    void checkAlive(boolean soon) {
+        if (!ready || gatt == null) {
+            probeAt = 0;
+            return;
+        }
+        long now = SystemClock.uptimeMillis();
+        if (probeAt > 0) {
+            if (lastRx >= probeAt) {
+                probeAt = 0;
+                silentRestarts = 0;
+            } else if (now - probeAt > 8000) {
+                probeAt = 0;
+                silentRestarts++;
+                log("Klockan har slutat svara fast den står som ansluten. Ansluter om");
+                setStatus("Ansluter om till klockan…");
+                closeGatt();
+                later(silentRestarts > 3 ? 30000 : 1500);
+            }
+            return;
+        }
+        if (soon || now - lastRx > 90 * 1000) {
+            probeAt = now;
+            sendRaw(frame(0x04, 0x40, new byte[0], seq++));
+            h.postDelayed(() -> checkAlive(false), 8500);
+        }
+    }
+
+    /** Anropas efter en avisering: kommer inget kvitto inom 6 s kollas kontakten direkt. */
+    static void expectReply() {
+        final WatchService s = instance;
+        if (s == null) return;
+        final long t = SystemClock.uptimeMillis();
+        s.h.postDelayed(() -> {
+            if (s.lastRx < t) s.checkAlive(true);
+        }, 6000);
+    }
+
     private void feed(byte[] v) {
+        lastRx = SystemClock.uptimeMillis();
         Web w = web;
         if (w != null) w.rx(v);
         byte[] n = new byte[rx.length + v.length];
