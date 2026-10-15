@@ -16,6 +16,11 @@
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
+    <!-- Kamerafjärren, och att appen får öppna kameran och "Hitta telefonen" även när den ligger i bakgrunden -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
         android:allowBackup="false"
@@ -35,6 +40,14 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+        <activity android:name=".CameraActivity" android:exported="false" android:screenOrientation="portrait" android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen" android:launchMode="singleTask" />
+        <activity android:name=".VoiceActivity" android:exported="true" android:label="Gemini via Min klocka" android:theme="@android:style/Theme.Translucent.NoTitleBar" android:excludeFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VOICE_COMMAND" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <receiver android:name=".FindPhone" android:exported="false" />
         <receiver android:name=".Reminders" android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

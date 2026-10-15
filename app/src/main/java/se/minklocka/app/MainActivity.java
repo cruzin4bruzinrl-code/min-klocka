@@ -172,6 +172,7 @@ public class MainActivity extends Activity implements WatchService.Web {
     @Override
     protected void onResume() {
         super.onResume();
+        FindPhone.stop(this);   // öppnar du appen har du hittat telefonen
         WatchService.web = this;
         js("window.__mkPerms&&__mkPerms()");
         js("window.__mk&&__mk.state(" + WatchService.readyNow + ")");
@@ -318,7 +319,8 @@ public class MainActivity extends Activity implements WatchService.Web {
                     && checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED;
             boolean contacts = checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
             SharedPreferences p = prefs();
-            return "{\"notif\":" + notif + ",\"sms\":" + sms + ",\"contacts\":" + contacts + ",\"on\":" + p.getBoolean(Notifier.PREF_ON, true)
+            boolean overlay = android.provider.Settings.canDrawOverlays(MainActivity.this);
+            return "{\"overlay\":" + overlay + ",\"notif\":" + notif + ",\"sms\":" + sms + ",\"contacts\":" + contacts + ",\"on\":" + p.getBoolean(Notifier.PREF_ON, true)
                     + ",\"bright\":" + p.getBoolean(WatchService.B_ON, false) + "}";
         }
 
@@ -332,6 +334,24 @@ public class MainActivity extends Activity implements WatchService.Web {
                     Toast.makeText(MainActivity.this, "Öppna Inställningar, Aviseringar, Åtkomst till aviseringar", Toast.LENGTH_LONG).show();
                 }
             });
+        }
+
+        @JavascriptInterface
+        public void openOverlay() {
+            if (!trusted) return;
+            ui.post(() -> {
+                try {
+                    startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName())));
+                } catch (Exception e) {
+                    Toast.makeText(MainActivity.this, "Öppna Inställningar, Appar, Min klocka, Visa ovanpå andra appar", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        @JavascriptInterface
+        public void stopRing() {
+            if (!trusted) return;
+            ui.post(() -> FindPhone.stop(MainActivity.this));
         }
 
         @JavascriptInterface

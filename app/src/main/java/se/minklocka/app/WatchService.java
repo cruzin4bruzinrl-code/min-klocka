@@ -533,6 +533,16 @@ public class WatchService extends Service {
         h.postDelayed(() -> Reminders.flush(this), 3000);
     }
 
+    /** Öppnar en skärm i appen. Från bakgrunden kräver Android lovet "Visa ovanpå andra appar". */
+    private void openActivity(Class<?> c) {
+        try {
+            startActivity(new Intent(this, c).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        } catch (Exception e) {
+            log("Kunde inte öppna " + c.getSimpleName() + ": " + e.getMessage());
+        }
+        if (!android.provider.Settings.canDrawOverlays(this)) log("Tips: ge Min klocka lovet Visa ovanpå andra appar, så öppnas kameran även när appen ligger i bakgrunden");
+    }
+
     // ---------- skicka från appen själv (aviseringar, ljusstyrka) ----------
     /** Skickar ett kommando till klockan. Får anropas från vilken tråd som helst. */
     void send(final int cmd, final int key, final byte[] data) {
@@ -677,6 +687,25 @@ public class WatchService extends Service {
             log("Klockans batteri: " + (d[0] & 255) + " %");
         } else if (cmd == 0x02 && key == 0x20) {
             log("Klockans tid är ställd");
+        } else if (cmd == 0x05 && key == 0x51) {
+            // Hitta telefonen (sett i loggen: 05/51 01). Annat värde: sluta ringa.
+            if (d.length > 0 && d[0] == 1) {
+                FindPhone.start(this);
+                openActivity(MainActivity.class);
+            } else FindPhone.stop(this);
+        } else if (cmd == 0x04 && (key == 0x46 || key == 0x47 || key == 0x48)) {
+            // Kameran på klockan: 46 öppna, 47 ta bild, 48 stäng (sett i loggen, namnen från originalappen)
+            if (key == 0x46) {
+                log("Klockan öppnar kameran");
+                openActivity(CameraActivity.class);
+            } else if (key == 0x47) {
+                CameraActivity ca = CameraActivity.instance;
+                if (ca != null) ca.runOnUiThread(ca::shoot);
+                else openActivity(CameraActivity.class);
+            } else {
+                CameraActivity ca = CameraActivity.instance;
+                if (ca != null) ca.runOnUiThread(ca::finish);
+            }
         } else if (cmd == 0x06 && key == 0x61) {
             Notifier.reply(this, d);
         } else if (cmd == 0x02 && key == 0xEF) {
