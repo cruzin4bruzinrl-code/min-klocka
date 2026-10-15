@@ -336,6 +336,16 @@ public class MainActivity extends Activity implements WatchService.Web {
             });
         }
 
+        /** Appens byggnummer, så att sidan kan visa vilken app som är installerad. */
+        @JavascriptInterface
+        public int appBuild() {
+            try {
+                return (int) getPackageManager().getPackageInfo(getPackageName(), 0).getLongVersionCode();
+            } catch (Exception e) {
+                return 0;
+            }
+        }
+
         @JavascriptInterface
         public void openOverlay() {
             if (!trusted) return;
