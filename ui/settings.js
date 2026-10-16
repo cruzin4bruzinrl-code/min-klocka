@@ -74,6 +74,8 @@ window.__mkPerms=function(){
   $('btnNotifAccess').hidden=p.notif;$('btnSmsPerm').hidden=p.sms;$('segNotif').hidden=false;
   let ob=$('btnOverlay');if(!ob){ob=document.createElement('button');ob.className='soft glass';ob.id='btnOverlay';ob.style.marginTop='10px';ob.textContent='Ge lov att visas ovanpå andra appar (kameran från klockan)';ob.onclick=()=>{if(NATIVE.openOverlay)NATIVE.openOverlay();};$('btnSmsPerm').after(ob);}
   ob.hidden=p.overlay!==false;
+  let bb=$('btnBattery');if(!bb){bb=document.createElement('button');bb.className='soft glass';bb.id='btnBattery';bb.style.marginTop='10px';bb.textContent='Låt appen vara igång i bakgrunden (så slipper du ansluta om)';bb.onclick=()=>{if(NATIVE.openBattery)NATIVE.openBattery();};ob.after(bb);}
+  bb.hidden=p.battery!==false;
   [...$('segNotif').children].forEach(b=>b.classList.toggle('on',(b.dataset.n==='1')===p.on));
   $('stNotif').textContent=(p.notif?'✓ Aviseringar skickas till klockan. ':'Aviseringar: ge appen lov först. ')+(p.sms?'✓ Sms skickas med avsändarens nummer, och svar från klockan blir sms.':'Sms: ge appen lov för att kunna svara från klockan.')+(p.on?'':' (Avstängt just nu.)');
 };
