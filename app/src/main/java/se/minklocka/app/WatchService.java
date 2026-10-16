@@ -206,7 +206,7 @@ public class WatchService extends Service {
         ch.setShowBadge(false);
         nm.createNotificationChannel(ch);
         try {
-            startForeground(1, notification("Startar…"), ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
+            startForeground(1, notification(running && status != null ? status : "Startar…"), ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE);
         } catch (Exception e) {
             log("Kunde inte starta i bakgrunden: " + e.getMessage());
             status = "Kunde inte starta. Ge appen lov att använda Bluetooth";
@@ -222,6 +222,21 @@ public class WatchService extends Service {
             h.postDelayed(watchdog, 30 * 1000);
         }
         return START_STICKY;
+    }
+
+    /** Sveps appen bort ur listan över öppna appar startar kontakten med klockan om efter en sekund. */
+    @Override
+    public void onTaskRemoved(Intent root) {
+        if (running) {
+            try {
+                android.app.AlarmManager am = getSystemService(android.app.AlarmManager.class);
+                PendingIntent pi = PendingIntent.getForegroundService(this, 3, new Intent(this, WatchService.class), PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+                am.setExactAndAllowWhileIdle(android.app.AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 1000, pi);
+            } catch (Exception e) {
+                log("Kunde inte boka omstart: " + e.getMessage());
+            }
+        }
+        super.onTaskRemoved(root);
     }
 
     @Override

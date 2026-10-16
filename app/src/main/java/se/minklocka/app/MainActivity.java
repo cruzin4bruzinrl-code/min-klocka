@@ -128,6 +128,7 @@ public class MainActivity extends Activity implements WatchService.Web {
             return;
         }
         startWatch();
+        askBattery(false);
         if (!loaded) {
             loaded = true;
             trusted = true;
@@ -136,6 +137,27 @@ public class MainActivity extends Activity implements WatchService.Web {
     }
 
     private boolean asked = false;
+
+    static boolean batteryFree(Context c) {
+        android.os.PowerManager pm = (android.os.PowerManager) c.getSystemService(Context.POWER_SERVICE);
+        return pm != null && pm.isIgnoringBatteryOptimizations(c.getPackageName());
+    }
+
+    /** Ber Android en gång att inte spara batteri på Min klocka. Annars stänger telefonen kontakten med klockan i bakgrunden. */
+    private void askBattery(boolean again) {
+        if (batteryFree(this)) return;
+        SharedPreferences p = prefs();
+        if (!again && p.getBoolean("batteri_fragat", false)) return;
+        p.edit().putBoolean("batteri_fragat", true).apply();
+        try {
+            startActivity(new Intent(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:" + getPackageName())));
+        } catch (Exception e) {
+            try {
+                startActivity(new Intent(android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS));
+            } catch (Exception ignored) {
+            }
+        }
+    }
 
     private void startWatch() {
         if (checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED
@@ -329,7 +351,13 @@ public class MainActivity extends Activity implements WatchService.Web {
             SharedPreferences p = prefs();
             boolean overlay = android.provider.Settings.canDrawOverlays(MainActivity.this);
             return "{\"overlay\":" + overlay + ",\"notif\":" + notif + ",\"sms\":" + sms + ",\"contacts\":" + contacts + ",\"on\":" + p.getBoolean(Notifier.PREF_ON, true)
-                    + ",\"bright\":" + p.getBoolean(WatchService.B_ON, false) + "}";
+                    + ",\"bright\":" + p.getBoolean(WatchService.B_ON, false) + ",\"battery\":" + batteryFree(MainActivity.this) + "}";
+        }
+
+        @JavascriptInterface
+        public void openBattery() {
+            if (!trusted) return;
+            ui.post(() -> askBattery(true));
         }
 
         @JavascriptInterface
