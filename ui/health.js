@@ -178,9 +178,10 @@ function hlRender(anim){
   const t=hlTotal(td);if(t!=null&&$('stSteps').textContent==='–')$('stSteps').textContent=t.toLocaleString('sv-SE');
   if(td&&td.hr&&td.hr.length&&$('stPulse').textContent==='–'){const r=td.hr[td.hr.length-1];$('stPulse').textContent=r[2];$('stPulseAt').textContent='Senast '+hpad(r[0])+':'+hpad(r[1])+', sparat på klockan';}
 }
-function hlCss(n,f){const v=getComputedStyle(document.documentElement).getPropertyValue(n).trim();return v||f;}
+let hlCssC={};
+function hlCss(n,f){if(n in hlCssC)return hlCssC[n]||f;const v=getComputedStyle(document.documentElement).getPropertyValue(n).trim();hlCssC[n]=v;return v||f;}
 function hlCanvas(id,h){
-  const c=$(id),r=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1,w=Math.max(200,Math.round(r.width||300));
+  const c=$(id),dpr=window.devicePixelRatio||1;if(!c.__w)c.__w=Math.round(c.getBoundingClientRect().width||0);const w=Math.max(200,c.__w||300);
   if(c.width!==w*dpr||c.height!==h*dpr){c.width=w*dpr;c.height=h*dpr;}c.style.height=h+'px';
   const x=c.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,w,h);return {x:x,w:w,h:h};
 }
@@ -199,7 +200,7 @@ function hlLoop(key,dur,anim,draw){
   const t0=performance.now();const f=n=>{const t=Math.min(1,(n-t0)/dur);draw(t);if(t<1)hlRaf[key]=requestAnimationFrame(f);};draw(0);hlRaf[key]=requestAnimationFrame(f);
 }
 let hlHit={steps:null,hr:null},hlSelBar=-1,hlDay=null;
-function hlDraw(day,anim){hlDay=day;hlSelBar=-1;hlDrawSteps(day,anim);hlDrawHr(day,anim);}
+function hlDraw(day,anim){hlDay=day;hlCssC={};$('hlStepC').__w=0;$('hlHrC').__w=0;hlSelBar=-1;hlDrawSteps(day,anim);hlDrawHr(day,anim);}
 // Steg per timme: staplarna växer upp i en våg, rundade toppar, mörkgrönt till ljusgrönt
 function hlDrawSteps(day,anim){
   let inc=null;
@@ -275,7 +276,7 @@ function hlTap(id,ev){
 function hlRange(min,max,segs,val,unit,label){
   const pos=v=>Math.max(0,Math.min(100,(v-min)/(max-min)*100));
   let h='<div class="hr-bar">';let from=min;segs.forEach((s,i)=>{h+='<i class="'+(i===0?'first':i===segs.length-1?'last':'')+'" style="left:'+pos(from)+'%;width:'+(pos(Math.min(s.to,max))-pos(from))+'%;background:'+s.c+'"><span>'+s.t+'</span></i>';from=s.to;});
-  h+=(val!=null?'<b class="hr-mark" data-p="'+pos(val)+'"><em>'+(label||String(val).replace('.',',')+(unit||''))+'</em></b>':'')+'</div>';return h;
+  h+=(val!=null?'<span class="hr-run" data-p="'+pos(val)+'"><b class="hr-mark"><em>'+(label||String(val).replace('.',',')+(unit||''))+'</em></b></span>':'')+'</div>';return h;
 }
 function hlInfoBody(k){
   const G=goals(),day=HL.days[hymd(hdayAgo(hlSel))],when=hlSel===0?'i dag':hlLabel(hlSel).toLowerCase();
@@ -334,7 +335,7 @@ function hlSheet(){
 function hlInfo(k){
   const s=hlSheet(),b=s.querySelector('.hs-body');b.innerHTML=hlInfoBody(k);b.parentElement.style.setProperty('--hc',HCOL[k]);b.scrollTop=0;
   s.classList.add('open');document.body.classList.add('hs-open');
-  requestAnimationFrame(()=>requestAnimationFrame(()=>b.querySelectorAll('.hr-mark').forEach(m=>{m.style.left=m.dataset.p+'%';m.classList.add('in');})));
+  requestAnimationFrame(()=>requestAnimationFrame(()=>b.querySelectorAll('.hr-run').forEach(m=>{m.style.transform='translate3d('+m.dataset.p+'%,0,0)';m.firstChild.classList.add('in');})));
 }
 function hlInfoClose(){const s=$('hsheet');if(s)s.classList.remove('open');document.body.classList.remove('hs-open');}
 
@@ -346,6 +347,7 @@ $('btnHlSync').addEventListener('click',()=>hlSync(true));
 $('btnHlMe').addEventListener('click',()=>hlInfo('me'));
 $('hlMeHint').addEventListener('click',()=>hlInfo('me'));
 let hlRz=0;window.addEventListener('resize',()=>{clearTimeout(hlRz);hlRz=setTimeout(()=>hlRender(false),150);});
+if('IntersectionObserver' in window)new IntersectionObserver(es=>{es.forEach(e=>$('grpHealth').classList.toggle('off',!e.isIntersecting));}).observe($('grpHealth'));
 // diagrammen ritas fram först när de syns
 if('IntersectionObserver' in window&&HFX){let seen=false;new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&!seen){seen=true;hlDraw(hlDay,true);}});},{threshold:.3}).observe($('hlHrC'));}
 hlRender(false);

@@ -204,7 +204,7 @@ function helpCard(){
 const THEMES=[['ljus','Ljus','#fdf7ff','#eaddff','#6750a4'],['mint','Mint','#f3fbf6','#c3eed6','#1b7f55'],['persika','Persika','#fff8f4','#ffdbcc','#b5532f'],['hav','Hav','#f4f9fd','#cfe5ff','#0b6aa2'],['mork','Mörk','#0f1513','#1f4d36','#7fd8a6'],['urtavla','Urtavlans färger','#07080c','#ff5aa0','#3ba0ff']];
 function markTheme(){const t=document.documentElement.dataset.theme;document.querySelectorAll('.themes button').forEach(b=>b.classList.toggle('on',b.dataset.th===t));
   const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()||'#07080c';}
-function setTheme(t){const r=document.documentElement;r.dataset.theme=t;lsSet('minklocka.tema.v1',t);
+function setTheme(t){const r=document.documentElement;r.dataset.theme=t;lsSet('minklocka.tema.v1',t);if(typeof hlRender==="function")setTimeout(()=>hlRender(false),60);
   if(t==='urtavla'&&typeof cur!=='undefined'&&cur){r.style.setProperty('--a1',cur.c1||'#7c8cff');r.style.setProperty('--a2',cur.c2||'#ff5aa0');}else{r.style.removeProperty('--a1');r.style.removeProperty('--a2');}
   markTheme();if(typeof hlRender==='function')hlRender();toast('Tema: '+THEMES.find(x=>x[0]===t)[1]);}
 window.setTheme=setTheme;
