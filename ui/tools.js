@@ -201,7 +201,7 @@ function helpCard(){
   th.querySelector('.themes').onclick=e=>{const b=e.target.closest('button');if(!b)return;setTheme(b.dataset.th);};
   markTheme();
 }
-const THEMES=[['ljus','Ljus','#fdf7ff','#eaddff','#6750a4'],['mint','Mint','#f3fbf6','#c3eed6','#1b7f55'],['persika','Persika','#fff8f4','#ffdbcc','#b5532f'],['hav','Hav','#f4f9fd','#cfe5ff','#0b6aa2'],['mork','Mörk','#141218','#4f378b','#cfbcff'],['urtavla','Urtavlans färger','#07080c','#ff5aa0','#3ba0ff']];
+const THEMES=[['ljus','Ljus','#fdf7ff','#eaddff','#6750a4'],['mint','Mint','#f3fbf6','#c3eed6','#1b7f55'],['persika','Persika','#fff8f4','#ffdbcc','#b5532f'],['hav','Hav','#f4f9fd','#cfe5ff','#0b6aa2'],['mork','Mörk','#0f1513','#1f4d36','#7fd8a6'],['urtavla','Urtavlans färger','#07080c','#ff5aa0','#3ba0ff']];
 function markTheme(){const t=document.documentElement.dataset.theme;document.querySelectorAll('.themes button').forEach(b=>b.classList.toggle('on',b.dataset.th===t));
   const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()||'#07080c';}
 function setTheme(t){const r=document.documentElement;r.dataset.theme=t;lsSet('minklocka.tema.v1',t);
@@ -220,5 +220,15 @@ const tb=document.querySelector('#tabs [data-v="log"]');if(tb)tb.lastChild.textC
 setTimeout(()=>tour(false),900);
 window.__obSteps=()=>$('tour')?$('tour').querySelectorAll('.tr-prog i').length:0;
 // studs på alla knappar
-document.addEventListener('pointerdown',e=>{const b=e.target.closest('button,.seg button,.soft,label.own');if(b&&!b.closest('#tabs'))bounce(b);},{passive:true});
+const PRESS='.cta,.soft,.ghost,.qbtn,.hl-me,.hl-hint';
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('button,.seg button,.soft,label.own');if(b&&!b.closest('#tabs')&&!b.matches(PRESS))bounce(b);},{passive:true});
+// Knapp med tryckkänsla: ner till 95 % direkt, ljus där fingret är, kort vibration, och en studs tillbaka när man släpper
+function pressable(root){
+  let cur=null;const up=()=>{if(!cur)return;const b=cur;cur=null;b.classList.remove('pressed');b.classList.add('released');setTimeout(()=>b.classList.remove('released'),520);};
+  root.addEventListener('pointerdown',e=>{const b=e.target.closest(PRESS);if(!b||b.disabled)return;const r=b.getBoundingClientRect();
+    b.style.setProperty('--px',(e.clientX-r.left)+'px');b.style.setProperty('--py',(e.clientY-r.top)+'px');b.classList.remove('released');b.classList.add('pressed');cur=b;
+    try{if(navigator.vibrate&&!navigator.webdriver)navigator.vibrate(8);}catch(_){}},{passive:true});
+  ['pointerup','pointercancel','pointerleave','blur'].forEach(t=>(t==='blur'?window:root).addEventListener(t,up,{passive:true}));
+}
+pressable(document);
 })();
