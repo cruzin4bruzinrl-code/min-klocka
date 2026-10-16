@@ -666,6 +666,7 @@ public class WatchService extends Service {
         @Override
         public void run() {
             checkAlive(false);
+            Updater.check(WatchService.this, false);   // högst var tredje timme
             h.postDelayed(this, 30 * 1000);
         }
     };

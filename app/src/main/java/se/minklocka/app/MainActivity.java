@@ -176,6 +176,14 @@ public class MainActivity extends Activity implements WatchService.Web {
         WatchService.web = this;
         js("window.__mkPerms&&__mkPerms()");
         js("window.__mk&&__mk.state(" + WatchService.readyNow + ")");
+        Updater.appVisible = true;
+        Updater.check(this, false);
+    }
+
+    @Override
+    protected void onPause() {
+        Updater.appVisible = false;
+        super.onPause();
     }
 
     @Override
@@ -334,6 +342,12 @@ public class MainActivity extends Activity implements WatchService.Web {
                     Toast.makeText(MainActivity.this, "Öppna Inställningar, Aviseringar, Åtkomst till aviseringar", Toast.LENGTH_LONG).show();
                 }
             });
+        }
+
+        /** Sök ny version: kolla GitHub direkt och installera om det finns en nyare app. */
+        @JavascriptInterface
+        public void checkUpdate() {
+            Updater.check(MainActivity.this, true);
         }
 
         /** Appens byggnummer, så att sidan kan visa vilken app som är installerad. */
