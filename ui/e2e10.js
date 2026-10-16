@@ -28,7 +28,7 @@ let pass=0,fail=0;const ok=(n,c,x)=>{c?pass++:fail++;console.log((c?'ok   ':'FEL
   await p.waitForFunction(()=>/Hämtat|svarade/.test($('hlState').textContent)&&!busy&&!hlBusy,null,{timeout:30000});
   await p.click('#tabs [data-v="tools"]');await p.waitForTimeout(700);
   const cards=await p.evaluate(()=>[...document.querySelectorAll('.tcard')].filter(c=>!c.hidden).map(c=>c.dataset.tool));
-  ok('verktygen är kort i grupper',cards.length>=15,cards.join(','));
+  ok('verktygen är kort i grupper',cards.length>=12&&!cards.includes('disp')&&!cards.includes('free'),cards.join(','));
   ok('Mer-fliken har bytt namn',(await p.textContent('#tabs [data-v="log"]')).trim()==='Mer');
   // varje verktyg öppnas med bild och steg, och stängs med innehållet tillbaka
   let all=true,bad=[];

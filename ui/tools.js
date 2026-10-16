@@ -39,8 +39,6 @@ const TOOLS=[
    s:['Tryck på en siffra 1–5','Klockan byter direkt']},
   {k:'notif',cat:'phone',a:'grpNotif',t:'Aviseringar och sms',d:'Telefonens aviseringar på klockan, svara på sms',g:'bell',m:'ring',dir:'båda',
    s:['Ge appen lov att läsa aviseringar','Ge lov för sms om du vill svara från klockan','Svara med klockans färdiga svar']},
-  {k:'disp',cat:'phone',a:'grpDisp',t:'Ljusstyrka',d:'Ljust på dagen, svagt på natten',g:'bright',m:'spin',dir:'ut',exp:1,
-   s:['Tryck Läs från klockan','Välj ljus för dag och natt','Tryck Spara och skicka']},
   {k:'measure',cat:'phone',a:'segAuto',t:'Tänd skärm vid mätning',d:'Skärmen släcks inte medan pulsen mäts',g:'heart',m:'beat',dir:'båda',
    s:['Slå på','Välj hur länge resultatet ska stå kvar','Mät puls på klockan som vanligt']},
   {k:'wrist',cat:'phone',a:'segWrist',t:'Lyft för att tända',d:'Skärmen tänds när du lyfter armen',g:'wrist',m:'wiggle',dir:'ut',
@@ -51,8 +49,6 @@ const TOOLS=[
    s:['Välj Intervall, Tabata eller Pomodoro','Låt appen vara öppen under passet','Klockan säger till när det är dags']},
   {k:'pass',cat:'fit',a:'blkPass',t:'Pass från IronSplit',d:'Dagens pass som urtavla',g:'dumb',m:'lift',dir:'ut',
    s:['Planera passet i IronSplit','Tryck Skapa urtavla av passet','Skicka den till klockan']},
-  {k:'free',cat:'fit',a:'numFree',t:'Egen siffra',d:'Visa en egen siffra där temperaturen står',g:'num',m:'pop',dir:'ut',exp:1,
-   s:['Välj symbol och siffra','Tryck Skicka','Urtavlor med väder visar din siffra']},
   {k:'ai',cat:'make',a:'grpAI',t:'Skapa med AI',d:'Beskriv en bild, få en urtavla',g:'spark',m:'twinkle',dir:'ut',exp:1,
    s:['Beskriv bilden','Välj stil och var värdena ska stå','Tryck Skapa bilden, eller välj en färdig bild']}
 ];
