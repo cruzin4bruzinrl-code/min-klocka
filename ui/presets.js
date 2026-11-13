@@ -442,5 +442,18 @@ const DIGITAL=[
 ,{key:'dansgolvet',name:'Dansgolvet',desc:'Fyra dansare är tiden: den högra byter dans varje minut, nästa var tionde minut. Visarna visar klockan.',c1:'#ff4fd8',c2:'#3ee6ff',fresh:2,def:{bg:{t:'grad',c:'#1a0830',c2:'#04030a',a:180},
   deco:[{k:'rect',x:16,y:244,w:208,h:3,r:2,c:'#ff4fd8',a:.5}],
   els:[{k:'hands',style:'bar',ml:66,hk:.62,w:6,hc:'#ffffff',mc:'#ff4fd8'},tm(120,172,68,'dance','#ffffff',{colon:false}),vl('pulse',60,256,18,'pb','#ff7ad9',''),vl('battv',180,256,18,'pb','#7ae8ff','',{pct:false})]}}
+,{key:'p_dauphine',name:'Dauphine',desc:'Solstrålar och facetterade visare i stål. Silverkant och glasreflex.',c1:'#d8dde6',c2:'#1a2a4a',fresh:2,def:{bg:{t:'sunburst',c:'#2a4a7a',c2:'#06101f',n:96},
+  deco:[{k:'bezel',r:118,w:6,c:'#c8ced8'},{k:'glassref',a:.16}],
+  els:[TK(60,108,5,'#aab4c4',{}),TK(12,108,12,'#f4f6fa',{nums:1,ns:15,f:'se'}),vl('date',120,196,13,'pb','#d8dde6',''),HN({style:'dauphine',hs:'dauphine',ms:'dauphine',hc:'#e8ecf2',mc:'#e8ecf2',sc:'#ff6a3c',ml:98,w:9})]}}
+,{key:'p_guilloche',name:'Guilloché',desc:'Gravyrmönster i guld på djupgrönt, som på en dyr klassisk klocka.',c1:'#d8b86a',c2:'#0e3a2c',fresh:2,def:{bg:{t:'guilloche',c:'#124a38',c2:'#06201a',lc:'230,200,120',lobes:28,amp:1.8},
+  deco:[{k:'bezel',r:118,w:6,c:'#d8b86a'},{k:'glassref',a:.14}],
+  els:[TK(60,108,4,'#d8b86a',{}),TK(12,108,11,'#f2dc9c',{}),HN({style:'sword',hs:'sword',ms:'sword',hc:'#f2dc9c',mc:'#f2dc9c',sc:'#e0402c',ml:98,w:8})]}}
+,{key:'p_borstad',name:'Borstad stål',desc:'Mörk borstad metall med självlysande visare.',c1:'#9aa4b4',c2:'#2a2e36',fresh:2,def:{bg:{t:'brushed',c:'#3c424e',c2:'#14171c'},
+  deco:[{k:'bezel',r:119,w:5,c:'#9aa4b4'},{k:'glassref',a:.12}],
+  els:[TK(60,110,4,'#c8ced8',{}),TK(12,110,13,'#c8ffd8',{}),vl('steps',120,206,14,'pb','#c8ced8','STEG'),HN({style:'lumed',hs:'lumed',ms:'lumed',hc:'#dfe4ec',mc:'#dfe4ec',sc:'#ff8a3c',ml:98,w:9})]}}
+,{key:'p_geneva',name:'Genève',desc:'Rött vågmönster som på en gammal mekanisk klocka, med guldvisare.',c1:'#c8483c',c2:'#3a0f12',fresh:2,def:{bg:{t:'geneva',c:'#7a1c22',c2:'#2a0a0e',sw:12,rot:-.45},
+  deco:[{k:'bezel',r:118,w:6,c:'#d8b86a'},{k:'glassref',a:.14}],
+  els:[TK(60,108,4,'#ecd9a0',{}),TK(12,108,12,'#ecd9a0',{nums:1,ns:15,f:'se'}),HN({style:'dauphine',hs:'dauphine',ms:'dauphine',hc:'#ecd9a0',mc:'#ecd9a0',sc:'#fff',ml:98,w:9})]}}
+
 ];
 DIGITAL.forEach((d,i)=>{d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});
