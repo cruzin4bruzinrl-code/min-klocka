@@ -2198,6 +2198,64 @@ Object.assign(PICFONT,{
   }
 });
 FONTS.run={n:'Löpare',css:null,pic:.62};FONTS.grow={n:'Planta',css:null,pic:.5};FONTS.dance={n:'Dansare',css:null,pic:.5};
+// ================= Premiumserien: metallvisare, ytor med struktur, glas och infattning =================
+// Visarna roterar runt vridpunkten, så skuggan är en jämn glans runt hela visaren, inte en förskjuten skugga.
+function mGrad(c,x0,x1,col){   // borstad metall: ljus kant, mörk mitt, ljus kant
+  const g=c.createLinearGradient(x0,0,x1,0),h=hexRgb(col||'#d8dde6'),L=k=>'rgb('+h.map(v=>Math.max(0,Math.min(255,Math.round(v*k+(k>1?(255-v)*(k-1)*.6:0))))).join(',')+')';
+  g.addColorStop(0,L(.55));g.addColorStop(.38,L(1.25));g.addColorStop(.55,L(.9));g.addColorStop(1,L(.5));return g;}
+function halo(c,path,col,r){c.save();c.shadowColor=col||'rgba(0,0,0,.55)';c.shadowBlur=r||5;c.fillStyle='rgba(0,0,0,.01)';path();c.fill();c.restore();}
+function hubDot(c,m,len,r,col){const g=c.createRadialGradient(m-r*.3,len-r*.3,.5,m,len,r);g.addColorStop(0,'#fff');g.addColorStop(.45,col||'#d8dde6');g.addColorStop(1,'#3a3f4a');c.beginPath();c.arc(m,len,r,0,7);c.fillStyle=g;c.fill();c.lineWidth=.8;c.strokeStyle='rgba(0,0,0,.6)';c.stroke();}
+Object.assign(HANDPIC,{
+  dauphine(len,tail,w,col,hub){const W=Math.max(16,Math.round(w)+10),{cv,c,m}=hpCanvas(W,len,14),hw=Math.max(3.2,w/2);
+    const P=()=>{c.beginPath();c.moveTo(m,2);c.lineTo(m+hw,len*.62);c.lineTo(m+hw*.55,len+13);c.lineTo(m-hw*.55,len+13);c.lineTo(m-hw,len*.62);c.closePath();};
+    halo(c,P,'rgba(0,0,0,.7)',4);P();c.fillStyle=mGrad(c,m-hw,m+hw,col);c.fill();
+    c.beginPath();c.moveTo(m,2);c.lineTo(m,len+13);c.strokeStyle='rgba(0,0,0,.28)';c.lineWidth=.9;c.stroke();   // fasad: mittveck
+    P();c.lineWidth=.8;c.strokeStyle='rgba(255,255,255,.55)';c.stroke();
+    if(hub)hubDot(c,m,len,Math.max(3.6,hub),col);return cv;},
+  sword(len,tail,w,col,hub){const W=Math.max(16,Math.round(w)+10),{cv,c,m}=hpCanvas(W,len,16),hw=Math.max(2.6,w/2.2);
+    const P=()=>{c.beginPath();c.moveTo(m,1);c.lineTo(m+hw,len*.18);c.lineTo(m+hw*.7,len+14);c.lineTo(m-hw*.7,len+14);c.lineTo(m-hw,len*.18);c.closePath();};
+    halo(c,P,'rgba(0,0,0,.7)',4);P();c.fillStyle=mGrad(c,m-hw,m+hw,col);c.fill();
+    c.fillStyle='rgba(0,0,0,.55)';c.fillRect(m-hw*.34,len*.2,hw*.68,len*.5);   // lumeinlägg
+    c.fillStyle='#c8ffd8';c.fillRect(m-hw*.22,len*.22,hw*.44,len*.46);
+    P();c.lineWidth=.8;c.strokeStyle='rgba(255,255,255,.5)';c.stroke();
+    if(hub)hubDot(c,m,len,Math.max(3.6,hub),col);return cv;},
+  lumed(len,tail,w,col,hub){const W=Math.max(16,Math.round(w)+10),{cv,c,m}=hpCanvas(W,len,14),hw=Math.max(3,w/2);
+    const R=()=>{const q=hw*.8;c.beginPath();c.moveTo(m-hw+q,2);c.arcTo(m+hw,2,m+hw,len+13,q);c.lineTo(m+hw*.8,len+13);c.lineTo(m-hw*.8,len+13);c.arcTo(m-hw,2,m+hw,2,q);c.closePath();};
+    halo(c,R,'rgba(0,0,0,.7)',4);R();c.fillStyle=mGrad(c,m-hw,m+hw,col);c.fill();
+    c.save();R();c.clip();const g=c.createLinearGradient(0,len*.1,0,len*.8);g.addColorStop(0,'#eaffd0');g.addColorStop(1,'#9fe8b0');c.fillStyle=g;c.fillRect(m-hw*.5,len*.1,hw,len*.62);c.restore();
+    R();c.lineWidth=.8;c.strokeStyle='rgba(255,255,255,.55)';c.stroke();
+    if(hub)hubDot(c,m,len,Math.max(3.6,hub),col);return cv;}
+});
+// Ytor: solstrålar, guilloché, borstad metall och Côtes de Genève. Allt ritas på förhand, så klockan får en färdig bild.
+const _drawBg=drawBg;
+drawBg=function(ctx,bg,photo){
+  bg=bg||{};const cx=bg.cx===undefined?120:bg.cx,cy=bg.cy===undefined?143:bg.cy;
+  if(bg.t==='sunburst'){const a=ctx.createRadialGradient(cx,cy,0,cx,cy,190);a.addColorStop(0,bg.c);a.addColorStop(1,bg.c2||'#000');ctx.fillStyle=a;ctx.fillRect(0,0,DW,DH);
+    const n=bg.n||90;for(let i=0;i<n;i++){const t=i/n*Math.PI*2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,260,t,t+Math.PI*2/n*.5);ctx.closePath();ctx.fillStyle='rgba(255,255,255,'+(.035+.05*Math.abs(Math.sin(t*2+.6)))+')';ctx.fill();}
+    const v=ctx.createRadialGradient(cx,cy,60,cx,cy,200);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(0,0,0,.45)');ctx.fillStyle=v;ctx.fillRect(0,0,DW,DH);}
+  else if(bg.t==='guilloche'){_drawBg(ctx,{t:'grad',c:bg.c,c2:bg.c2||bg.c,a:160},photo);ctx.lineWidth=.6;
+    const rings=bg.rings||26;for(let k=1;k<=rings;k++){const r=k*(bg.step||5.4);ctx.beginPath();for(let s=0;s<=360;s+=2){const t=s*Math.PI/180,rr=r+Math.sin(t*(bg.lobes||24))*(bg.amp||1.6);const x=cx+Math.cos(t)*rr,y=cy+Math.sin(t)*rr;s?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+      ctx.strokeStyle='rgba('+(bg.lc||'255,255,255')+','+(.05+.07*(k%2))+')';ctx.stroke();}
+    const v=ctx.createRadialGradient(cx,cy,40,cx,cy,210);v.addColorStop(0,'rgba(255,255,255,.06)');v.addColorStop(1,'rgba(0,0,0,.4)');ctx.fillStyle=v;ctx.fillRect(0,0,DW,DH);}
+  else if(bg.t==='brushed'){_drawBg(ctx,{t:'grad',c:bg.c,c2:bg.c2||bg.c,a:bg.a===undefined?135:bg.a},photo);let s=7;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;
+    for(let y=0;y<DH;y+=1){ctx.fillStyle='rgba('+(rnd()>.5?'255,255,255':'0,0,0')+','+(rnd()*.07).toFixed(3)+')';ctx.fillRect(0,y,DW,1);}
+    const g=ctx.createLinearGradient(0,0,DW,DH);g.addColorStop(0,'rgba(255,255,255,.14)');g.addColorStop(.5,'rgba(255,255,255,0)');g.addColorStop(1,'rgba(0,0,0,.3)');ctx.fillStyle=g;ctx.fillRect(0,0,DW,DH);}
+  else if(bg.t==='geneva'){_drawBg(ctx,{t:'grad',c:bg.c,c2:bg.c2||bg.c,a:90},photo);const w=bg.sw||14;
+    for(let x=-20,i=0;x<DW+30;x+=w,i++){const g=ctx.createLinearGradient(x,0,x+w,0);g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(.5,'rgba(255,255,255,.13)');g.addColorStop(1,'rgba(0,0,0,.18)');
+      ctx.save();ctx.translate(DW/2,DH/2);ctx.rotate((bg.rot===undefined?-.5:bg.rot));ctx.translate(-DW/2,-DH/2);ctx.fillStyle=g;ctx.fillRect(x,-80,w,DH+160);ctx.restore();}}
+  else _drawBg(ctx,bg,photo);
+};
+// Deco: infattning (metallring med skuggkanter) och glasreflex
+const _drawDeco=drawDeco;
+drawDeco=function(ctx,d){
+  if(d.k==='bezel'){ctx.save();const x=d.x===undefined?120:d.x,y=d.y===undefined?143:d.y,r=d.r||118,w=d.w||7,col=d.c||'#c8ced8';
+    const g=ctx.createLinearGradient(x-r,y-r,x+r,y+r);g.addColorStop(0,'#fff');g.addColorStop(.25,col);g.addColorStop(.5,'#5a606c');g.addColorStop(.75,col);g.addColorStop(1,'#fff');
+    ctx.lineWidth=w;ctx.strokeStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.stroke();
+    ctx.lineWidth=1;ctx.strokeStyle='rgba(0,0,0,.55)';ctx.beginPath();ctx.arc(x,y,r-w/2-.5,0,7);ctx.stroke();ctx.strokeStyle='rgba(255,255,255,.4)';ctx.beginPath();ctx.arc(x,y,r+w/2,0,7);ctx.stroke();ctx.restore();return;}
+  if(d.k==='glassref'){ctx.save();ctx.beginPath();ctx.arc(120,143,d.r||116,0,7);ctx.clip();const g=ctx.createLinearGradient(0,0,DW*.8,DH*.8);g.addColorStop(0,'rgba(255,255,255,'+(d.a||.2)+')');g.addColorStop(.42,'rgba(255,255,255,.03)');g.addColorStop(.43,'rgba(255,255,255,0)');
+    ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(DW,0);ctx.lineTo(0,DH);ctx.closePath();ctx.fill();ctx.restore();return;}
+  _drawDeco(ctx,d);
+};
 // ================= QR-kod (egen kodare: bytedata, felrättning M, version 1–6) =================
 const QRV=[null,[16,10,1],[28,16,1],[44,26,1],[64,18,2],[86,24,2],[108,16,4]];   // [databyte, felrättningsbyte per block, antal block]
 function qrCapacity(){return QRV[6][0]-2;}
@@ -2694,6 +2752,19 @@ const DIGITAL=[
 ,{key:'dansgolvet',name:'Dansgolvet',desc:'Fyra dansare är tiden: den högra byter dans varje minut, nästa var tionde minut. Visarna visar klockan.',c1:'#ff4fd8',c2:'#3ee6ff',fresh:2,def:{bg:{t:'grad',c:'#1a0830',c2:'#04030a',a:180},
   deco:[{k:'rect',x:16,y:244,w:208,h:3,r:2,c:'#ff4fd8',a:.5}],
   els:[{k:'hands',style:'bar',ml:66,hk:.62,w:6,hc:'#ffffff',mc:'#ff4fd8'},tm(120,172,68,'dance','#ffffff',{colon:false}),vl('pulse',60,256,18,'pb','#ff7ad9',''),vl('battv',180,256,18,'pb','#7ae8ff','',{pct:false})]}}
+,{key:'p_dauphine',name:'Dauphine',desc:'Solstrålar och facetterade visare i stål. Silverkant och glasreflex.',c1:'#d8dde6',c2:'#1a2a4a',fresh:2,def:{bg:{t:'sunburst',c:'#2a4a7a',c2:'#06101f',n:96},
+  deco:[{k:'bezel',r:118,w:6,c:'#c8ced8'},{k:'glassref',a:.16}],
+  els:[TK(60,108,5,'#aab4c4',{}),TK(12,108,12,'#f4f6fa',{nums:1,ns:15,f:'se'}),vl('date',120,196,13,'pb','#d8dde6',''),HN({style:'dauphine',hs:'dauphine',ms:'dauphine',hc:'#e8ecf2',mc:'#e8ecf2',sc:'#ff6a3c',ml:98,w:9})]}}
+,{key:'p_guilloche',name:'Guilloché',desc:'Gravyrmönster i guld på djupgrönt, som på en dyr klassisk klocka.',c1:'#d8b86a',c2:'#0e3a2c',fresh:2,def:{bg:{t:'guilloche',c:'#124a38',c2:'#06201a',lc:'230,200,120',lobes:28,amp:1.8},
+  deco:[{k:'bezel',r:118,w:6,c:'#d8b86a'},{k:'glassref',a:.14}],
+  els:[TK(60,108,4,'#d8b86a',{}),TK(12,108,11,'#f2dc9c',{}),HN({style:'sword',hs:'sword',ms:'sword',hc:'#f2dc9c',mc:'#f2dc9c',sc:'#e0402c',ml:98,w:8})]}}
+,{key:'p_borstad',name:'Borstad stål',desc:'Mörk borstad metall med självlysande visare.',c1:'#9aa4b4',c2:'#2a2e36',fresh:2,def:{bg:{t:'brushed',c:'#3c424e',c2:'#14171c'},
+  deco:[{k:'bezel',r:119,w:5,c:'#9aa4b4'},{k:'glassref',a:.12}],
+  els:[TK(60,110,4,'#c8ced8',{}),TK(12,110,13,'#c8ffd8',{}),vl('steps',120,206,14,'pb','#c8ced8','STEG'),HN({style:'lumed',hs:'lumed',ms:'lumed',hc:'#dfe4ec',mc:'#dfe4ec',sc:'#ff8a3c',ml:98,w:9})]}}
+,{key:'p_geneva',name:'Genève',desc:'Rött vågmönster som på en gammal mekanisk klocka, med guldvisare.',c1:'#c8483c',c2:'#3a0f12',fresh:2,def:{bg:{t:'geneva',c:'#7a1c22',c2:'#2a0a0e',sw:12,rot:-.45},
+  deco:[{k:'bezel',r:118,w:6,c:'#d8b86a'},{k:'glassref',a:.14}],
+  els:[TK(60,108,4,'#ecd9a0',{}),TK(12,108,12,'#ecd9a0',{nums:1,ns:15,f:'se'}),HN({style:'dauphine',hs:'dauphine',ms:'dauphine',hc:'#ecd9a0',mc:'#ecd9a0',sc:'#fff',ml:98,w:9})]}}
+
 ];
 DIGITAL.forEach((d,i)=>{d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});
 
@@ -3248,7 +3319,7 @@ $('edSend').addEventListener('click',async()=>{if(!ed||busy)return;const rec=edS
   cat='m';closeEditor();renderGrid();pickDial('m:'+rec.id,true);$('btnSend').click();});
 
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=32;
+const APPV=33;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
