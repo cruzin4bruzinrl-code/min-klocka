@@ -235,6 +235,7 @@ public class WatchService extends Service {
             try {
                 android.content.IntentFilter f = new android.content.IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
                 registerReceiver(btState, f, Context.RECEIVER_NOT_EXPORTED);
+                registerReceiver(lowBatt, new android.content.IntentFilter(Intent.ACTION_BATTERY_LOW), Context.RECEIVER_NOT_EXPORTED);
                 btReg = true;
             } catch (Exception e) {
                 log("Kunde inte lyssna på Bluetooth: " + e.getMessage());
@@ -262,6 +263,12 @@ public class WatchService extends Service {
     }
 
     private boolean btReg = false;
+    private final android.content.BroadcastReceiver lowBatt = new android.content.BroadcastReceiver() {
+        @Override
+        public void onReceive(Context c, Intent i) {
+            Smart.phoneBatteryLow(c);
+        }
+    };
     /** Slås Bluetooth på igen ansluter appen direkt, i stället för att vänta på nästa försök. */
     private final android.content.BroadcastReceiver btState = new android.content.BroadcastReceiver() {
         @Override
@@ -286,6 +293,7 @@ public class WatchService extends Service {
     public void onDestroy() {
         if (btReg) {
             try { unregisterReceiver(btState); } catch (Exception ignored) { }
+            try { unregisterReceiver(lowBatt); } catch (Exception ignored) { }
             btReg = false;
         }
         running = false;
@@ -814,15 +822,24 @@ public class WatchService extends Service {
             media(key, d);
         } else if (cmd == 0x04 && key == 0x41 && d.length >= 1) {
             log("Klockans batteri: " + (d[0] & 255) + " %");
+            Smart.watchBattery(this, d[0] & 255);
         } else if (cmd == 0x02 && key == 0x20) {
             log("Klockans tid är ställd");
         } else if (cmd == 0x05 && key == 0x51) {
             // Hitta telefonen (sett i loggen: 05/51 01). Annat värde: sluta ringa.
             if (d.length > 0 && d[0] == 1) {
-                FindPhone.start(this);
+                String act = Smart.action(this, "hitta");
+                if (act.equals("standard")) FindPhone.start(this);
+                else button("Hitta telefon", act);
             } else FindPhone.stop(this);
         } else if (cmd == 0x04 && (key == 0x46 || key == 0x47 || key == 0x48)) {
             // Kameran på klockan: 46 öppna, 47 ta bild, 48 stäng (sett i loggen, namnen från originalappen)
+            String act = Smart.action(this, "kamera");
+            if (!act.equals("standard")) {
+                // Kamerasidan på klockan är en fjärrknapp: avtryckaren gör det du valt i stället för att ta en bild
+                if (key == 0x47) button("Kameraknappen", act);
+                return;
+            }
             if (key == 0x46) {
                 log("Klockan öppnar kameran");
                 openActivity(CameraActivity.class);
@@ -930,6 +947,25 @@ public class WatchService extends Service {
             if (next < volumeTarget) h.postDelayed(this, 125);
         }
     };
+
+    private void button(String which, String act) {
+        log(which + ": " + act);
+        String msg = Smart.run(this, act);
+        if (msg != null) Notifier.push(this, 10, "Min klocka", msg);
+    }
+
+    void mediaKey(int code) {
+        AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (am != null) press(am, code);
+    }
+
+    void openVoice() {
+        try {
+            startActivity(new Intent(this, VoiceActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        } catch (Exception e) {
+            log("Kunde inte öppna röstassistenten: " + e.getMessage());
+        }
+    }
 
     private void press(AudioManager am, int code) {
         long t = SystemClock.uptimeMillis();

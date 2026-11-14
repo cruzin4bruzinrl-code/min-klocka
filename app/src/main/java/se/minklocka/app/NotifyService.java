@@ -65,7 +65,9 @@ public class NotifyService extends NotificationListenerService {
             if (text == null) text = x.getCharSequence(Notification.EXTRA_TEXT);
             String t = title == null ? "" : title.toString().replaceAll("\\s*\\(\\d+\\)$", "").replaceAll("\\s*\\[\\d+ [^\\]]*\\]$", "");
             int type = Notifier.typeOf(this, pkg);
-            Notifier.push(this, type, t, type == 0 ? "" : (text == null ? "" : text.toString()));
+            String[] sh = Smart.shape(this, type, t, type == 0 ? "" : (text == null ? "" : text.toString()));
+            if (sh == null) return;
+            Notifier.push(this, type, sh[0], sh[1]);
         } catch (Exception e) {
             WatchService.log("Aviseringen gick inte att läsa: " + e.getMessage());
         }

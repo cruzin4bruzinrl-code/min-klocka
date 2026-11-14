@@ -439,6 +439,18 @@ public class MainActivity extends Activity implements WatchService.Web {
             Reminders.set(MainActivity.this, json);
         }
 
+        /** Smarta inställningar (knappar, tysta timmar, viktiga personer, batteri). Bara kända nycklar. */
+        @JavascriptInterface
+        public void setPref(String k, String v) {
+            if (!trusted || k == null || v == null || !Smart.allowedKey(k) || v.length() > 400) return;
+            prefs().edit().putString("s_" + k, v).apply();
+        }
+
+        @JavascriptInterface
+        public String getPrefs() {
+            return trusted ? Smart.all(MainActivity.this) : "{}";
+        }
+
         @JavascriptInterface
         public void share(final String text) {
             if (!trusted || text == null) return;

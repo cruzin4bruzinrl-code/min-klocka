@@ -146,7 +146,13 @@ final class Notifier {
             c.getSharedPreferences(WatchService.PREFS, Context.MODE_PRIVATE).edit().putString("sms_senast", number).apply();
         }
         String name = contactName(c, number);
-        push(c, 1, (name != null ? name : number) + ":" + number, body);
+        String cd = Smart.on(c, "koder", true) ? Smart.code("", body) : null;
+        if (cd == null && Smart.quietNow(c) && !Smart.important(c, name != null ? name : number, body)) {
+            WatchService.log("Tyst timme: sms hölls tillbaka");
+            return;
+        }
+        // En kod hamnar först, så att den syns direkt på klockan. Numret behövs kvar för att kunna svara.
+        push(c, 1, (name != null ? name : number) + ":" + number, cd != null ? "Kod " + cd + ". " + body : body);
     }
 
     /** Hittar det riktiga numret bland nyliga avsändare (sista 8 siffrorna räcker). Inget träff ger null. */
