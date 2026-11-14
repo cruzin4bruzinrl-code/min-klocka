@@ -456,4 +456,5 @@ const DIGITAL=[
   els:[TK(60,108,4,'#ecd9a0',{}),TK(12,108,12,'#ecd9a0',{nums:1,ns:15,f:'se'}),HN({style:'dauphine',hs:'dauphine',ms:'dauphine',hc:'#ecd9a0',mc:'#ecd9a0',sc:'#fff',ml:98,w:9})]}}
 
 ];
-DIGITAL.forEach((d,i)=>{d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});
+DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');   // inga små snurrande saker: klockan stegar dem, så de rycker
+  d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});
