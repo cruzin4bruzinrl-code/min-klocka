@@ -217,6 +217,13 @@ public class WatchService extends Service {
         if (!running) {
             running = true;
             log("Startar");
+            try {
+                android.content.IntentFilter f = new android.content.IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+                registerReceiver(btState, f, Context.RECEIVER_NOT_EXPORTED);
+                btReg = true;
+            } catch (Exception e) {
+                log("Kunde inte lyssna på Bluetooth: " + e.getMessage());
+            }
             begin();
             h.postDelayed(brightTick, 60 * 1000);
             h.postDelayed(watchdog, 30 * 1000);
@@ -239,8 +246,33 @@ public class WatchService extends Service {
         super.onTaskRemoved(root);
     }
 
+    private boolean btReg = false;
+    /** Slås Bluetooth på igen ansluter appen direkt, i stället för att vänta på nästa försök. */
+    private final android.content.BroadcastReceiver btState = new android.content.BroadcastReceiver() {
+        @Override
+        public void onReceive(Context c, Intent i) {
+            int st = i.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+            h.post(() -> {
+                if (!running) return;
+                if (st == BluetoothAdapter.STATE_ON) {
+                    log("Bluetooth på, ansluter");
+                    generation++;
+                    h.postDelayed(() -> { if (running) begin(); }, 1500);
+                } else if (st == BluetoothAdapter.STATE_OFF) {
+                    stopScan();
+                    closeGatt();
+                    setStatus("Slå på Bluetooth");
+                }
+            });
+        }
+    };
+
     @Override
     public void onDestroy() {
+        if (btReg) {
+            try { unregisterReceiver(btState); } catch (Exception ignored) { }
+            btReg = false;
+        }
         running = false;
         instance = null;
         generation++;
@@ -304,7 +336,17 @@ public class WatchService extends Service {
         String saved = prefs().getString(ADDR, null);
         if (dev == null && saved != null && BluetoothAdapter.checkBluetoothAddress(saved)) dev = ad.getRemoteDevice(saved);
         if (dev != null) {
-            open(dev, true);
+            // Först en direkt anslutning (tar några sekunder). autoConnect väntar på telefonens långsamma bakgrundssökning
+            // och kan ta en minut. Lyckas inte den direkta inom 12 sekunder går vi över till att vänta på klockan.
+            final BluetoothDevice fd = dev;
+            open(fd, false);
+            final int gen = generation;
+            h.postDelayed(() -> {
+                if (running && gen == generation && !ready && !discoverStarted) {
+                    log("Direkt anslutning tog för lång tid, väntar på klockan i stället");
+                    open(fd, true);
+                }
+            }, 12000);
             return;
         }
         startScan(ad);
