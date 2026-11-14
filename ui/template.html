@@ -720,6 +720,22 @@ body.hs-open{overflow:hidden}
           <button class="soft glass" id="btnSmsPerm" style="margin-top:10px">Ge lov för sms och kontakter</button>
           <p class="note" id="stNotif"></p></div>
       </div>
+      <div class="group glass" id="grpSmart">
+        <div class="block" style="border-top:0"><span class="lab">Klockans knappar styr telefonen<span class="tag">oprovat</span><small>Öppna kameran på klockan och tryck på avtryckaren, eller tryck på Hitta telefon. Telefonen gör det du väljer här i stället. Kräver att appen är ansluten</small></span>
+          <span class="lab" style="margin:12px 0 8px">Kamerans avtryckare</span><div class="seg pseg" data-k="knapp_kamera" data-d="standard"><button data-v="standard">Ta bild</button><button data-v="spela">Spela/paus</button><button data-v="nasta">Nästa låt</button><button data-v="gemini">Gemini</button><button data-v="tyst">Tyst</button><button data-v="ficklampa">Ficklampa</button></div>
+          <span class="lab" style="margin:12px 0 8px">Hitta telefon</span><div class="seg pseg" data-k="knapp_hitta" data-d="standard"><button data-v="standard">Ringa</button><button data-v="spela">Spela/paus</button><button data-v="nasta">Nästa låt</button><button data-v="gemini">Gemini</button><button data-v="tyst">Tyst</button><button data-v="ficklampa">Ficklampa</button></div></div>
+        <div class="block"><span class="lab">Tysta timmar<span class="tag">oprovat</span><small>Under de här timmarna kommer bara samtal, koder och aviseringar från viktiga personer fram till klockan</small></span>
+          <div class="seg pseg" data-k="tyst_pa" data-d="0"><button data-v="1">På</button><button data-v="0">Av</button></div>
+          <div class="msg" style="margin-top:10px"><input id="tystFran" type="time" value="22:00" aria-label="Tyst från"><input id="tystTill" type="time" value="07:00" aria-label="Tyst till"></div></div>
+        <div class="block"><span class="lab">Viktiga personer<small>Namn eller ord, med komma emellan. De kommer alltid fram, även under tysta timmar</small></span>
+          <div class="msg"><input id="txtViktiga" type="text" maxlength="300" placeholder="Mamma, Jobbet" autocomplete="off"><button id="btnViktiga">Spara</button></div></div>
+        <div class="block"><span class="lab">Koder först<small>Inloggningskoder och paketkoder i sms och aviseringar visas överst på klockan, till exempel "Kod 482913"</small></span>
+          <div class="seg pseg" data-k="koder" data-d="1"><button data-v="1">På</button><button data-v="0">Av</button></div></div>
+        <div class="block"><span class="lab">Batterivarningar<small>Telefonen säger till när klockans batteri är under 15 %, och klockan när telefonens batteri är lågt</small></span>
+          <span class="lab" style="margin:12px 0 8px">Klockans batteri i telefonen</span><div class="seg pseg" data-k="batt_klocka" data-d="1"><button data-v="1">På</button><button data-v="0">Av</button></div>
+          <span class="lab" style="margin:12px 0 8px">Telefonens batteri på klockan</span><div class="seg pseg" data-k="batt_telefon" data-d="1"><button data-v="1">På</button><button data-v="0">Av</button></div>
+          <p class="note" id="stSmart"></p></div>
+      </div>
       <div class="group glass" id="grpDisp">
         <div class="block" style="border-top:0"><span class="lab">Skärm och ljusstyrka<span class="tag">oprovat</span><small>Ljust på dagen och svagt på natten, och hur länge skärmen ska vara tänd. Appen kan inte mäta ljuset vid klockan, så den följer tiden på dygnet. Läs först vad klockan har nu</small></span>
           <button class="soft glass" id="btnDispRead">Läs från klockan</button>

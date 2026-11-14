@@ -39,6 +39,8 @@ const TOOLS=[
    s:['Tryck på en siffra 1–5','Klockan byter direkt']},
   {k:'notif',cat:'phone',a:'grpNotif',t:'Aviseringar och sms',d:'Telefonens aviseringar på klockan, svara på sms',g:'bell',m:'ring',dir:'båda',
    s:['Ge appen lov att läsa aviseringar','Ge lov för sms om du vill svara från klockan','Svara med klockans färdiga svar']},
+  {k:'smart',cat:'phone',a:'grpSmart',t:'Smarta funktioner',d:'Klockans knappar styr telefonen, tysta timmar, koder och batteri',g:'spark',m:'twinkle',dir:'båda',exp:1,
+   s:['Välj vad kamerans avtryckare och Hitta telefon ska göra','Ställ in tysta timmar och viktiga personer','Allt sköts av appen, även när den är stängd']},
   {k:'measure',cat:'phone',a:'segAuto',t:'Tänd skärm vid mätning',d:'Skärmen släcks inte medan pulsen mäts',g:'heart',m:'beat',dir:'båda',
    s:['Slå på','Välj hur länge resultatet ska stå kvar','Mät puls på klockan som vanligt']},
   {k:'wrist',cat:'phone',a:'segWrist',t:'Lyft för att tända',d:'Skärmen tänds när du lyfter armen',g:'wrist',m:'wiggle',dir:'ut',

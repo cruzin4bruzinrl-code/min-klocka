@@ -83,3 +83,20 @@ $('btnNotifAccess').addEventListener('click',()=>{if(NATIVE&&NATIVE.openNotifyAc
 $('btnSmsPerm').addEventListener('click',()=>{if(NATIVE&&NATIVE.askSms)NATIVE.askSms();});
 $('segNotif').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||!NATIVE||!NATIVE.setNotify)return;NATIVE.setNotify(b.dataset.n==='1');window.__mkPerms();});
 window.__mkPerms();
+
+// ---- Smarta funktioner: sparas i appen på telefonen, som sedan gör jobbet även när sidan är stängd ----
+(function(){
+  if(!(NATIVE&&NATIVE.setPref&&NATIVE.getPrefs)){const n=$('stSmart');if(n)n.textContent='Fungerar bara i appen Min klocka på telefonen.';return;}
+  let P={};try{P=JSON.parse(NATIVE.getPrefs())||{};}catch(e){}
+  const save=(k,v)=>{P[k]=v;NATIVE.setPref(k,String(v));const n=$('stSmart');if(n)n.textContent='Sparat.';};
+  document.querySelectorAll('#grpSmart .pseg').forEach(g=>{
+    const k=g.dataset.k,cur=P[k]===undefined?g.dataset.d:P[k];
+    g.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.v===cur));
+    g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;g.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));save(k,b.dataset.v);
+      if(b.dataset.v!=='standard'&&k.startsWith('knapp_'))toast(k==='knapp_kamera'?'Öppna kameran på klockan och tryck på avtryckaren':'Tryck på Hitta telefon på klockan');});
+  });
+  if(P.tyst_fran)$('tystFran').value=P.tyst_fran;if(P.tyst_till)$('tystTill').value=P.tyst_till;if(P.viktiga)$('txtViktiga').value=P.viktiga;
+  $('tystFran').addEventListener('change',e=>save('tyst_fran',e.target.value));
+  $('tystTill').addEventListener('change',e=>save('tyst_till',e.target.value));
+  $('btnViktiga').addEventListener('click',()=>{save('viktiga',$('txtViktiga').value.trim());toast('Viktiga personer sparade');});
+})();
