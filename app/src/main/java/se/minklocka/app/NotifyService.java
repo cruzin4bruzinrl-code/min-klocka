@@ -13,6 +13,7 @@ public class NotifyService extends NotificationListenerService {
     public void onListenerConnected() {
         connected = true;
         WatchService.log("Appen får läsa aviseringar");
+        WatchService.kick(this, "aviseringstjänsten startade");
     }
 
     @Override
@@ -38,6 +39,7 @@ public class NotifyService extends NotificationListenerService {
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
+        WatchService.kick(this, "avisering");   // har Android stängt kontakten startar varje avisering den igen
         try {
             if (!Notifier.enabled(this)) return;
             String pkg = sbn.getPackageName();

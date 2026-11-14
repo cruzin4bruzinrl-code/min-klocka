@@ -100,6 +100,20 @@ public class WatchService extends Service {
     private int pumpTries = 0;
 
     // ---------- hjälp ----------
+    /** Startar kontakten med klockan om den inte redan går, utom när användaren själv har stoppat den. */
+    static void kick(Context c, String why) {
+        try {
+            if (running) return;
+            SharedPreferences p = c.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+            if (p.getBoolean("stoppad", false) || !p.contains(ADDR)) return;
+            if (c.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) return;
+            c.startForegroundService(new Intent(c, WatchService.class));
+            log("Startar kontakten med klockan (" + why + ")");
+        } catch (Exception e) {
+            log("Kunde inte starta kontakten (" + why + "): " + e.getMessage());
+        }
+    }
+
     static void log(String s) {
         String line = new SimpleDateFormat("HH:mm:ss", Locale.ROOT).format(new Date()) + "  " + s;
         synchronized (LOG) {
@@ -198,6 +212,7 @@ public class WatchService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && ACTION_STOP.equals(intent.getAction())) {
+            prefs().edit().putBoolean("stoppad", true).apply();   // användaren kopplade bort: starta inte av sig själv
             stopSelf();
             return START_NOT_STICKY;
         }

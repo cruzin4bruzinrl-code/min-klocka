@@ -63,6 +63,7 @@ public class Reminders extends BroadcastReceiver {
         String a = i.getAction();
         if (Intent.ACTION_BOOT_COMPLETED.equals(a) || "android.intent.action.MY_PACKAGE_REPLACED".equals(a)) {
             schedule(c);
+            if (Intent.ACTION_BOOT_COMPLETED.equals(a)) WatchService.kick(c, "telefonen startade");
             return;
         }
         String t = i.getStringExtra("t");

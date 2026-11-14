@@ -165,6 +165,7 @@ public class MainActivity extends Activity implements WatchService.Web {
             Toast.makeText(this, "Appen behöver lov att använda Bluetooth (Enheter i närheten)", Toast.LENGTH_LONG).show();
             return;
         }
+        prefs().edit().putBoolean("stoppad", false).apply();
         if (!WatchService.running) {
             try {
                 startForegroundService(new Intent(this, WatchService.class));
