@@ -203,7 +203,7 @@ function helpCard(){
   th.querySelector('.themes').onclick=e=>{const b=e.target.closest('button');if(!b)return;setTheme(b.dataset.th);};
   markTheme();
 }
-const THEMES=[['ljus','Ljus','#fdf7ff','#eaddff','#6750a4'],['mint','Mint','#f3fbf6','#c3eed6','#1b7f55'],['persika','Persika','#fff8f4','#ffdbcc','#b5532f'],['hav','Hav','#f4f9fd','#cfe5ff','#0b6aa2'],['mork','Mörk','#0f1513','#1f4d36','#7fd8a6'],['urtavla','Urtavlans färger','#07080c','#ff5aa0','#3ba0ff']];
+const THEMES=[['nextgen','Next Gen','#05060c','#2a1f6b','#2ee6ff'],['ljus','Ljus','#fdf7ff','#eaddff','#6750a4'],['mint','Mint','#f3fbf6','#c3eed6','#1b7f55'],['persika','Persika','#fff8f4','#ffdbcc','#b5532f'],['hav','Hav','#f4f9fd','#cfe5ff','#0b6aa2'],['mork','Mörk','#0f1513','#1f4d36','#7fd8a6'],['urtavla','Urtavlans färger','#07080c','#ff5aa0','#3ba0ff']];
 function markTheme(){const t=document.documentElement.dataset.theme;document.querySelectorAll('.themes button').forEach(b=>b.classList.toggle('on',b.dataset.th===t));
   const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()||'#07080c';}
 function setTheme(t){const r=document.documentElement;r.dataset.theme=t;lsSet('minklocka.tema.v1',t);if(typeof hlRender==="function")setTimeout(()=>hlRender(false),60);
