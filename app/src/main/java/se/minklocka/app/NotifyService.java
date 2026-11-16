@@ -55,6 +55,7 @@ public class NotifyService extends NotificationListenerService {
             if (sbn.isOngoing()) return;
             if ((n.flags & Notification.FLAG_GROUP_SUMMARY) != 0) return;
             String cat = n.category;
+            if ("promo".equals(cat) || "recommendation".equals(cat)) return;   // reklam och tips från appar
             if (Notification.CATEGORY_TRANSPORT.equals(cat) || Notification.CATEGORY_PROGRESS.equals(cat) || Notification.CATEGORY_SERVICE.equals(cat)) return;
             // Sms tas emot direkt (med numret, så att klockan kan svara). Då hoppas sms-appens avisering över.
             if (Notifier.isSmsApp(this, pkg) && Notifier.smsAllowed(this)) return;

@@ -153,7 +153,33 @@ final class Smart {
      * Bestämmer om en avisering ska till klockan, och hur. Ger {rubrik, text} eller null för att hoppa över.
      * Samtal och koder går alltid fram. Under tysta timmar går bara viktiga personer fram.
      */
+    private static String lastSig = "";
+    private static long lastAt = 0;
+    private static final Pattern SUMMARY = Pattern.compile("(?i)^\\d+\\s+(nya\\s+)?(meddelanden|messages|aviseringar|notifications|chattar|chats)\\b.*");
+
+    /** Gör texten ren: ett mellanslag i taget, inget namn två gånger, ingen text som bara upprepar rubriken. */
+    static String[] clean(String title, String body) {
+        String t = title == null ? "" : title.replaceAll("\\s+", " ").trim();
+        String b = body == null ? "" : body.replaceAll("\\s+", " ").trim();
+        if (!t.isEmpty() && b.regionMatches(true, 0, t + ":", 0, t.length() + 1)) b = b.substring(t.length() + 1).trim();
+        if (b.equalsIgnoreCase(t)) b = "";
+        return new String[]{t, b};
+    }
+
     static String[] shape(Context c, int type, String title, String body) {
+        String[] cl = clean(title, body);
+        title = cl[0];
+        body = cl[1];
+        if (type != 0 && (SUMMARY.matcher(body).matches() || SUMMARY.matcher(title).matches())) {
+            WatchService.log("Sammanfattning hoppades över");
+            return null;
+        }
+        // Samma avisering två gånger i rad (många appar uppdaterar sin avisering) surrar bara en gång
+        String sig = type + "|" + title + "|" + body;
+        long now = System.currentTimeMillis();
+        if (sig.equals(lastSig) && now - lastAt < 90000) return null;
+        lastSig = sig;
+        lastAt = now;
         String cd = on(c, "koder", true) ? code(title, body) : null;
         if (cd != null) return new String[]{"Kod " + cd, title == null ? "" : title};
         if (type == 0) return new String[]{title, body};
