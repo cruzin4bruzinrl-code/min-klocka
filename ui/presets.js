@@ -455,6 +455,22 @@ const DIGITAL=[
   deco:[{k:'bezel',r:118,w:6,c:'#d8b86a'},{k:'glassref',a:.14}],
   els:[TK(60,108,4,'#ecd9a0',{}),TK(12,108,12,'#ecd9a0',{nums:1,ns:15,f:'se'}),HN({style:'dauphine',hs:'dauphine',ms:'dauphine',hc:'#ecd9a0',mc:'#ecd9a0',sc:'#fff',ml:98,w:9})]}}
 
+// ---- Ren serie: fem urtavlor i samma stil. Lugnt, lättläst, inget som snurrar. Bara riktiga visare rör sig. ----
+,{key:'ren_analog',name:'Ren analog',desc:'Grafit med mjukt solljus och stålvisare. Datum vid tre.',c1:'#c8ced8',c2:'#1a1d22',ren:true,fresh:2,def:{bg:{t:'sunburst',c:'#3a3f48',c2:'#0b0d10',n:120},
+  deco:[{k:'glassref',a:.1},R(160,132,40,24,7,'#0b0d10',.75)],
+  els:[TK(60,112,4,'#7d8594',{}),TK(12,112,13,'#eef1f6',{}),vl('day',180,134,15,'pb','#eef1f6',''),HN({style:'dauphine',hs:'dauphine',ms:'dauphine',hc:'#eef1f6',mc:'#eef1f6',sc:'#ff7a3c',ml:100,w:9})]}}
+,{key:'ren_stor',name:'Ren stor tid',desc:'Bara klockslaget, stort och tydligt. Datum och batteri längst ner.',c1:'#ffffff',c2:'#7c8cff',ren:true,fresh:2,def:{bg:{t:'grad',c:'#10131c',c2:'#000000',a:180},
+  deco:[L(40,236,200,236,'#ffffff',1,.12)],
+  els:[tm(120,24,100,'pb','#ffffff',{lay:'stack',gap:4}),vl('day',78,248,17,'pm','#c9cfdc','DAG'),vl('battv',162,248,17,'pm','#c9cfdc','BATT')]}}
+,{key:'ren_info',name:'Ren info',desc:'Tid överst och tre värden under: puls, steg och batteri.',c1:'#5cf0ff',c2:'#0b1020',ren:true,fresh:2,def:{bg:{t:'grad',c:'#121a30',c2:'#05070d',a:160},
+  deco:[...BADGES(170,{bg:'#0b1020',a:.8}).deco],
+  els:[tm(120,44,70,'pb','#ffffff'),vl('day',120,128,17,'pm','#8f9ab4',''),...BADGES(170,{bg:'#0b1020',a:.8}).els]}}
+,{key:'ren_natt',name:'Ren natt',desc:'Nästan svart med svag, varm text. Bländar inte i mörkret.',c1:'#8a6a4a',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'solid',c:'#000000'},
+  els:[tm(120,100,62,'pl','#8a6a4a'),vl('day',120,180,15,'pl','#4a3a2a','')]}}
+,{key:'ren_sport',name:'Ren steg',desc:'Dagens steg stort i mitten, med tid och puls runt om.',c1:'#3dffa8',c2:'#06140e',ren:true,fresh:2,def:{bg:{t:'grad',c:'#0c2a1e',c2:'#030806',a:180},
+  deco:[RG(98,'#ffffff',8,.06),IC('feet',120,96,22,'#3dffa8'),IC('heart',96,226,17,'#ff5a6a')],
+  els:[tm(120,20,34,'pb','#ffffff'),vl('steps',120,128,40,'pb','#3dffa8',''),TX('STEG',120,176,13,'pm','#7fae98','c'),vl('pulse',130,224,18,'pb','#ffffff','')]}}
+
 ];
 DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');   // inga små snurrande saker: klockan stegar dem, så de rycker
-  d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});
+  d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.ren=!!d.ren;d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});
