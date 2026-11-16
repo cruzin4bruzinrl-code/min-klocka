@@ -56,3 +56,28 @@ drawDeco=function(ctx,d){
     ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(DW,0);ctx.lineTo(0,DH);ctx.closePath();ctx.fill();ctx.restore();return;}
   _drawDeco(ctx,d);
 };
+
+// ================= Rörelse som drivs av stegen, utan att något roterar =================
+// Varje siffra i stegräknaren är en bild. Med tio lägen per bild går rörelsen ett läge framåt per steg,
+// och läge 9 går över i läge 0 utan hopp. Klockan färgar bilderna med en färg, så allt ritas i vitt med genomskinlighet.
+Object.assign(PICFONT,{
+  eq(c,ch,x,y,w,h){   // equalizer: en stapel av tio lysdioder, den högsta lyser starkast
+    const d=+ch;if(!(d>=0))return;const n=10,gap=Math.max(1,h*.025),sh=(h-gap*(n-1))/n,bw=w*.72,bx=x+(w-bw)/2,on=d+1;
+    for(let k=0;k<n;k++){const yy=y+h-(k+1)*sh-k*gap;c.globalAlpha=k<on?(k===on-1?1:.62+.03*k):.12;c.fillStyle='#fff';
+      c.beginPath();c.roundRect(bx,yy,bw,sh,Math.min(2.5,sh/2.5));c.fill();}
+    c.globalAlpha=1;},
+  lava(c,ch,x,y,w,h){   // lavalampa: två klotter som stiger, tonar in nertill och ut upptill
+    const d=+ch;if(!(d>=0))return;c.save();c.beginPath();c.roundRect(x+w*.08,y,w*.84,h,w*.4);c.clip();
+    c.globalAlpha=.1;c.fillStyle='#fff';c.fillRect(x,y,w,h);
+    [d/10,((d+5)%10)/10].forEach((p,i)=>{const a=Math.sin(Math.PI*(p*.9+.05)),r=w*(.26+.08*Math.sin(p*Math.PI*2+i)),cy=y+h-r-(h-2*r)*p,cx=x+w/2+Math.sin(p*Math.PI*2+i*2)*w*.08;
+      const g=c.createRadialGradient(cx-r*.3,cy-r*.3,1,cx,cy,r*1.15);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.7,'rgba(255,255,255,.75)');g.addColorStop(1,'rgba(255,255,255,0)');
+      c.globalAlpha=Math.max(0,a);c.fillStyle=g;c.beginPath();c.ellipse(cx,cy,r*1.05,r*(1.15-.2*Math.abs(Math.cos(p*Math.PI))),0,0,7);c.fill();});
+    c.restore();c.globalAlpha=1;},
+  ekg(c,ch,x,y,w,h){   // en hjärtmonitor: ett slag vandrar över rutan och lämnar ett svans som bleknar
+    const d=+ch;if(!(d>=0))return;const mid=y+h*.6,head=x+w*(d+.5)/10,lw=Math.max(1.6,w*.07);
+    const Y=t=>{const u=t-(head-w*.22);if(u<0||u>w*.22)return mid;const q=u/(w*.22);return q<.25?mid-h*.06*Math.sin(q/.25*Math.PI):q<.45?mid+h*.08*(q-.25)/.2:q<.6?mid-h*.5*(1-Math.abs(q-.55)/.06>0?1-Math.abs(q-.55)/.06:0)+h*.08*(1-(q-.45)/.15):q<.75?mid+h*.12*Math.sin((q-.6)/.15*Math.PI):mid;};
+    c.lineWidth=lw;c.lineCap=c.lineJoin='round';c.strokeStyle='#fff';
+    for(let s=0;s<w;s+=1){const t0=x+s,age=(head-t0+w)%w;c.globalAlpha=Math.max(.06,1-age/w);c.beginPath();c.moveTo(t0,Y(t0));c.lineTo(t0+1.2,Y(t0+1.2));c.stroke();}
+    c.globalAlpha=1;c.beginPath();c.arc(head,Y(head),lw*1.1,0,7);c.fillStyle='#fff';c.fill();}
+});
+FONTS.eq={n:'Equalizer',css:null,pic:.5};FONTS.lava={n:'Lavalampa',css:null,pic:.42};FONTS.ekg={n:'Monitor',css:null,pic:.62};

@@ -471,6 +471,16 @@ const DIGITAL=[
   deco:[RG(98,'#ffffff',8,.06),IC('feet',120,96,22,'#3dffa8'),IC('heart',96,226,17,'#ff5a6a')],
   els:[tm(120,20,34,'pb','#ffffff'),vl('steps',120,128,40,'pb','#3dffa8',''),TX('STEG',120,176,13,'pm','#7fae98','c'),vl('pulse',130,224,18,'pb','#ffffff','')]}}
 
+// ---- Steg i rörelse: när du går rör sig bilden, ett läge per steg. Inget roterar. ----
+,{key:'stg_eq',name:'Equalizer',desc:'Stegräknaren som equalizer. Staplarna hoppar när du går.',c1:'#2ee6ff',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'grad',c:'#06131c',c2:'#000000',a:180},
+  deco:[L(28,214,212,214,'#2ee6ff',1,.18)],
+  els:[tm(120,20,54,'pb','#ffffff'),vl('steps',120,96,92,'eq','#2ee6ff',''),vl('day',70,232,16,'pm','#8fb4c4','DAG'),vl('battv',170,232,16,'pm','#8fb4c4','BATT')]}}
+,{key:'stg_lava',name:'Lavalampa',desc:'Fem lampor där klotter stiger när du går. Ju fler steg, desto mer liv.',c1:'#ff5fa8',c2:'#1a0628',ren:true,fresh:2,def:{bg:{t:'grad',c:'#2a0a3c',c2:'#08020e',a:200},
+  els:[tm(120,22,50,'pl','#ffd8ec'),vl('steps',120,92,104,'lava','#ff6fb0',''),vl('pulse',120,232,18,'pm','#ffb8d8','PULS')]}}
+,{key:'stg_ekg',name:'Monitor',desc:'Fem små hjärtmonitorer. Slaget vandrar fram ett steg i taget.',c1:'#3dff7a',c2:'#03100a',ren:true,fresh:2,def:{bg:{t:'solid',c:'#020a06'},
+  deco:[...[0,1,2,3,4,5,6].map(i=>L(14,96+i*18,226,96+i*18,'#3dff7a',1,.07)),...[0,1,2,3,4,5,6,7,8,9,10,11,12].map(i=>L(14+i*17.7,96,14+i*17.7,204,'#3dff7a',1,.07))],
+  els:[tm(120,22,50,'mo','#3dff7a'),vl('steps',120,110,74,'ekg','#3dff7a',''),vl('pulse',120,230,20,'mo','#3dff7a','PULS')]}}
+
 ];
 DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');   // inga små snurrande saker: klockan stegar dem, så de rycker
   d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.ren=!!d.ren;d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});
