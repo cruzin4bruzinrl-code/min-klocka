@@ -40,7 +40,7 @@
 .ng-ring{position:absolute;right:12px;top:50%;width:52px;height:52px;margin-top:-26px;transform:rotate(-90deg)}
 .ng-ring circle{fill:none;stroke-width:5}
 .ng-ring .t{stroke:rgba(255,255,255,.08)}
-.ng-ring .v{stroke:url(#ngGrad);stroke-linecap:round;stroke-dasharray:138.2;stroke-dashoffset:138.2;transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 4px #2ee6ff)}
+.ng-ring .v{stroke:url(#ngGrad);stroke-linecap:round;stroke-dasharray:138.2;stroke-dashoffset:138.2;transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)}
 .tile .ng-ic{position:absolute;right:14px;top:12px;width:20px;height:20px;opacity:.95}
 .tile.ng-steps .ng-ic{display:none}
 .ng-ic svg{width:100%;height:100%}
@@ -89,3 +89,22 @@
 .ng-ws div{padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.04)}
 .ng-ws b{display:block;font:700 18px/1.2 var(--font);font-variant-numeric:tabular-nums}.ng-ws small{color:var(--dim);font-size:11.5px}
 @media (prefers-reduced-motion:reduce){.ng-week.go .ng-wb i{animation:none!important}}
+/* ===== känns som en app, inte en webbsida ===== */
+html,body{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+.app,.tabs,.stage,button,.tile,.hcard,.cats,.seg{-webkit-user-select:none;user-select:none}
+input,textarea,#logBox,pre{-webkit-user-select:text;user-select:text}
+.view{overscroll-behavior:contain;scroll-behavior:auto}
+/* flikbyte: sidan glider in från det håll man går åt, som i en riktig app */
+.view{transform:translate3d(var(--vx,0),0,0)!important;transition:opacity .28s ease,transform .38s cubic-bezier(.2,.9,.25,1),visibility 0s linear .38s!important}
+.view.on{transform:none!important;transition:opacity .28s ease,transform .38s cubic-bezier(.2,.9,.25,1),visibility 0s!important}
+.view.from-r{--vx:28px}.view.from-l{--vx:-28px}
+/* hemvyn: rubriken med klockan krymper när man skrollar, som en apprubrik */
+body.shrunk .stage{height:116px}
+body.shrunk .watch{left:57px;transform:translateY(-6px) scale(.4)}
+body.shrunk .info{top:26px;left:108px;text-align:left}
+body.shrunk .info h1{font-size:23px}
+body.shrunk .info p{opacity:0;max-height:0;margin:0}
+body.shrunk .ng-orbit{opacity:0;transition:opacity .3s}
+.ng-orbit{transition:opacity .4s}
+
+:root[data-theme="nextgen"] .toast{background:#1a1838!important;border:1px solid rgba(139,108,255,.4);box-shadow:0 12px 30px -10px #000,0 0 20px -8px #8b6cff}

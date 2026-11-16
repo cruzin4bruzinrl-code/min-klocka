@@ -40,7 +40,7 @@ button{border:0;background:none;cursor:pointer}
 .app{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;max-width:520px;margin:0 auto}
 
 /* ---- scenen: klockan ---- */
-.stage{position:relative;flex:none;height:var(--sh,352px);transition:height .5s cubic-bezier(.3,1.1,.4,1)}
+.stage{position:relative;flex:none;height:var(--sh,366px);transition:height .5s cubic-bezier(.3,1.1,.4,1)}
 .watch{position:absolute;left:50%;top:var(--wt,26px);width:176px;height:210px;margin-left:-88px;transform:scale(var(--ws,1));transform-origin:50% 0;transition:transform .5s cubic-bezier(.3,1.1,.4,1),left .5s cubic-bezier(.3,1.1,.4,1)}
 .strap{position:absolute;left:19%;width:62%;height:44px;background:linear-gradient(90deg,#15171d,#2a2d37 50%,#15171d);z-index:0}
 .strap.t{top:-26px;border-radius:14px 14px 0 0}.strap.b{bottom:-26px;border-radius:0 0 14px 14px}
@@ -59,7 +59,7 @@ button{border:0;background:none;cursor:pointer}
 @keyframes spin{to{stroke-dashoffset:-100}}
 .watch.done .case{animation:pop .7s cubic-bezier(.2,1.4,.4,1)}
 @keyframes pop{30%{transform:scale(1.045)}}
-.info{position:absolute;left:16px;right:16px;top:var(--it,262px);text-align:center;transition:top .5s cubic-bezier(.3,1.1,.4,1),left .5s cubic-bezier(.3,1.1,.4,1)}
+.info{position:absolute;left:16px;right:16px;top:var(--it,276px);text-align:center;transition:top .5s cubic-bezier(.3,1.1,.4,1),left .5s cubic-bezier(.3,1.1,.4,1)}
 .info h1{margin:0;font:700 26px/1.1 var(--font);letter-spacing:-.4px}
 .info p{margin:5px 0 0;color:var(--dim);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-height:22px;transition:opacity .3s,max-height .4s,margin .4s}
 .pill{display:inline-flex;align-items:center;gap:7px;margin-top:9px;padding:5px 12px 5px 10px;border-radius:99px;background:var(--glass);border:1px solid var(--edge);font-size:13px;backdrop-filter:blur(16px)}
@@ -206,8 +206,8 @@ button.row:active{background:color-mix(in srgb,var(--ov) 6%,transparent)}
 
 /* flikar */
 .fade{position:fixed;left:0;right:0;bottom:0;height:calc(130px + var(--lift,0px));z-index:4;pointer-events:none;background:linear-gradient(180deg,color-mix(in srgb,var(--ink) 0%,transparent) 0,color-mix(in srgb,var(--ink) 86%,transparent) 46%,var(--ink) 100%)}
-.tabs{background:var(--navbg);position:fixed;left:50%;bottom:calc(14px + var(--lift,0px) + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:5;transition:bottom .35s ease;display:grid;grid-template-columns:repeat(4,1fr);width:min(92vw,400px);padding:6px;border-radius:26px}
-.tabs .slide{position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 12px)/4);border-radius:20px;background:color-mix(in srgb,var(--ov) 11%,transparent);transition:transform .42s cubic-bezier(.3,1.3,.4,1)}
+.tabs{background:var(--navbg);position:fixed;left:50%;bottom:calc(14px + var(--lift,0px) + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:5;transition:bottom .35s ease;display:grid;grid-template-columns:repeat(5,1fr);width:min(94vw,440px);padding:6px;border-radius:26px}
+.tabs .slide{position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 12px)/5);border-radius:20px;background:color-mix(in srgb,var(--ov) 11%,transparent);transition:transform .42s cubic-bezier(.3,1.3,.4,1)}
 .tabs button{position:relative;padding:9px 0 7px;font-size:11.5px;color:var(--dim);display:grid;justify-items:center;gap:3px;transition:color .25s}
 .tabs svg{width:22px;height:22px;transition:transform .35s cubic-bezier(.3,1.5,.4,1)}
 .tabs button.on{color:var(--text)}
@@ -241,9 +241,9 @@ button.row:active{background:color-mix(in srgb,var(--ov) 6%,transparent)}
 #keyBox em{white-space:normal}
 
 /* lägre skärmar: klockan krymper så att innehållet får plats */
-@media (max-height:800px){:root{--ws:.86;--wt:20px;--it:214px;--sh:302px}}
-@media (max-height:720px){:root{--ws:.72;--wt:16px;--it:178px;--sh:264px}.info h1{font-size:23px}.info p{font-size:13.5px;margin-top:3px}.pill{margin-top:7px}}
-@media (max-height:620px){:root{--ws:.58;--wt:12px;--it:142px;--sh:226px}}
+@media (max-height:800px){:root{--ws:.86;--wt:20px;--it:230px;--sh:318px}}
+@media (max-height:720px){:root{--ws:.72;--wt:16px;--it:192px;--sh:278px}.info h1{font-size:23px}.info p{font-size:13.5px;margin-top:3px}.pill{margin-top:7px}}
+@media (max-height:620px){:root{--ws:.58;--wt:12px;--it:154px;--sh:238px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important}}
 
 /* ---------- verktyg som kort, blad med förklarande bild, rundtur och studs ---------- */
@@ -400,7 +400,7 @@ body.sheet-open{overflow:hidden}
   box-shadow:0 14px 34px -14px rgba(0,0,0,.38),0 2px 6px -2px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.75),inset 0 -1px 0 rgba(0,0,0,.06)!important;width:min(90vw,380px)!important}
 :root[data-theme="mork"] .tabs.glass,:root[data-theme="urtavla"] .tabs.glass{border-color:rgba(255,255,255,.14)!important;box-shadow:0 14px 34px -14px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.16),inset 0 -1px 0 rgba(0,0,0,.3)!important}
 .tabs.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0) 46%);opacity:.6;mix-blend-mode:soft-light}
-.tabs .slide{top:7px!important;bottom:7px!important;left:7px!important;width:calc((100% - 14px)/4)!important;border-radius:999px!important;
+.tabs .slide{top:7px!important;bottom:7px!important;left:7px!important;width:calc((100% - 14px)/5)!important;border-radius:999px!important;
   background:color-mix(in srgb,#ffffff 46%,var(--pricont))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -2px 6px rgba(0,0,0,.06),0 4px 12px -4px rgba(0,0,0,.18)!important;
   backdrop-filter:blur(2px) saturate(160%);transition:transform .55s var(--spring)!important;will-change:transform}
 :root[data-theme="mork"] .tabs .slide,:root[data-theme="urtavla"] .tabs .slide{background:rgba(255,255,255,.14)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 4px 12px -4px rgba(0,0,0,.5)!important}
@@ -631,6 +631,21 @@ body.hs-open{overflow:hidden}
         <div class="tile glass"><small>Steg i dag</small><strong id="stSteps">–</strong></div>
         <div class="tile glass"><small>Klockans tid</small><strong id="stTime">–</strong></div>
       </div>
+      <p class="meta">Aktiv urtavla <span id="stDial">–</span>, ledigt <span id="stFree">–</span></p>
+      <p class="meta">Version <span id="stVer">–</span> · <button class="lnk" id="btnUpd">Sök ny version</button></p>
+      <details class="glass">
+        <summary>Innan du ansluter</summary>
+        <ol>
+          <li>Öppna sidan i <b>Chrome</b> på telefonen.</li>
+          <li><b>Tvinga stopp på Triacle Life</b>, annars krockar apparna om klockan.</li>
+          <li>Håll klockan nära med skärmen tänd.</li>
+          <li>Syns den inte? Tryck <b>Visa alla enheter</b> och välj TRIARENALI1.</li>
+        </ol>
+      </details>
+      <span id="stScreen" hidden></span>
+    </section>
+
+    <section class="view" id="view-health">
       <div class="group glass" id="grpHealth">
         <div class="block" style="border-top:0">
           <div class="hl-head"><span class="lab">Hälsa<small id="hlState">Hämtas när klockan ansluter. Klockan sparar ungefär en vecka, appen sparar allt den hämtat</small></span><button class="hl-me" id="btnHlMe" aria-label="Om dig"><svg viewBox="0 0 24 24"><circle cx="12" cy="7.5" r="3.5" fill="currentColor"/><path d="M5 20c.6-4 3.3-6.5 7-6.5s6.4 2.5 7 6.5z" fill="currentColor"/></svg>Om dig</button></div>
@@ -649,20 +664,7 @@ body.hs-open{overflow:hidden}
           <button class="soft glass" id="btnHlSync" style="margin-top:10px"><svg viewBox="0 0 24 24" class="sync-ic"><path d="M20 12a8 8 0 0 1-14.2 5M4 12A8 8 0 0 1 18.2 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18.5 3v4.5H14M5.5 21v-4.5H10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Hämta nu</button>
         </div>
       </div>
-      <p class="meta">Aktiv urtavla <span id="stDial">–</span>, ledigt <span id="stFree">–</span></p>
-      <p class="meta">Version <span id="stVer">–</span> · <button class="lnk" id="btnUpd">Sök ny version</button></p>
-      <details class="glass">
-        <summary>Innan du ansluter</summary>
-        <ol>
-          <li>Öppna sidan i <b>Chrome</b> på telefonen.</li>
-          <li><b>Tvinga stopp på Triacle Life</b>, annars krockar apparna om klockan.</li>
-          <li>Håll klockan nära med skärmen tänd.</li>
-          <li>Syns den inte? Tryck <b>Visa alla enheter</b> och välj TRIARENALI1.</li>
-        </ol>
-      </details>
-      <span id="stScreen" hidden></span>
     </section>
-
     <section class="view" id="view-dials">
       <div class="sendrow"><button class="cta" id="btnSend" disabled>Skicka till klockan</button></div>
       <div class="prog" id="stProg">Anslut klockan för att skicka</div>
@@ -789,6 +791,7 @@ body.hs-open{overflow:hidden}
 <nav class="tabs glass" id="tabs">
   <span class="slide" id="tabSlide"></span>
   <button class="on" data-v="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="5.5" width="10" height="13" rx="3.2"/><path d="M9.5 5.5V3h5v2.5M9.5 18.5V21h5v-2.5"/></svg>Klocka</button>
+  <button data-v="health"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-9.6A4 4 0 0 1 12 8a4 4 0 0 1 7 2.4C19 15.6 12 20 12 20z"/><path d="M3 12h4l1.5-2.5L11 15l1.5-3H16"/></svg>Hälsa</button>
   <button data-v="dials"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4" width="7" height="8.5" rx="2.2"/><rect x="13.5" y="4" width="7" height="8.5" rx="2.2"/><rect x="3.5" y="15.5" width="7" height="4.5" rx="1.8"/><rect x="13.5" y="15.5" width="7" height="4.5" rx="1.8"/></svg>Urtavlor</button>
   <button data-v="tools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Verktyg</button>
   <button data-v="log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"/></svg>Logg</button>
@@ -816,13 +819,13 @@ function pill(state,text){$('pill').className='pill'+(state?' '+state:'');$('stC
 /*GALLERY*/
 
 // flikar
-const TABS=['home','dials','tools','log'];
+const TABS=['home','health','dials','tools','log'];
 function showTab(v){
   const i=TABS.indexOf(v);if(i<0&&v!=='editor')return;
   qsa('.view').forEach(s=>s.classList.toggle('on',s.id==='view-'+v));
   qsa('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
   if(i>=0)$('tabSlide').style.transform='translateX('+(i*100)+'%)';
-  document.body.classList.toggle('compact',v==='tools'||v==='log');
+  document.body.classList.toggle('compact',v==='tools'||v==='log'||v==='health');
   document.body.classList.toggle('side',v==='dials');
   if(v==='dials'&&window.__galleryReady)setTimeout(()=>paintGrid(nowT(),true),40);
 }

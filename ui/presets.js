@@ -458,7 +458,7 @@ const DIGITAL=[
 // ---- Ren serie: fem urtavlor i samma stil. Lugnt, lättläst, inget som snurrar. Bara riktiga visare rör sig. ----
 ,{key:'ren_analog',name:'Ren analog',desc:'Grafit med mjukt solljus och stålvisare. Datum vid tre.',c1:'#c8ced8',c2:'#1a1d22',ren:true,fresh:2,def:{bg:{t:'sunburst',c:'#3a3f48',c2:'#0b0d10',n:120},
   deco:[{k:'glassref',a:.1},R(160,132,40,24,7,'#0b0d10',.75)],
-  els:[TK(60,112,4,'#7d8594',{}),TK(12,112,13,'#eef1f6',{}),vl('day',180,134,15,'pb','#eef1f6',''),HN({style:'dauphine',hs:'dauphine',ms:'dauphine',hc:'#eef1f6',mc:'#eef1f6',sc:'#ff7a3c',ml:100,w:9})]}}
+  els:[TK(60,112,4,'#7d8594',{}),TK(12,112,13,'#eef1f6',{}),vl('day',180,134,15,'pb','#eef1f6',''),HN({style:'dauphine',hs:'dauphine',ms:'dauphine',hc:'#eef1f6',mc:'#eef1f6',sec:0,ml:100,w:9})]}}
 ,{key:'ren_stor',name:'Ren stor tid',desc:'Bara klockslaget, stort och tydligt. Datum och batteri längst ner.',c1:'#ffffff',c2:'#7c8cff',ren:true,fresh:2,def:{bg:{t:'grad',c:'#10131c',c2:'#000000',a:180},
   deco:[L(40,236,200,236,'#ffffff',1,.12)],
   els:[tm(120,24,100,'pb','#ffffff',{lay:'stack',gap:4}),vl('day',78,248,17,'pm','#c9cfdc','DAG'),vl('battv',162,248,17,'pm','#c9cfdc','BATT')]}}
@@ -471,16 +471,6 @@ const DIGITAL=[
   deco:[RG(98,'#ffffff',8,.06),IC('feet',120,96,22,'#3dffa8'),IC('heart',96,226,17,'#ff5a6a')],
   els:[tm(120,20,34,'pb','#ffffff'),vl('steps',120,128,40,'pb','#3dffa8',''),TX('STEG',120,176,13,'pm','#7fae98','c'),vl('pulse',130,224,18,'pb','#ffffff','')]}}
 
-// ---- Steg i rörelse: när du går rör sig bilden, ett läge per steg. Inget roterar. ----
-,{key:'stg_eq',name:'Equalizer',desc:'Stegräknaren som equalizer. Staplarna hoppar när du går.',c1:'#2ee6ff',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'grad',c:'#06131c',c2:'#000000',a:180},
-  deco:[L(28,214,212,214,'#2ee6ff',1,.18)],
-  els:[tm(120,20,54,'pb','#ffffff'),vl('steps',120,96,92,'eq','#2ee6ff',''),vl('day',70,232,16,'pm','#8fb4c4','DAG'),vl('battv',170,232,16,'pm','#8fb4c4','BATT')]}}
-,{key:'stg_lava',name:'Lavalampa',desc:'Fem lampor där klotter stiger när du går. Ju fler steg, desto mer liv.',c1:'#ff5fa8',c2:'#1a0628',ren:true,fresh:2,def:{bg:{t:'grad',c:'#2a0a3c',c2:'#08020e',a:200},
-  els:[tm(120,22,50,'pl','#ffd8ec'),vl('steps',120,92,104,'lava','#ff6fb0',''),vl('pulse',120,232,18,'pm','#ffb8d8','PULS')]}}
-,{key:'stg_ekg',name:'Monitor',desc:'Fem små hjärtmonitorer. Slaget vandrar fram ett steg i taget.',c1:'#3dff7a',c2:'#03100a',ren:true,fresh:2,def:{bg:{t:'solid',c:'#020a06'},
-  deco:[...[0,1,2,3,4,5,6].map(i=>L(14,96+i*18,226,96+i*18,'#3dff7a',1,.07)),...[0,1,2,3,4,5,6,7,8,9,10,11,12].map(i=>L(14+i*17.7,96,14+i*17.7,204,'#3dff7a',1,.07))],
-  els:[tm(120,22,50,'mo','#3dff7a'),vl('steps',120,110,74,'ekg','#3dff7a',''),vl('pulse',120,230,20,'mo','#3dff7a','PULS')]}}
-
 ];
-DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');   // inga små snurrande saker: klockan stegar dem, så de rycker
+DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');d.def.els.forEach(e=>{if(e.k==='hands')e.sec=0;});   // inget som snurrar runt, inte heller sekundvisare   // inga små snurrande saker: klockan stegar dem, så de rycker
   d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.ren=!!d.ren;d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});

@@ -31,7 +31,7 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
   const saved=await p.evaluate(()=>{const o=JSON.parse(localStorage.getItem('minklocka.halsa.v1'));const k=Object.keys(o.days).sort();return {n:k.length,hr:o.days[k[k.length-1]].hr.length,done:k.slice(0,-1).every(x=>o.days[x].done)};});
   ok('sju dagar sparas, 47 pulsmätningar per dag (en nolla bort, en post delad mellan delar)',saved.n===7&&saved.hr===47&&saved.done,JSON.stringify(saved));
   await p.screenshot({path:'ui/v13_historik.png',fullPage:false});
-  await p.evaluate(()=>document.getElementById('grpHealth').scrollIntoView());await p.waitForTimeout(300);await p.screenshot({path:'ui/v13_historik2.png'});
+  await p.evaluate(()=>{showTab('health');document.getElementById('grpHealth').scrollIntoView();});await p.waitForTimeout(300);await p.screenshot({path:'ui/v13_historik2.png'});
   // tryck i diagrammet
   const bx=await p.locator('#hlStepC').boundingBox();await p.locator('#hlStepC').click({position:{x:6+(bx.width-12)*(12.5/24),y:50}});
   ok('tryck i stegdiagrammet visar timmen',/Kl 12–13: 420 steg/.test(await p.textContent('#hlTip')),await p.textContent('#hlTip'));
@@ -39,7 +39,7 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
   ok('tryck i pulsdiagrammet visar mätningen',/Kl 14:41/.test(await p.textContent('#hlTip')),await p.textContent('#hlTip'));
   await p.click('#hlDays [data-i="1"]');ok('igår går att välja',await p.evaluate(()=>$('hlSteps').textContent!=='–'&&$('hlDays').children[1].classList.contains('on')));
   // ny anslutning: bara idag hämtas
-  await p.evaluate(()=>{window.__sent.length=0;});await p.click('#btnDisconnect');await p.waitForTimeout(500);await p.click('#btnConnect');await connected();await p.waitForFunction(()=>window.__sent.includes('a/a6:03'),null,{timeout:10000});await done();
+  await p.evaluate(()=>{window.__sent.length=0;showTab('home');});await p.waitForTimeout(400);await p.click('#btnDisconnect');await p.waitForTimeout(500);await p.click('#btnConnect');await connected();await p.waitForFunction(()=>window.__sent.includes('a/a6:03'),null,{timeout:10000});await done();
   const a1=await p.evaluate(()=>window.__sent.filter(s=>s.startsWith('a/a0')));
   ok('färdiga dagar hämtas inte igen',a1.length===4,a1.length);
   // efter omladdning, utan klocka: värdena finns kvar
