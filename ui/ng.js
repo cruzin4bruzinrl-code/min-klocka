@@ -104,17 +104,8 @@ window.ngHideGuide=hideGuide;
   const orig=hlRender;window.hlRender=hlRender=function(a){const r=orig.apply(this,arguments);try{render();}catch(e){}return r;};
   try{render();}catch(e){}
 })();
-// ===== appkänsla: riktning vid flikbyte och en rubrik som krymper i hemvyn =====
-(function(){
-  if(typeof showTab!=='function')return;
-  const order=['home','health','dials','tools','log'];let last='home';
-  const st=showTab;showTab=function(v){const a=order.indexOf(last),b=order.indexOf(v);
-    const el=document.getElementById('view-'+v);if(el&&a>=0&&b>=0&&a!==b){el.classList.remove('from-l','from-r');el.classList.add(b>a?'from-r':'from-l');void el.offsetWidth;}
-    if(v!=='home')document.body.classList.remove('shrunk');
-    const r=st.apply(this,arguments);if(el)requestAnimationFrame(()=>el.classList.remove('from-l','from-r'));if(order.includes(v))last=v;
-    if(v==='home'){const h=document.getElementById('view-home');document.body.classList.toggle('shrunk',!!h&&h.scrollTop>24);}
-    return r;};
-  window.showTab=showTab;
-  const h=document.getElementById('view-home');let raf=0;
-  if(h)h.addEventListener('scroll',()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;if(h.classList.contains('on'))document.body.classList.toggle('shrunk',h.scrollTop>24);});},{passive:true});
+// ===== rubriken: texten tonar ut medan klockan flyttar sig och tonar in när den står still =====
+(function(){let t=0,was=document.body.classList.contains('compact');
+  new MutationObserver(()=>{const now=document.body.classList.contains('compact');if(now===was)return;was=now;
+    document.body.classList.add('hswap');clearTimeout(t);t=setTimeout(()=>document.body.classList.remove('hswap'),430);}).observe(document.body,{attributes:true,attributeFilter:['class']});
 })();
