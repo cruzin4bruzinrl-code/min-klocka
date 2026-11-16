@@ -90,6 +90,10 @@ public class Updater extends BroadcastReceiver {
             if (manual) WatchService.log("Appen är senaste versionen (bygge " + mine + ")");
             return;
         }
+        // Har du sagt nej till just det här bygget frågar appen inte igen förrän nästa dag, utom när du själv trycker Sök ny version
+        SharedPreferences q = c.getSharedPreferences(WatchService.PREFS, Context.MODE_PRIVATE);
+        if (!manual && q.getInt("upd_nej_bygge", 0) == remote && System.currentTimeMillis() - q.getLong("upd_nej_tid", 0) < 24 * 3600 * 1000L) return;
+        q.edit().putInt("upd_fragar", remote).apply();
         String url = null;
         JSONArray a = j.optJSONArray("assets");
         for (int i = 0; a != null && i < a.length(); i++) {
@@ -176,8 +180,9 @@ public class Updater extends BroadcastReceiver {
             WatchService.log("Ny version hämtad. Tryck på aviseringen för att installera");
         } else if (st != PackageInstaller.STATUS_SUCCESS && st != -999) {
             WatchService.log("Uppdateringen gick inte: " + i.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE));
-            // Försök igen vid nästa koll
-            c.getSharedPreferences(WatchService.PREFS, Context.MODE_PRIVATE).edit().putLong(LAST, 0).apply();
+            // Avbröt du, eller gick det inte, frågar appen inte om samma bygge igen förrän nästa dag
+            SharedPreferences q = c.getSharedPreferences(WatchService.PREFS, Context.MODE_PRIVATE);
+            q.edit().putInt("upd_nej_bygge", q.getInt("upd_fragar", 0)).putLong("upd_nej_tid", System.currentTimeMillis()).apply();
         }
     }
 }
