@@ -611,7 +611,7 @@ body.hs-open{overflow:hidden}
 :root[data-theme="nextgen"] .aurora i{opacity:.32;filter:blur(90px)}
 :root[data-theme="nextgen"] .aurora i:nth-child(2){background:#2ee6ff;opacity:.16}
 :root[data-theme="nextgen"] .aurora i:nth-child(3){background:#5b2bff;opacity:.18}
-:root[data-theme="nextgen"] .aurora::before{content:"";position:absolute;inset:-50%;background-image:radial-gradient(1px 1px at 20% 30%,#fff8,transparent),radial-gradient(1px 1px at 70% 20%,#fff6,transparent),radial-gradient(1.5px 1.5px at 40% 80%,#cfd8ff88,transparent),radial-gradient(1px 1px at 85% 65%,#fff5,transparent),radial-gradient(1px 1px at 10% 70%,#fff4,transparent);background-size:260px 260px;animation:ngDrift 120s linear infinite;opacity:.7}
+:root[data-theme="nextgen"] .aurora::before{content:"";position:absolute;inset:-50%;background-image:radial-gradient(1px 1px at 20% 30%,#fff8,transparent),radial-gradient(1px 1px at 70% 20%,#fff6,transparent),radial-gradient(1.5px 1.5px at 40% 80%,#cfd8ff88,transparent),radial-gradient(1px 1px at 85% 65%,#fff5,transparent),radial-gradient(1px 1px at 10% 70%,#fff4,transparent);background-size:260px 260px;opacity:.6}
 @keyframes ngDrift{to{transform:translate3d(260px,130px,0)}}
 /* glas och kort */
 :root[data-theme="nextgen"] .glass{background:linear-gradient(160deg,rgba(32,34,64,.78),rgba(12,13,28,.82));border:1px solid var(--edge);box-shadow:var(--shadow);backdrop-filter:none}
@@ -632,16 +632,12 @@ body.hs-open{overflow:hidden}
 .ng-orbit{position:absolute;left:50%;top:calc(var(--wt,26px) + 105px);width:0;height:0;pointer-events:none;z-index:0;display:none}
 :root[data-theme="nextgen"] .ng-orbit{display:block}
 :root[data-theme="nextgen"] .stage .watch{z-index:1}
-.ng-orbit i{position:absolute;left:0;top:0;border-radius:50%;border:1.5px solid transparent;transform-style:preserve-3d}
-.ng-orbit i:nth-child(1){width:300px;height:300px;margin:-150px;border-top-color:rgba(139,108,255,.85);border-right-color:rgba(46,230,255,.35);transform:rotateX(72deg) rotateZ(0);animation:ngOrb 9s linear infinite;filter:drop-shadow(0 0 6px #8b6cff)}
-.ng-orbit i:nth-child(2){width:250px;height:250px;margin:-125px;border-bottom-color:rgba(46,230,255,.8);border-left-color:rgba(139,108,255,.25);transform:rotateX(72deg) rotateY(14deg);animation:ngOrb2 13s linear infinite;filter:drop-shadow(0 0 5px #2ee6ff)}
-.ng-orbit i:nth-child(3){width:360px;height:360px;margin:-180px;border-top-color:rgba(255,90,200,.45);transform:rotateX(76deg) rotateY(-10deg);animation:ngOrb 19s linear infinite reverse}
-.ng-orbit b{position:absolute;left:-130px;top:-130px;width:260px;height:260px;border-radius:50%;background:radial-gradient(closest-side,rgba(139,108,255,.38),rgba(46,230,255,.12) 55%,transparent);animation:ngBreath 6s ease-in-out infinite}
+.ng-orbit b{position:absolute;left:-140px;top:-140px;width:280px;height:280px;border-radius:50%;background:radial-gradient(closest-side,rgba(139,108,255,.34),rgba(46,230,255,.1) 55%,transparent);animation:ngGlow 7s ease-in-out infinite;will-change:opacity}
+@keyframes ngGlow{0%,100%{opacity:.7}50%{opacity:1}}
 @keyframes ngOrb{from{transform:rotateX(72deg) rotateZ(0)}to{transform:rotateX(72deg) rotateZ(360deg)}}
 @keyframes ngOrb2{from{transform:rotateX(72deg) rotateY(14deg) rotateZ(0)}to{transform:rotateX(72deg) rotateY(14deg) rotateZ(-360deg)}}
 @keyframes ngBreath{0%,100%{transform:scale(.92);opacity:.75}50%{transform:scale(1.06);opacity:1}}
-:root[data-theme="nextgen"] .stage:not(.on) .ng-orbit i{animation-play-state:running}
-/* stegringen i rutan */
+:root[data-theme="nextgen"] .stage:not(.on) /* stegringen i rutan */
 .ng-ring{position:absolute;right:12px;top:50%;width:52px;height:52px;margin-top:-26px;transform:rotate(-90deg)}
 .ng-ring circle{fill:none;stroke-width:5}
 .ng-ring .t{stroke:rgba(255,255,255,.08)}
@@ -668,9 +664,9 @@ body.hs-open{overflow:hidden}
 .ng-hand.on{opacity:1;animation:ngTap 1.8s cubic-bezier(.4,0,.2,1) infinite}
 @keyframes ngTap{0%{transform:translate3d(14px,16px,0) scale(1)}35%{transform:translate3d(0,0,0) scale(1)}45%{transform:translate3d(0,0,0) scale(.86)}60%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(14px,16px,0) scale(1)}}
 /* stegen i verktygsbladet tänds i tur och ordning, som en kort film om hur man gör */
-.tsh-steps li.ng-now{background:linear-gradient(100deg,rgba(139,108,255,.3),rgba(46,230,255,.14));box-shadow:var(--neon);transform:translateX(4px)}
-.tsh-steps li{transition:background .4s,box-shadow .4s,transform .45s cubic-bezier(.2,1.3,.4,1)}
-@media (prefers-reduced-motion:reduce){.ng-orbit i,.ng-orbit b,.cta::after,.aurora::before,.ng-guide::before,.ng-hand.on,#tilePulse .ng-ic{animation:none!important}}
+.tsh-steps li.ng-now{background:linear-gradient(100deg,rgba(139,108,255,.3),rgba(46,230,255,.14));box-shadow:var(--neon)}
+.tsh-steps li{transition:background .4s,box-shadow .4s}
+@media (prefers-reduced-motion:reduce){.ng-orbit b,.cta::after,.aurora::before,.ng-guide::before,.ng-hand.on,#tilePulse .ng-ic{animation:none!important}}
 /* veckorapporten */
 .ng-week{margin:14px 0 4px;padding:14px;border-radius:20px;background:linear-gradient(160deg,rgba(139,108,255,.12),rgba(46,230,255,.05));border:1px solid var(--edge)}
 .ng-wh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
@@ -776,7 +772,7 @@ body.hswap .ng-orbit{opacity:0}
       <div class="sendrow"><button class="cta" id="btnSend" disabled>Skicka till klockan</button></div>
       <div class="prog" id="stProg">Anslut klockan för att skicka</div>
       <div class="cats" id="acts"><button id="btnFav">☆ Favorit</button><button id="btnEdit">Redigera en kopia</button><button id="btnNext">Nästa oprovade</button><button id="btnRand">Slumpa</button><button id="btnShare">Dela</button><button class="danger" id="btnDelete" hidden>Ta bort</button></div>
-      <div class="cats" id="cats"><button data-c="all" class="on">Alla</button><button data-c="r">Ren serie</button><button data-c="x">Nya</button><button data-c="f">Favoriter</button><button data-c="l">Rörliga</button><button data-c="t">Tecknade</button><button data-c="s">Sport</button><button data-c="d">Digitala</button><button data-c="a">Analoga</button><button data-c="m">Mina</button><button data-c="p">Provade</button><button data-c="n">Oprovade</button></div>
+      <div class="cats" id="cats"><button data-c="all" class="on">Alla</button><button data-c="r">Premium</button><button data-c="x">Nya</button><button data-c="f">Favoriter</button><button data-c="l">Rörliga</button><button data-c="t">Tecknade</button><button data-c="s">Sport</button><button data-c="d">Digitala</button><button data-c="a">Analoga</button><button data-c="m">Mina</button><button data-c="p">Provade</button><button data-c="n">Oprovade</button></div>
       <div class="gridd" id="dialGrid"></div>
       <div class="duo2" id="mineTools" hidden><button class="soft glass" id="btnExport">Spara mina till en fil</button><label class="soft glass own">Hämta från fil<input type="file" id="fileImport" accept=".json,application/json"></label></div>
       <label class="own soft glass">Välj en färdig urtavlefil<input type="file" id="file" accept=".bin,application/octet-stream"></label>
@@ -2401,6 +2397,22 @@ Object.assign(PICFONT,{
     c.globalAlpha=1;c.beginPath();c.arc(head,Y(head),lw*1.1,0,7);c.fillStyle='#fff';c.fill();}
 });
 FONTS.eq={n:'Equalizer',css:null,pic:.5};FONTS.lava={n:'Lavalampa',css:null,pic:.42};FONTS.ekg={n:'Monitor',css:null,pic:.62};
+
+// ================= Fler ytor för stillbildsurtavlor =================
+const _drawBg2=drawBg;
+drawBg=function(ctx,bg,photo){
+  bg=bg||{};
+  if(bg.t==='carbon'){ctx.fillStyle=bg.c2||'#0a0b0d';ctx.fillRect(0,0,DW,DH);const s=bg.s||8;   // vävd kolfiber: små rutor som växlar riktning
+    for(let y=0;y<DH;y+=s)for(let x=0;x<DW;x+=s){const k=((x/s)+(y/s))%2,g=k?ctx.createLinearGradient(x,y,x+s,y):ctx.createLinearGradient(x,y,x,y+s);
+      g.addColorStop(0,bg.c||'#24272d');g.addColorStop(.5,'#2a2e35');g.addColorStop(1,bg.c||'#24272d');ctx.fillStyle=g;ctx.fillRect(x+.5,y+.5,s-1,s-1);}
+    const v=ctx.createRadialGradient(120,110,30,120,143,220);v.addColorStop(0,'rgba(255,255,255,.06)');v.addColorStop(1,'rgba(0,0,0,.55)');ctx.fillStyle=v;ctx.fillRect(0,0,DW,DH);}
+  else if(bg.t==='paper'){ctx.fillStyle=bg.c||'#efe9dc';ctx.fillRect(0,0,DW,DH);let s=11;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;   // papper: fint korn och mjuk skugga i kanten
+    for(let i=0;i<5200;i++){ctx.fillStyle='rgba(0,0,0,'+(rnd()*.05).toFixed(3)+')';ctx.fillRect(rnd()*DW,rnd()*DH,1,1);}
+    const v=ctx.createRadialGradient(120,143,90,120,143,200);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(60,40,10,.18)');ctx.fillStyle=v;ctx.fillRect(0,0,DW,DH);}
+  else if(bg.t==='bloom'){ctx.fillStyle=bg.c3||'#05060b';ctx.fillRect(0,0,DW,DH);   // mörkt med två mjuka ljuskällor
+    [[bg.x1||60,bg.y1||70,bg.c||'#7b5cff',170],[bg.x2||200,bg.y2||240,bg.c2||'#2ee6ff',150]].forEach(q=>{const g=ctx.createRadialGradient(q[0],q[1],0,q[0],q[1],q[3]);g.addColorStop(0,q[2]+'aa');g.addColorStop(1,q[2]+'00');ctx.fillStyle=g;ctx.fillRect(0,0,DW,DH);});}
+  else _drawBg2(ctx,bg,photo);
+};
 // ================= QR-kod (egen kodare: bytedata, felrättning M, version 1–6) =================
 const QRV=[null,[16,10,1],[28,16,1],[44,26,1],[64,18,2],[86,24,2],[108,16,4]];   // [databyte, felrättningsbyte per block, antal block]
 function qrCapacity(){return QRV[6][0]-2;}
@@ -2926,9 +2938,31 @@ const DIGITAL=[
   deco:[RG(98,'#ffffff',8,.06),IC('feet',120,96,22,'#3dffa8'),IC('heart',96,226,17,'#ff5a6a')],
   els:[tm(120,20,34,'pb','#ffffff'),vl('steps',120,128,40,'pb','#3dffa8',''),TX('STEG',120,176,13,'pm','#7fae98','c'),vl('pulse',130,224,18,'pb','#ffffff','')]}}
 
+// ---- Premium stillbild: varje urtavla har sin egen stil. Lugna, tydliga, inget som snurrar. ----
+,{key:'pr2_noir',name:'Noir',desc:'Svart solstråleurtavla med guldindex och guldvisare. Klassisk och stram.',c1:'#d8b86a',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'sunburst',c:'#1c1c1e',c2:'#000000',n:140},
+  deco:[{k:'glassref',a:.08},R(154,133,46,22,5,'#000000',.85),{k:'ring',x:120,y:143,r:112,c:'#d8b86a',w:1,a:.35}],
+  els:[TK(60,106,3,'#8a7a55',{}),TK(12,106,14,'#e9cf8a',{}),vl('day',177,135,15,'pb','#e9cf8a',''),HN({style:'sword',hs:'sword',ms:'sword',hc:'#e9cf8a',mc:'#e9cf8a',sec:0,ml:98,w:8})]}}
+,{key:'pr2_bla',name:'Blå gravyr',desc:'Djupblå gravyr med stålvisare och romerska tolv, tre, sex och nio.',c1:'#dfe6f2',c2:'#0b2350',ren:true,fresh:2,def:{bg:{t:'guilloche',c:'#13306a',c2:'#06122e',lc:'190,210,255',lobes:36,amp:1.4,step:4.6,rings:30},
+  deco:[{k:'bezel',r:119,w:5,c:'#c9d2e0'},{k:'glassref',a:.12},TX('XII',120,40,22,'se','#e6ecf6','c'),TX('III',196,132,22,'se','#e6ecf6','c'),TX('VI',120,226,22,'se','#e6ecf6','c'),TX('IX',44,132,22,'se','#e6ecf6','c')],
+  els:[TK(60,108,3,'#9fb0cc',{}),HN({style:'dauphine',hs:'dauphine',ms:'dauphine',hc:'#eef2f8',mc:'#eef2f8',sec:0,ml:96,w:9})]}}
+,{key:'pr2_kolfiber',name:'Kolfiber',desc:'Vävd kolfiber, stor tid och en röd linje. Steg, puls och batteri längst ner.',c1:'#ff3b3b',c2:'#15171b',ren:true,fresh:2,def:{bg:{t:'carbon',c:'#121418',c2:'#050607',s:6},
+  deco:[R(20,150,200,3,1.5,'#ff3b3b',1),...BAR(222,{bg:'#000000',a:.6,sc:'#ff3b3b',hc:'#ff3b3b',bc:'#ffffff'}).deco],
+  els:[tm(120,56,66,'pb','#ffffff'),vl('day',120,166,16,'pm','#b8bec8','DAG'),...BAR(222,{bg:'#000000',a:.6,sc:'#ff3b3b',hc:'#ff3b3b',bc:'#ffffff'}).els]}}
+,{key:'pr2_papper',name:'Papper',desc:'Varmt papper, svarta siffror och blå stålvisare. Lugn som en gammal väggklocka.',c1:'#1f4fa8',c2:'#efe9dc',ren:true,fresh:2,def:{bg:{t:'paper',c:'#efe9dc'},
+  deco:[TX('12',120,32,20,'pm','#1a1a1a','c'),TX('1',170,45,15,'pm','#1a1a1a','c'),TX('2',207,82,15,'pm','#1a1a1a','c'),TX('3',220,132,20,'pm','#1a1a1a','c'),TX('4',207,182,15,'pm','#1a1a1a','c'),TX('5',170,219,15,'pm','#1a1a1a','c'),TX('6',120,232,20,'pm','#1a1a1a','c'),TX('7',70,219,15,'pm','#1a1a1a','c'),TX('8',33,182,15,'pm','#1a1a1a','c'),TX('9',20,132,20,'pm','#1a1a1a','c'),TX('10',33,82,15,'pm','#1a1a1a','c'),TX('11',70,45,15,'pm','#1a1a1a','c')],
+  els:[TK(60,116,4,'#1a1a1a',{}),HN({style:'baton',hs:'baton',ms:'baton',hc:'#1f4fa8',mc:'#1f4fa8',sec:0,ml:100,w:6})]}}
+,{key:'pr2_ljus',name:'Ljusfält',desc:'Mörkt med två mjuka ljus i violett och cyan. Tunn tid och datum.',c1:'#7b5cff',c2:'#2ee6ff',ren:true,fresh:2,def:{bg:{t:'bloom',c:'#7b5cff',c2:'#2ee6ff',c3:'#05060b'},
+  els:[tm(120,74,72,'pl','#ffffff'),vl('day',120,160,18,'pl','#cfd6ff',''),vl('pulse',124,224,17,'pm','#ffffff','')],deco:[IC('heart',90,226,16,'#ff7aa8')]}}
+,{key:'pr2_pilot',name:'Instrument',desc:'Matt svart som ett flyginstrument. Stora siffror och självlysande visare.',c1:'#c8ffd8',c2:'#0a0a0a',ren:true,fresh:2,def:{bg:{t:'grad',c:'#16181a',c2:'#050505',a:180},
+  deco:[TX('12',120,30,30,'pb','#e8efe9','c'),TX('3',202,124,30,'pb','#e8efe9','c'),TX('6',120,222,30,'pb','#e8efe9','c'),TX('9',38,124,30,'pb','#e8efe9','c'),{k:'glassref',a:.07}],
+  els:[TK(60,112,6,'#9aa49c',{}),HN({style:'sword',hs:'sword',ms:'sword',hc:'#d8dcd8',mc:'#d8dcd8',sec:0,ml:94,w:9})]}}
+,{key:'pr2_solnedgang',name:'Solnedgång',desc:'Varm övergång från orange till lila. Stor tid staplad, datum under.',c1:'#ff8a3c',c2:'#3a1a5c',ren:true,fresh:2,def:{bg:{t:'grad',c:'#ff8a3c',c2:'#2a1450',a:180},
+  deco:[{k:'glassref',a:.1}],
+  els:[tm(120,26,96,'pb','#fff4e8',{lay:'stack',gap:2}),vl('day',120,246,17,'pm','#ffe2c8','')]}}
+
 ];
 DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');d.def.els.forEach(e=>{if(e.k==='hands')e.sec=0;});   // inget som snurrar runt, inte heller sekundvisare   // inga små snurrande saker: klockan stegar dem, så de rycker
-  d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.ren=!!d.ren;d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});
+  d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.ren=!!d.ren||/^p_/.test(d.key);d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});
 
 
 // ================= gränssnitt =================
@@ -3481,7 +3515,7 @@ $('edSend').addEventListener('click',async()=>{if(!ed||busy)return;const rec=edS
   cat='m';closeEditor();renderGrid();pickDial('m:'+rec.id,true);$('btnSend').click();});
 
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=40;
+const APPV=41;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
@@ -4657,7 +4691,7 @@ const IC={
 };
 // ---- scenen: banor runt klockan ----
 function orbit(){const st=document.querySelector('.stage');if(!st||st.querySelector('.ng-orbit'))return;
-  const o=document.createElement('div');o.className='ng-orbit';o.setAttribute('aria-hidden','true');o.innerHTML='<b></b><i></i><i></i><i></i>';st.insertBefore(o,st.firstChild);}
+  const o=document.createElement('div');o.className='ng-orbit';o.setAttribute('aria-hidden','true');o.innerHTML='<b></b>';st.insertBefore(o,st.firstChild);}
 // ---- rutorna: ikoner, stegring och en liten studs när ett värde ändras ----
 function tiles(){
   const t=[...document.querySelectorAll('#view-home .tiles .tile')];if(!t.length||t[0].dataset.ng)return;
