@@ -471,6 +471,28 @@ const DIGITAL=[
   deco:[RG(98,'#ffffff',8,.06),IC('feet',120,96,22,'#3dffa8'),IC('heart',96,226,17,'#ff5a6a')],
   els:[tm(120,20,34,'pb','#ffffff'),vl('steps',120,128,40,'pb','#3dffa8',''),TX('STEG',120,176,13,'pm','#7fae98','c'),vl('pulse',130,224,18,'pb','#ffffff','')]}}
 
+// ---- Premium stillbild: varje urtavla har sin egen stil. Lugna, tydliga, inget som snurrar. ----
+,{key:'pr2_noir',name:'Noir',desc:'Svart solstråleurtavla med guldindex och guldvisare. Klassisk och stram.',c1:'#d8b86a',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'sunburst',c:'#1c1c1e',c2:'#000000',n:140},
+  deco:[{k:'glassref',a:.08},R(154,133,46,22,5,'#000000',.85),{k:'ring',x:120,y:143,r:112,c:'#d8b86a',w:1,a:.35}],
+  els:[TK(60,106,3,'#8a7a55',{}),TK(12,106,14,'#e9cf8a',{}),vl('day',177,135,15,'pb','#e9cf8a',''),HN({style:'sword',hs:'sword',ms:'sword',hc:'#e9cf8a',mc:'#e9cf8a',sec:0,ml:98,w:8})]}}
+,{key:'pr2_bla',name:'Blå gravyr',desc:'Djupblå gravyr med stålvisare och romerska tolv, tre, sex och nio.',c1:'#dfe6f2',c2:'#0b2350',ren:true,fresh:2,def:{bg:{t:'guilloche',c:'#13306a',c2:'#06122e',lc:'190,210,255',lobes:36,amp:1.4,step:4.6,rings:30},
+  deco:[{k:'bezel',r:119,w:5,c:'#c9d2e0'},{k:'glassref',a:.12},TX('XII',120,40,22,'se','#e6ecf6','c'),TX('III',196,132,22,'se','#e6ecf6','c'),TX('VI',120,226,22,'se','#e6ecf6','c'),TX('IX',44,132,22,'se','#e6ecf6','c')],
+  els:[TK(60,108,3,'#9fb0cc',{}),HN({style:'dauphine',hs:'dauphine',ms:'dauphine',hc:'#eef2f8',mc:'#eef2f8',sec:0,ml:96,w:9})]}}
+,{key:'pr2_kolfiber',name:'Kolfiber',desc:'Vävd kolfiber, stor tid och en röd linje. Steg, puls och batteri längst ner.',c1:'#ff3b3b',c2:'#15171b',ren:true,fresh:2,def:{bg:{t:'carbon',c:'#121418',c2:'#050607',s:6},
+  deco:[R(20,150,200,3,1.5,'#ff3b3b',1),...BAR(222,{bg:'#000000',a:.6,sc:'#ff3b3b',hc:'#ff3b3b',bc:'#ffffff'}).deco],
+  els:[tm(120,56,66,'pb','#ffffff'),vl('day',120,166,16,'pm','#b8bec8','DAG'),...BAR(222,{bg:'#000000',a:.6,sc:'#ff3b3b',hc:'#ff3b3b',bc:'#ffffff'}).els]}}
+,{key:'pr2_papper',name:'Papper',desc:'Varmt papper, svarta siffror och blå stålvisare. Lugn som en gammal väggklocka.',c1:'#1f4fa8',c2:'#efe9dc',ren:true,fresh:2,def:{bg:{t:'paper',c:'#efe9dc'},
+  deco:[TX('12',120,32,20,'pm','#1a1a1a','c'),TX('1',170,45,15,'pm','#1a1a1a','c'),TX('2',207,82,15,'pm','#1a1a1a','c'),TX('3',220,132,20,'pm','#1a1a1a','c'),TX('4',207,182,15,'pm','#1a1a1a','c'),TX('5',170,219,15,'pm','#1a1a1a','c'),TX('6',120,232,20,'pm','#1a1a1a','c'),TX('7',70,219,15,'pm','#1a1a1a','c'),TX('8',33,182,15,'pm','#1a1a1a','c'),TX('9',20,132,20,'pm','#1a1a1a','c'),TX('10',33,82,15,'pm','#1a1a1a','c'),TX('11',70,45,15,'pm','#1a1a1a','c')],
+  els:[TK(60,116,4,'#1a1a1a',{}),HN({style:'baton',hs:'baton',ms:'baton',hc:'#1f4fa8',mc:'#1f4fa8',sec:0,ml:100,w:6})]}}
+,{key:'pr2_ljus',name:'Ljusfält',desc:'Mörkt med två mjuka ljus i violett och cyan. Tunn tid och datum.',c1:'#7b5cff',c2:'#2ee6ff',ren:true,fresh:2,def:{bg:{t:'bloom',c:'#7b5cff',c2:'#2ee6ff',c3:'#05060b'},
+  els:[tm(120,74,72,'pl','#ffffff'),vl('day',120,160,18,'pl','#cfd6ff',''),vl('pulse',124,224,17,'pm','#ffffff','')],deco:[IC('heart',90,226,16,'#ff7aa8')]}}
+,{key:'pr2_pilot',name:'Instrument',desc:'Matt svart som ett flyginstrument. Stora siffror och självlysande visare.',c1:'#c8ffd8',c2:'#0a0a0a',ren:true,fresh:2,def:{bg:{t:'grad',c:'#16181a',c2:'#050505',a:180},
+  deco:[TX('12',120,30,30,'pb','#e8efe9','c'),TX('3',202,124,30,'pb','#e8efe9','c'),TX('6',120,222,30,'pb','#e8efe9','c'),TX('9',38,124,30,'pb','#e8efe9','c'),{k:'glassref',a:.07}],
+  els:[TK(60,112,6,'#9aa49c',{}),HN({style:'sword',hs:'sword',ms:'sword',hc:'#d8dcd8',mc:'#d8dcd8',sec:0,ml:94,w:9})]}}
+,{key:'pr2_solnedgang',name:'Solnedgång',desc:'Varm övergång från orange till lila. Stor tid staplad, datum under.',c1:'#ff8a3c',c2:'#3a1a5c',ren:true,fresh:2,def:{bg:{t:'grad',c:'#ff8a3c',c2:'#2a1450',a:180},
+  deco:[{k:'glassref',a:.1}],
+  els:[tm(120,26,96,'pb','#fff4e8',{lay:'stack',gap:2}),vl('day',120,246,17,'pm','#ffe2c8','')]}}
+
 ];
 DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');d.def.els.forEach(e=>{if(e.k==='hands')e.sec=0;});   // inget som snurrar runt, inte heller sekundvisare   // inga små snurrande saker: klockan stegar dem, så de rycker
-  d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.ren=!!d.ren;d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});
+  d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.ren=!!d.ren||/^p_/.test(d.key);d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});

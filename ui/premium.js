@@ -81,3 +81,19 @@ Object.assign(PICFONT,{
     c.globalAlpha=1;c.beginPath();c.arc(head,Y(head),lw*1.1,0,7);c.fillStyle='#fff';c.fill();}
 });
 FONTS.eq={n:'Equalizer',css:null,pic:.5};FONTS.lava={n:'Lavalampa',css:null,pic:.42};FONTS.ekg={n:'Monitor',css:null,pic:.62};
+
+// ================= Fler ytor för stillbildsurtavlor =================
+const _drawBg2=drawBg;
+drawBg=function(ctx,bg,photo){
+  bg=bg||{};
+  if(bg.t==='carbon'){ctx.fillStyle=bg.c2||'#0a0b0d';ctx.fillRect(0,0,DW,DH);const s=bg.s||8;   // vävd kolfiber: små rutor som växlar riktning
+    for(let y=0;y<DH;y+=s)for(let x=0;x<DW;x+=s){const k=((x/s)+(y/s))%2,g=k?ctx.createLinearGradient(x,y,x+s,y):ctx.createLinearGradient(x,y,x,y+s);
+      g.addColorStop(0,bg.c||'#24272d');g.addColorStop(.5,'#2a2e35');g.addColorStop(1,bg.c||'#24272d');ctx.fillStyle=g;ctx.fillRect(x+.5,y+.5,s-1,s-1);}
+    const v=ctx.createRadialGradient(120,110,30,120,143,220);v.addColorStop(0,'rgba(255,255,255,.06)');v.addColorStop(1,'rgba(0,0,0,.55)');ctx.fillStyle=v;ctx.fillRect(0,0,DW,DH);}
+  else if(bg.t==='paper'){ctx.fillStyle=bg.c||'#efe9dc';ctx.fillRect(0,0,DW,DH);let s=11;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;   // papper: fint korn och mjuk skugga i kanten
+    for(let i=0;i<5200;i++){ctx.fillStyle='rgba(0,0,0,'+(rnd()*.05).toFixed(3)+')';ctx.fillRect(rnd()*DW,rnd()*DH,1,1);}
+    const v=ctx.createRadialGradient(120,143,90,120,143,200);v.addColorStop(0,'rgba(0,0,0,0)');v.addColorStop(1,'rgba(60,40,10,.18)');ctx.fillStyle=v;ctx.fillRect(0,0,DW,DH);}
+  else if(bg.t==='bloom'){ctx.fillStyle=bg.c3||'#05060b';ctx.fillRect(0,0,DW,DH);   // mörkt med två mjuka ljuskällor
+    [[bg.x1||60,bg.y1||70,bg.c||'#7b5cff',170],[bg.x2||200,bg.y2||240,bg.c2||'#2ee6ff',150]].forEach(q=>{const g=ctx.createRadialGradient(q[0],q[1],0,q[0],q[1],q[3]);g.addColorStop(0,q[2]+'aa');g.addColorStop(1,q[2]+'00');ctx.fillStyle=g;ctx.fillRect(0,0,DW,DH);});}
+  else _drawBg2(ctx,bg,photo);
+};

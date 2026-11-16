@@ -6,7 +6,7 @@
 :root[data-theme="nextgen"] .aurora i{opacity:.32;filter:blur(90px)}
 :root[data-theme="nextgen"] .aurora i:nth-child(2){background:#2ee6ff;opacity:.16}
 :root[data-theme="nextgen"] .aurora i:nth-child(3){background:#5b2bff;opacity:.18}
-:root[data-theme="nextgen"] .aurora::before{content:"";position:absolute;inset:-50%;background-image:radial-gradient(1px 1px at 20% 30%,#fff8,transparent),radial-gradient(1px 1px at 70% 20%,#fff6,transparent),radial-gradient(1.5px 1.5px at 40% 80%,#cfd8ff88,transparent),radial-gradient(1px 1px at 85% 65%,#fff5,transparent),radial-gradient(1px 1px at 10% 70%,#fff4,transparent);background-size:260px 260px;animation:ngDrift 120s linear infinite;opacity:.7}
+:root[data-theme="nextgen"] .aurora::before{content:"";position:absolute;inset:-50%;background-image:radial-gradient(1px 1px at 20% 30%,#fff8,transparent),radial-gradient(1px 1px at 70% 20%,#fff6,transparent),radial-gradient(1.5px 1.5px at 40% 80%,#cfd8ff88,transparent),radial-gradient(1px 1px at 85% 65%,#fff5,transparent),radial-gradient(1px 1px at 10% 70%,#fff4,transparent);background-size:260px 260px;opacity:.6}
 @keyframes ngDrift{to{transform:translate3d(260px,130px,0)}}
 /* glas och kort */
 :root[data-theme="nextgen"] .glass{background:linear-gradient(160deg,rgba(32,34,64,.78),rgba(12,13,28,.82));border:1px solid var(--edge);box-shadow:var(--shadow);backdrop-filter:none}
@@ -27,16 +27,12 @@
 .ng-orbit{position:absolute;left:50%;top:calc(var(--wt,26px) + 105px);width:0;height:0;pointer-events:none;z-index:0;display:none}
 :root[data-theme="nextgen"] .ng-orbit{display:block}
 :root[data-theme="nextgen"] .stage .watch{z-index:1}
-.ng-orbit i{position:absolute;left:0;top:0;border-radius:50%;border:1.5px solid transparent;transform-style:preserve-3d}
-.ng-orbit i:nth-child(1){width:300px;height:300px;margin:-150px;border-top-color:rgba(139,108,255,.85);border-right-color:rgba(46,230,255,.35);transform:rotateX(72deg) rotateZ(0);animation:ngOrb 9s linear infinite;filter:drop-shadow(0 0 6px #8b6cff)}
-.ng-orbit i:nth-child(2){width:250px;height:250px;margin:-125px;border-bottom-color:rgba(46,230,255,.8);border-left-color:rgba(139,108,255,.25);transform:rotateX(72deg) rotateY(14deg);animation:ngOrb2 13s linear infinite;filter:drop-shadow(0 0 5px #2ee6ff)}
-.ng-orbit i:nth-child(3){width:360px;height:360px;margin:-180px;border-top-color:rgba(255,90,200,.45);transform:rotateX(76deg) rotateY(-10deg);animation:ngOrb 19s linear infinite reverse}
-.ng-orbit b{position:absolute;left:-130px;top:-130px;width:260px;height:260px;border-radius:50%;background:radial-gradient(closest-side,rgba(139,108,255,.38),rgba(46,230,255,.12) 55%,transparent);animation:ngBreath 6s ease-in-out infinite}
+.ng-orbit b{position:absolute;left:-140px;top:-140px;width:280px;height:280px;border-radius:50%;background:radial-gradient(closest-side,rgba(139,108,255,.34),rgba(46,230,255,.1) 55%,transparent);animation:ngGlow 7s ease-in-out infinite;will-change:opacity}
+@keyframes ngGlow{0%,100%{opacity:.7}50%{opacity:1}}
 @keyframes ngOrb{from{transform:rotateX(72deg) rotateZ(0)}to{transform:rotateX(72deg) rotateZ(360deg)}}
 @keyframes ngOrb2{from{transform:rotateX(72deg) rotateY(14deg) rotateZ(0)}to{transform:rotateX(72deg) rotateY(14deg) rotateZ(-360deg)}}
 @keyframes ngBreath{0%,100%{transform:scale(.92);opacity:.75}50%{transform:scale(1.06);opacity:1}}
-:root[data-theme="nextgen"] .stage:not(.on) .ng-orbit i{animation-play-state:running}
-/* stegringen i rutan */
+:root[data-theme="nextgen"] .stage:not(.on) /* stegringen i rutan */
 .ng-ring{position:absolute;right:12px;top:50%;width:52px;height:52px;margin-top:-26px;transform:rotate(-90deg)}
 .ng-ring circle{fill:none;stroke-width:5}
 .ng-ring .t{stroke:rgba(255,255,255,.08)}
@@ -63,9 +59,9 @@
 .ng-hand.on{opacity:1;animation:ngTap 1.8s cubic-bezier(.4,0,.2,1) infinite}
 @keyframes ngTap{0%{transform:translate3d(14px,16px,0) scale(1)}35%{transform:translate3d(0,0,0) scale(1)}45%{transform:translate3d(0,0,0) scale(.86)}60%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(14px,16px,0) scale(1)}}
 /* stegen i verktygsbladet tänds i tur och ordning, som en kort film om hur man gör */
-.tsh-steps li.ng-now{background:linear-gradient(100deg,rgba(139,108,255,.3),rgba(46,230,255,.14));box-shadow:var(--neon);transform:translateX(4px)}
-.tsh-steps li{transition:background .4s,box-shadow .4s,transform .45s cubic-bezier(.2,1.3,.4,1)}
-@media (prefers-reduced-motion:reduce){.ng-orbit i,.ng-orbit b,.cta::after,.aurora::before,.ng-guide::before,.ng-hand.on,#tilePulse .ng-ic{animation:none!important}}
+.tsh-steps li.ng-now{background:linear-gradient(100deg,rgba(139,108,255,.3),rgba(46,230,255,.14));box-shadow:var(--neon)}
+.tsh-steps li{transition:background .4s,box-shadow .4s}
+@media (prefers-reduced-motion:reduce){.ng-orbit b,.cta::after,.aurora::before,.ng-guide::before,.ng-hand.on,#tilePulse .ng-ic{animation:none!important}}
 /* veckorapporten */
 .ng-week{margin:14px 0 4px;padding:14px;border-radius:20px;background:linear-gradient(160deg,rgba(139,108,255,.12),rgba(46,230,255,.05));border:1px solid var(--edge)}
 .ng-wh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}

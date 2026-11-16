@@ -9,7 +9,7 @@ const IC={
 };
 // ---- scenen: banor runt klockan ----
 function orbit(){const st=document.querySelector('.stage');if(!st||st.querySelector('.ng-orbit'))return;
-  const o=document.createElement('div');o.className='ng-orbit';o.setAttribute('aria-hidden','true');o.innerHTML='<b></b><i></i><i></i><i></i>';st.insertBefore(o,st.firstChild);}
+  const o=document.createElement('div');o.className='ng-orbit';o.setAttribute('aria-hidden','true');o.innerHTML='<b></b>';st.insertBefore(o,st.firstChild);}
 // ---- rutorna: ikoner, stegring och en liten studs när ett värde ändras ----
 function tiles(){
   const t=[...document.querySelectorAll('#view-home .tiles .tile')];if(!t.length||t[0].dataset.ng)return;
