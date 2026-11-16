@@ -653,11 +653,6 @@ body.hs-open{overflow:hidden}
 @keyframes ngBeat{0%,40%,100%{transform:scale(1)}15%{transform:scale(1.22)}28%{transform:scale(1.05)}}
 .tile.ng-pop strong{animation:ngPop .6s cubic-bezier(.2,1.5,.4,1)}
 @keyframes ngPop{0%{transform:translateY(6px);opacity:.2}100%{transform:none;opacity:1}}
-/* vyer glider in i lager när man byter flik */
-:root[data-theme="nextgen"] .view.on>*{animation:ngIn .55s cubic-bezier(.2,.9,.25,1) both}
-:root[data-theme="nextgen"] .view.on>*:nth-child(2){animation-delay:.04s}:root[data-theme="nextgen"] .view.on>*:nth-child(3){animation-delay:.08s}:root[data-theme="nextgen"] .view.on>*:nth-child(4){animation-delay:.12s}
-:root[data-theme="nextgen"] .view.on>*:nth-child(5){animation-delay:.16s}:root[data-theme="nextgen"] .view.on>*:nth-child(n+6){animation-delay:.2s}
-@keyframes ngIn{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:none}}
 /* ===== guiden: animationen visar vad man ska göra härnäst ===== */
 .ng-guide{position:relative;z-index:2}
 .ng-guide::before{content:"";position:absolute;inset:-5px;border-radius:inherit;border:2px solid #2ee6ff;box-shadow:0 0 18px #2ee6ff99;animation:ngHalo 1.8s ease-out infinite;pointer-events:none}
@@ -675,7 +670,7 @@ body.hs-open{overflow:hidden}
 /* stegen i verktygsbladet tänds i tur och ordning, som en kort film om hur man gör */
 .tsh-steps li.ng-now{background:linear-gradient(100deg,rgba(139,108,255,.3),rgba(46,230,255,.14));box-shadow:var(--neon);transform:translateX(4px)}
 .tsh-steps li{transition:background .4s,box-shadow .4s,transform .45s cubic-bezier(.2,1.3,.4,1)}
-@media (prefers-reduced-motion:reduce){.ng-orbit i,.ng-orbit b,.cta::after,.aurora::before,.ng-guide::before,.ng-hand.on,#tilePulse .ng-ic,.view.on>*{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.ng-orbit i,.ng-orbit b,.cta::after,.aurora::before,.ng-guide::before,.ng-hand.on,#tilePulse .ng-ic{animation:none!important}}
 /* veckorapporten */
 .ng-week{margin:14px 0 4px;padding:14px;border-radius:20px;background:linear-gradient(160deg,rgba(139,108,255,.12),rgba(46,230,255,.05));border:1px solid var(--edge)}
 .ng-wh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
@@ -699,20 +694,15 @@ html,body{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
 .app,.tabs,.stage,button,.tile,.hcard,.cats,.seg{-webkit-user-select:none;user-select:none}
 input,textarea,#logBox,pre{-webkit-user-select:text;user-select:text}
 .view{overscroll-behavior:contain;scroll-behavior:auto}
-/* flikbyte: sidan glider in från det håll man går åt, som i en riktig app */
-.view{transform:translate3d(var(--vx,0),0,0)!important;transition:opacity .28s ease,transform .38s cubic-bezier(.2,.9,.25,1),visibility 0s linear .38s!important}
-.view.on{transform:none!important;transition:opacity .28s ease,transform .38s cubic-bezier(.2,.9,.25,1),visibility 0s!important}
-.view.from-r{--vx:28px}.view.from-l{--vx:-28px}
-/* hemvyn: rubriken med klockan krymper när man skrollar, som en apprubrik */
-body.shrunk .stage{height:116px}
-body.shrunk .watch{left:57px;transform:translateY(-6px) scale(.4)}
-body.shrunk .info{top:26px;left:108px;text-align:left}
-body.shrunk .info h1{font-size:23px}
-body.shrunk .info p{opacity:0;max-height:0;margin:0}
-body.shrunk .ng-orbit{opacity:0;transition:opacity .3s}
 .ng-orbit{transition:opacity .4s}
 
 :root[data-theme="nextgen"] .toast{background:#1a1838!important;border:1px solid rgba(139,108,255,.4);box-shadow:0 12px 30px -10px #000,0 0 20px -8px #8b6cff}
+
+/* när rubriken byter läge tonar texten ut och in, så att den aldrig glider under klockan */
+.info{transition:top .5s cubic-bezier(.3,1.1,.4,1),left .5s cubic-bezier(.3,1.1,.4,1),opacity .18s ease}
+body.hswap .info{opacity:0;transition:opacity .12s ease}
+.ng-orbit{transition:opacity .25s}
+body.hswap .ng-orbit{opacity:0}
 </style>
 </head>
 <body>
@@ -3491,7 +3481,7 @@ $('edSend').addEventListener('click',async()=>{if(!ed||busy)return;const rec=edS
   cat='m';closeEditor();renderGrid();pickDial('m:'+rec.id,true);$('btnSend').click();});
 
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=39;
+const APPV=40;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
@@ -4762,19 +4752,10 @@ window.ngHideGuide=hideGuide;
   const orig=hlRender;window.hlRender=hlRender=function(a){const r=orig.apply(this,arguments);try{render();}catch(e){}return r;};
   try{render();}catch(e){}
 })();
-// ===== appkänsla: riktning vid flikbyte och en rubrik som krymper i hemvyn =====
-(function(){
-  if(typeof showTab!=='function')return;
-  const order=['home','health','dials','tools','log'];let last='home';
-  const st=showTab;showTab=function(v){const a=order.indexOf(last),b=order.indexOf(v);
-    const el=document.getElementById('view-'+v);if(el&&a>=0&&b>=0&&a!==b){el.classList.remove('from-l','from-r');el.classList.add(b>a?'from-r':'from-l');void el.offsetWidth;}
-    if(v!=='home')document.body.classList.remove('shrunk');
-    const r=st.apply(this,arguments);if(el)requestAnimationFrame(()=>el.classList.remove('from-l','from-r'));if(order.includes(v))last=v;
-    if(v==='home'){const h=document.getElementById('view-home');document.body.classList.toggle('shrunk',!!h&&h.scrollTop>24);}
-    return r;};
-  window.showTab=showTab;
-  const h=document.getElementById('view-home');let raf=0;
-  if(h)h.addEventListener('scroll',()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;if(h.classList.contains('on'))document.body.classList.toggle('shrunk',h.scrollTop>24);});},{passive:true});
+// ===== rubriken: texten tonar ut medan klockan flyttar sig och tonar in när den står still =====
+(function(){let t=0,was=document.body.classList.contains('compact');
+  new MutationObserver(()=>{const now=document.body.classList.contains('compact');if(now===was)return;was=now;
+    document.body.classList.add('hswap');clearTimeout(t);t=setTimeout(()=>document.body.classList.remove('hswap'),430);}).observe(document.body,{attributes:true,attributeFilter:['class']});
 })();
 
 initGallery().then(()=>afterInit());
