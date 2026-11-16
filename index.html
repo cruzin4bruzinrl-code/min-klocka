@@ -2364,6 +2364,31 @@ drawDeco=function(ctx,d){
     ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(DW,0);ctx.lineTo(0,DH);ctx.closePath();ctx.fill();ctx.restore();return;}
   _drawDeco(ctx,d);
 };
+
+// ================= Rörelse som drivs av stegen, utan att något roterar =================
+// Varje siffra i stegräknaren är en bild. Med tio lägen per bild går rörelsen ett läge framåt per steg,
+// och läge 9 går över i läge 0 utan hopp. Klockan färgar bilderna med en färg, så allt ritas i vitt med genomskinlighet.
+Object.assign(PICFONT,{
+  eq(c,ch,x,y,w,h){   // equalizer: en stapel av tio lysdioder, den högsta lyser starkast
+    const d=+ch;if(!(d>=0))return;const n=10,gap=Math.max(1,h*.025),sh=(h-gap*(n-1))/n,bw=w*.72,bx=x+(w-bw)/2,on=d+1;
+    for(let k=0;k<n;k++){const yy=y+h-(k+1)*sh-k*gap;c.globalAlpha=k<on?(k===on-1?1:.62+.03*k):.12;c.fillStyle='#fff';
+      c.beginPath();c.roundRect(bx,yy,bw,sh,Math.min(2.5,sh/2.5));c.fill();}
+    c.globalAlpha=1;},
+  lava(c,ch,x,y,w,h){   // lavalampa: två klotter som stiger, tonar in nertill och ut upptill
+    const d=+ch;if(!(d>=0))return;c.save();c.beginPath();c.roundRect(x+w*.08,y,w*.84,h,w*.4);c.clip();
+    c.globalAlpha=.1;c.fillStyle='#fff';c.fillRect(x,y,w,h);
+    [d/10,((d+5)%10)/10].forEach((p,i)=>{const a=Math.sin(Math.PI*(p*.9+.05)),r=w*(.26+.08*Math.sin(p*Math.PI*2+i)),cy=y+h-r-(h-2*r)*p,cx=x+w/2+Math.sin(p*Math.PI*2+i*2)*w*.08;
+      const g=c.createRadialGradient(cx-r*.3,cy-r*.3,1,cx,cy,r*1.15);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.7,'rgba(255,255,255,.75)');g.addColorStop(1,'rgba(255,255,255,0)');
+      c.globalAlpha=Math.max(0,a);c.fillStyle=g;c.beginPath();c.ellipse(cx,cy,r*1.05,r*(1.15-.2*Math.abs(Math.cos(p*Math.PI))),0,0,7);c.fill();});
+    c.restore();c.globalAlpha=1;},
+  ekg(c,ch,x,y,w,h){   // en hjärtmonitor: ett slag vandrar över rutan och lämnar ett svans som bleknar
+    const d=+ch;if(!(d>=0))return;const mid=y+h*.6,head=x+w*(d+.5)/10,lw=Math.max(1.6,w*.07);
+    const Y=t=>{const u=t-(head-w*.22);if(u<0||u>w*.22)return mid;const q=u/(w*.22);return q<.25?mid-h*.06*Math.sin(q/.25*Math.PI):q<.45?mid+h*.08*(q-.25)/.2:q<.6?mid-h*.5*(1-Math.abs(q-.55)/.06>0?1-Math.abs(q-.55)/.06:0)+h*.08*(1-(q-.45)/.15):q<.75?mid+h*.12*Math.sin((q-.6)/.15*Math.PI):mid;};
+    c.lineWidth=lw;c.lineCap=c.lineJoin='round';c.strokeStyle='#fff';
+    for(let s=0;s<w;s+=1){const t0=x+s,age=(head-t0+w)%w;c.globalAlpha=Math.max(.06,1-age/w);c.beginPath();c.moveTo(t0,Y(t0));c.lineTo(t0+1.2,Y(t0+1.2));c.stroke();}
+    c.globalAlpha=1;c.beginPath();c.arc(head,Y(head),lw*1.1,0,7);c.fillStyle='#fff';c.fill();}
+});
+FONTS.eq={n:'Equalizer',css:null,pic:.5};FONTS.lava={n:'Lavalampa',css:null,pic:.42};FONTS.ekg={n:'Monitor',css:null,pic:.62};
 // ================= QR-kod (egen kodare: bytedata, felrättning M, version 1–6) =================
 const QRV=[null,[16,10,1],[28,16,1],[44,26,1],[64,18,2],[86,24,2],[108,16,4]];   // [databyte, felrättningsbyte per block, antal block]
 function qrCapacity(){return QRV[6][0]-2;}
@@ -2888,6 +2913,16 @@ const DIGITAL=[
 ,{key:'ren_sport',name:'Ren steg',desc:'Dagens steg stort i mitten, med tid och puls runt om.',c1:'#3dffa8',c2:'#06140e',ren:true,fresh:2,def:{bg:{t:'grad',c:'#0c2a1e',c2:'#030806',a:180},
   deco:[RG(98,'#ffffff',8,.06),IC('feet',120,96,22,'#3dffa8'),IC('heart',96,226,17,'#ff5a6a')],
   els:[tm(120,20,34,'pb','#ffffff'),vl('steps',120,128,40,'pb','#3dffa8',''),TX('STEG',120,176,13,'pm','#7fae98','c'),vl('pulse',130,224,18,'pb','#ffffff','')]}}
+
+// ---- Steg i rörelse: när du går rör sig bilden, ett läge per steg. Inget roterar. ----
+,{key:'stg_eq',name:'Equalizer',desc:'Stegräknaren som equalizer. Staplarna hoppar när du går.',c1:'#2ee6ff',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'grad',c:'#06131c',c2:'#000000',a:180},
+  deco:[L(28,214,212,214,'#2ee6ff',1,.18)],
+  els:[tm(120,20,54,'pb','#ffffff'),vl('steps',120,96,92,'eq','#2ee6ff',''),vl('day',70,232,16,'pm','#8fb4c4','DAG'),vl('battv',170,232,16,'pm','#8fb4c4','BATT')]}}
+,{key:'stg_lava',name:'Lavalampa',desc:'Fem lampor där klotter stiger när du går. Ju fler steg, desto mer liv.',c1:'#ff5fa8',c2:'#1a0628',ren:true,fresh:2,def:{bg:{t:'grad',c:'#2a0a3c',c2:'#08020e',a:200},
+  els:[tm(120,22,50,'pl','#ffd8ec'),vl('steps',120,92,104,'lava','#ff6fb0',''),vl('pulse',120,232,18,'pm','#ffb8d8','PULS')]}}
+,{key:'stg_ekg',name:'Monitor',desc:'Fem små hjärtmonitorer. Slaget vandrar fram ett steg i taget.',c1:'#3dff7a',c2:'#03100a',ren:true,fresh:2,def:{bg:{t:'solid',c:'#020a06'},
+  deco:[...[0,1,2,3,4,5,6].map(i=>L(14,96+i*18,226,96+i*18,'#3dff7a',1,.07)),...[0,1,2,3,4,5,6,7,8,9,10,11,12].map(i=>L(14+i*17.7,96,14+i*17.7,204,'#3dff7a',1,.07))],
+  els:[tm(120,22,50,'mo','#3dff7a'),vl('steps',120,110,74,'ekg','#3dff7a',''),vl('pulse',120,230,20,'mo','#3dff7a','PULS')]}}
 
 ];
 DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');   // inga små snurrande saker: klockan stegar dem, så de rycker
@@ -3444,7 +3479,7 @@ $('edSend').addEventListener('click',async()=>{if(!ed||busy)return;const rec=edS
   cat='m';closeEditor();renderGrid();pickDial('m:'+rec.id,true);$('btnSend').click();});
 
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=37;
+const APPV=38;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
