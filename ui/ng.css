@@ -97,3 +97,6 @@ body.hswap .ng-orbit{opacity:0}
 /* I den riktiga appen sköts menyn av Android */
 html.native #tabs,html.native .tabs{display:none!important}
 html.native .app{padding-bottom:16px!important}
+/* I appen byts flik av Android: inga egna övergångar som krockar, och ingen plats för den egna menyn */
+html.native .view{transition:none!important;transform:none!important;padding-bottom:24px!important}
+html.native #tabSlide{transition:none!important}
