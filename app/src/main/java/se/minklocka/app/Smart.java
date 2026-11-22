@@ -21,7 +21,7 @@ final class Smart {
     }
 
     /** Inställningar som sidan får ändra. Allt annat nekas. */
-    static final String[] KEYS = {"knapp_kamera", "knapp_hitta", "tyst_pa", "tyst_fran", "tyst_till", "viktiga", "koder", "batt_klocka", "batt_telefon"};
+    static final String[] KEYS = {"knapp_kamera", "knapp_hitta", "tyst_pa", "tyst_fran", "tyst_till", "viktiga", "koder", "batt_klocka", "batt_telefon", "wx_plats", "wx_auto"};
 
     static SharedPreferences p(Context c) {
         return c.getSharedPreferences(WatchService.PREFS, Context.MODE_PRIVATE);

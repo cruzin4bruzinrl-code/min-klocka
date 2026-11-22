@@ -747,6 +747,7 @@ public class WatchService extends Service {
         public void run() {
             checkAlive(false);
             Updater.check(WatchService.this, false);   // högst var tredje timme
+            if (ready) Weather.maybe(WatchService.this);   // högst en gång i timmen
             h.postDelayed(this, 30 * 1000);
         }
     };
