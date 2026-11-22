@@ -109,3 +109,15 @@ window.ngHideGuide=hideGuide;
   new MutationObserver(()=>{const now=document.body.classList.contains('compact');if(now===was)return;was=now;
     document.body.classList.add('hswap');clearTimeout(t);t=setTimeout(()=>document.body.classList.remove('hswap'),430);}).observe(document.body,{attributes:true,attributeFilter:['class']});
 })();
+// ===== Temats levande bakgrund: byggs om när temat byts =====
+(function(){
+  const L=document.createElement('div');L.className='thbg';L.setAttribute('aria-hidden','true');document.body.insertBefore(L,document.body.firstChild);
+  const star=n=>Array.from({length:n},()=>'<i class="star" style="left:'+(Math.random()*100)+'%;top:'+(Math.random()*100)+'%;animation-delay:'+(Math.random()*3).toFixed(2)+'s"></i>').join('');
+  const B={
+    flytglas:'<i class="blob" style="width:300px;height:300px;background:#ff4fa3;left:-80px;top:10%;animation:thFloat1 14s ease-in-out infinite"></i><i class="blob" style="width:280px;height:280px;background:#3a7bff;right:-80px;top:40%;animation:thFloat2 17s ease-in-out infinite"></i><i class="blob" style="width:240px;height:240px;background:#7d4dff;left:20%;top:70%;animation:thFloat3 15s ease-in-out infinite"></i>',
+    norrsken:star(40)+'<i class="band" style="top:-2%;background:linear-gradient(90deg,transparent,#1de9b6,#00b0ff,transparent);animation:thAur1 16s ease-in-out infinite"></i><i class="band" style="top:12%;height:180px;background:linear-gradient(90deg,transparent,#7c4dff,#1de9b6,transparent);animation:thAur2 19s ease-in-out infinite"></i>',
+    cockpit:'<i class="scan"></i>',panel:'<i class="scan" style="animation-duration:9s"></i>',prick:'<i class="rdot"></i>',atelje:'<i class="glow"></i>'};
+  let last=null;
+  function sync(){const t=document.documentElement.dataset.theme;if(t===last)return;last=t;L.innerHTML=B[t]||'';}
+  new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});sync();
+})();
