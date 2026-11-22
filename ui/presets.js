@@ -521,6 +521,12 @@ const DIGITAL=[
 ,{key:'bi_ihalig',name:'Ihålig',desc:'Helt svart med ihåliga vita visare. Inget annat.',c1:'#ffffff',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'solid',c:'#000000'},
   els:[HN({style:'hollow',hs:'hollow',ms:'hollow',hc:'#ffffff',mc:'#ffffff',sec:0,ml:100,w:8})]}}
 
+// ---- Dagen: allt du behöver för dagen på ett ställe. Vädret uppdateras av appen varje timme. ----
+,{key:'dagen',name:'Dagen',desc:'Veckodag och datum, stor tid, vädret just nu och batteri. Vädret skickas av appen varje timme.',c1:'#ffd36b',c2:'#0b1020',ren:true,fresh:2,def:{bg:{t:'bloom',c:'#2a4cff',c2:'#ff9a3c',c3:'#05070d',x1:40,y1:40,x2:210,y2:270},
+  deco:[{k:'doticon',n:'feet',x:84,y:233,s:24,g:7,c:'#9fd0ff'}],
+  els:[{k:'week',x:96,y:36,c:'#ffffff'},vl('day',144,36,18,'pm','#ffffff',''),tm(120,64,70,'pb','#ffffff'),{k:'weather',x:82,y:156,s:36},vl('temp',142,162,26,'pm','#ffd36b',''),
+    vl('steps',134,236,17,'pm','#dfe6ff',''),{k:'batt',style:'dotcell',x:120,y:206}]}}
+
 ];
 // ---- Kollektionen: 50 urtavlor i fem serier. Egna motiv, inget som snurrar. ----
 (function(){

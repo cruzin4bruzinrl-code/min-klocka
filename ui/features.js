@@ -1,5 +1,5 @@
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=46;
+const APPV=47;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
@@ -176,7 +176,7 @@ async function loadWeather(pl){
 }
 $('btnWeather').addEventListener('click',async()=>{
   const b=$('btnWeather');b.disabled=true;$('stWeather').textContent='Hämtar vädret…';
-  try{const pl=await getPlace();lsSet(PLLS,pl);const days=await loadWeather(pl),d=days[0];
+  try{const pl=await getPlace();lsSet(PLLS,pl);wxToNative(pl);const days=await loadWeather(pl),d=days[0];
     setLiveVal('temp',Math.abs(d.cur));
     $('stWeather').textContent=pl.name+': '+d.cur+'°, '+WNAME[d.code]+'. I dag '+d.lo+' till '+d.hi+'°.';log('Väder för '+pl.name+': '+d.cur+'°, '+WNAME[d.code]+', '+d.lo+' till '+d.hi+'°');
     if(!chW){toast('Vädret är hämtat. Anslut klockan för att skicka det',true);}

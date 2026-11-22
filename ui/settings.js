@@ -100,3 +100,7 @@ window.__mkPerms();
   $('tystTill').addEventListener('change',e=>save('tyst_till',e.target.value));
   $('btnViktiga').addEventListener('click',()=>{save('viktiga',$('txtViktiga').value.trim());toast('Viktiga personer sparade');});
 })();
+
+// Platsen för vädret ges till appen på telefonen, som sedan skickar vädret till klockan varje timme, även när sidan är stängd.
+function wxToNative(pl){try{if(NATIVE&&NATIVE.setPref&&pl&&typeof pl.lat==='number')NATIVE.setPref('wx_plats',JSON.stringify({lat:pl.lat,lon:pl.lon,name:pl.name||''}));}catch(e){}}
+try{wxToNative(lsGet(PLLS,null));}catch(e){}
