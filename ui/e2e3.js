@@ -13,7 +13,7 @@ const FILE=process.argv[2]||'dist/index.html';const W=+(process.argv[3]||360),H=
   const sig=sel=>p.evaluate(s=>{const c=document.querySelector(s),d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let h=0;for(let i=0;i<d.length;i+=16)h=(h*31+d[i]+d[i+1]*3+d[i+2]*7)>>>0;return h;},sel);
   await p.click('#tabs [data-v="dials"]');await p.click('#cats [data-c="l"]');await p.waitForTimeout(500);
   console.log('rörliga i listan:',await p.evaluate(()=>document.querySelectorAll('#dialGrid [data-k]').length),'| alla:',await p.evaluate(()=>allDials().length));
-  await p.click('#dialGrid [data-k="d:omlopp"]');await p.waitForTimeout(700);
+  await p.click('#dialGrid [data-k="d:station"]');await p.waitForTimeout(700);
   const hero=await p.evaluate(()=>document.querySelector('.screen .face.on').id);
   const a=await sig('#'+hero),ga=await sig('#dialGrid canvas[data-cv="d:hybrid"]'),gk=await sig('#dialGrid canvas[data-cv="a:kontur"]');await p.waitForTimeout(1300);
   console.log('klockan på skärmen rör sig:',a!==await sig('#'+hero),'| ruta Hybrid rör sig:',ga!==await sig('#dialGrid canvas[data-cv="d:hybrid"]'),'| ruta Kontur rör sig:',gk!==await sig('#dialGrid canvas[data-cv="a:kontur"]'));

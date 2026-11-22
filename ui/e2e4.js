@@ -38,14 +38,14 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
   await p.click('#btnConnect');await connected();await p.waitForTimeout(500);
   const s83=await sent('83/');ok('hälsningen är nyckeln',s83.length===1&&s83[0]==='83/1:a1a2a3a4a5a6b1b2b3b4b5b600',s83[0]);
   const s44=await sent('4/44');ok('bindningen kommer ur nyckeln',s44[0]==='4/44:a1a2a3a4a5a6b1b2b3b4b5b601',s44[0]);
-  ok('versionen visas',await p.textContent('#stVer')==='47');
+  ok('versionen visas',await p.textContent('#stVer')==='48');
   await p.evaluate(()=>{window.__push(0x0D,7,[]);window.__push(0x0D,4,[]);window.__push(0x21,3,[1,2]);});await p.waitForTimeout(200);
   ok('musikknappar och okända paket syns i loggen',await p.evaluate(()=>{const t=document.getElementById('log').textContent;return /Knapp på klockan: nästa låt \(0d\/7\)/.test(t)&&/spela eller pausa/.test(t)&&/inte känner till: 21\/3 01 02/.test(t);}));
 
   // --- favoriter, slumpa, nästa oprovade
   await p.click('#tabs [data-v="dials"]');await p.waitForTimeout(400);
-  await p.click('#dialGrid [data-k="d:omlopp"]');await p.click('#btnFav');await p.click('#cats [data-c="f"]');await p.waitForTimeout(200);
-  ok('favorit sparas och filtret visar den',await p.evaluate(()=>document.querySelectorAll('#dialGrid [data-k]').length===1&&!!JSON.parse(localStorage.getItem('minklocka.fav.v1'))['d:omlopp']));
+  await p.click('#dialGrid [data-k="d:station"]');await p.click('#btnFav');await p.click('#cats [data-c="f"]');await p.waitForTimeout(200);
+  ok('favorit sparas och filtret visar den',await p.evaluate(()=>document.querySelectorAll('#dialGrid [data-k]').length===1&&!!JSON.parse(localStorage.getItem('minklocka.fav.v1'))['d:station']));
   await p.click('#cats [data-c="all"]');const before=await p.evaluate(()=>cur.gk);await p.click('#btnRand');await p.waitForTimeout(200);
   ok('slumpa byter urtavla och väljer aldrig experiment',await p.evaluate(b=>cur.gk!==b&&!cur.exp,before),await p.evaluate(()=>cur.name));
   await p.click('#btnNext');await p.waitForTimeout(300);
@@ -63,7 +63,7 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
   ok('provad urtavla skickas utan fråga',await p.evaluate(()=>document.getElementById('shade').hidden));
 
   // --- experiment: varning, avbryt, sedan hänger klockan sig och räddas
-  await p.click('#dialGrid [data-k="d:kugghjul"]');const c5=(await sent('1/c5')).length;await p.click('#btnSend');await p.waitForSelector('#shade:not([hidden])');await p.screenshot({path:'ui/v3_exp.png'});
+  await p.click('#dialGrid [data-k="d:dagen"]');const c5=(await sent('1/c5')).length;await p.click('#btnSend');await p.waitForSelector('#shade:not([hidden])');await p.screenshot({path:'ui/v3_exp.png'});
   await p.click('#shB button:has-text("Avbryt")');await p.waitForTimeout(400);
   ok('avbryt på varningen skickar inget',(await sent('1/c5')).length===c5&&(await sent('16/3:0103')).length===2);
   await p.evaluate(()=>{window.__hangNext=true;window.__dropOnHang=true;window.__heal=true;});
@@ -72,9 +72,9 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
   const t=await p.textContent('#shT');await p.screenshot({path:'ui/v4_rescued.png'});
   const sw=await sent('16/3:0100');ok('hängd klocka räddas av sig själv',t==='Klockan räddades'&&sw[sw.length-1]==='16/3:0100b05e2963',t+' '+sw[sw.length-1]);
   await p.click('#shB button:has-text("Ja, den blev svart")');
-  ok('resultatet sparas som svart',await p.evaluate(()=>RES['d:kugghjul']==='svart'));
+  ok('resultatet sparas som svart',await p.evaluate(()=>RES['d:dagen']==='svart'));
   await connected();ok('ansluten igen efter räddningen',true);
-  ok('märkt i listan',await p.evaluate(()=>!!document.querySelector('#dialGrid [data-k="d:kugghjul"] em.bad')));
+  ok('märkt i listan',await p.evaluate(()=>!!document.querySelector('#dialGrid [data-k="d:dagen"] em.bad')));
 
   // --- klockan tappas: sidan ansluter igen av sig själv
   const c0=await p.evaluate(()=>window.__connects);await p.evaluate(()=>{window.__away=1;window.__drop();});
@@ -183,7 +183,7 @@ let pass=0,fail=0;const ok=(name,c,extra)=>{if(c)pass++;else fail++;console.log(
 
   // --- provresultat
   await p.click('#tabs [data-v="log"]');await p.click('#btnCopyRes');await p.waitForTimeout(300);const res=await p.evaluate(()=>navigator.clipboard.readText());
-  ok('provresultaten går att kopiera',/Svart skärm: Kugghjul/.test(res)&&/Fungerar: /.test(res),res.split('\n').slice(1,4).join(' / ').slice(0,200));
+  ok('provresultaten går att kopiera',/Svart skärm: Dagen/.test(res)&&/Fungerar: /.test(res),res.split('\n').slice(1,4).join(' / ').slice(0,200));
 
   // --- känd klocka: ansluter utan att fråga när sidan öppnas
   await p.addInitScript(()=>{window.__known=true;});await p.reload();await ready();await connected();ok('känd klocka ansluts direkt när sidan öppnas',true);

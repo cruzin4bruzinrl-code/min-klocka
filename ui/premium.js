@@ -209,3 +209,16 @@ BATTPIC.dotcell=function(e){const cols=8,rows=4,d=e.d||5,w=cols*d+d+2,h=rows*d+2
     for(let i=0;i<cols;i++)for(let j=0;j<rows;j++){c.beginPath();c.arc(1+d/2+i*d,1+d/2+j*d,d*.38,0,7);c.fillStyle=i<fill?col:'rgba(255,255,255,.16)';c.fill();}
     c.fillStyle='rgba(255,255,255,.4)';c.fillRect(w-d+1,1+d,d*.5,d*2);out.push(cv);}
   return out;};
+
+// ================= Klippta färgformer: egen konst bakom visarna =================
+const _drawBg6=drawBg;
+drawBg=function(ctx,bg,photo){
+  bg=bg||{};
+  if(bg.t==='cutout'){ctx.fillStyle=bg.c||'#1a1a2e';ctx.fillRect(0,0,DW,DH);const cols=bg.cols||['#ff6b4a','#ffd23f','#3a86ff','#8338ec','#06d6a0'],r=_rng(bg.seed||3);
+    ctx.save();ctx.beginPath();ctx.roundRect(14,18,212,250,40);ctx.clip();
+    for(let i=0;i<9;i++){ctx.fillStyle=cols[i%cols.length];ctx.globalAlpha=.92;ctx.beginPath();const x=r()*240,y=r()*286,w=60+r()*110,a=r()*Math.PI;
+      if(i%3===0){ctx.arc(x,y,w*.5,0,7);}else if(i%3===1){ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.roundRect(-w/2,-w*.22,w,w*.44,w*.22);ctx.restore();}
+      else{ctx.moveTo(x,y);ctx.arc(x,y,w*.7,a,a+Math.PI*.5);ctx.closePath();}ctx.fill();}
+    ctx.restore();ctx.globalAlpha=1;}
+  else _drawBg6(ctx,bg,photo);
+};
