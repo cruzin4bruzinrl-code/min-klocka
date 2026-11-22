@@ -700,7 +700,7 @@ body.hswap .info{opacity:0;transition:opacity .12s ease}
 .ng-orbit{transition:opacity .25s}
 body.hswap .ng-orbit{opacity:0}
 /* ================= 16 teman: färger, former, typsnitt och en levande bakgrund per tema ================= */
-.thbg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;display:none}
+.thbg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;display:none}
 .thbg i{position:absolute;display:block}
 @media (prefers-reduced-motion:reduce){.thbg *{animation:none!important}}
 /* 1 Instrument */
@@ -766,7 +766,6 @@ body.hswap .ng-orbit{opacity:0}
 .thbg .glow{left:50%;top:-10%;width:120%;height:60%;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(201,169,106,.22),transparent);animation:thBreath 7s ease-in-out infinite}
 @keyframes thBreath{0%,100%{opacity:.6}50%{opacity:1}}
 .thbg .rdot{width:8px;height:8px;border-radius:50%;background:#e8202a;right:22px;top:18px;animation:thTw 1.6s ease-in-out infinite}
-.app,.tabs,#tsheet{position:relative;z-index:1}
 </style>
 </head>
 <body>
@@ -3483,7 +3482,7 @@ $('edSend').addEventListener('click',async()=>{if(!ed||busy)return;const rec=edS
   cat='m';closeEditor();renderGrid();pickDial('m:'+rec.id,true);$('btnSend').click();});
 
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=53;
+const APPV=54;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
