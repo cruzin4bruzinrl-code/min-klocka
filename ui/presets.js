@@ -580,6 +580,24 @@ const DIGITAL=[
    ['meridian','Meridian','Blå gravyr med vita romerska tal.',A({t:'guilloche',c:'#0f2a5a',c2:'#040c1e',lc:'190,210,255',lobes:40,amp:1.2},'sword','#ffffff','#dfe6f2',{deco:[TX('XII',120,40,20,'se','#e6ecf6','c'),TX('VI',120,226,20,'se','#e6ecf6','c')]})],
    ['celestial','Celestial','Stjärnhimmel med guldvisare och tunn guldring.',A({t:'stars',c:'#13163a',c2:'#02020a',n:160,seed:33},'dauphine','#e8cf8a','#e8cf8a',{min:0,deco:[{k:'ring',x:120,y:143,r:108,c:'#e8cf8a',w:1,a:.5}]})]
   ];
+  // Efter bilderna från din katalog: om urtavlan har visare eller digital tid, och vilken accentfärg den har.
+  // a = visare, d = digital tid. Ytan och stilen behålls, så bara upplägget och färgen följer bilden.
+  const PNG={midnight:['d','#ff5a5a'],eclipse:['a','#a8b0ff'],obsidian:['a','#c8ccd4'],nightfall:['d','#5aa8ff'],deepspace:['a','#9b8cff'],copper:['a','#e8925a'],
+    carbon2:['d','#c8c8c8'],mono:['d','#e0e0e0'],smoke2:['a','#9fb4c8'],emerald:['d','#5ae0a0'],summit:['a','#f0b080'],lunar:['d','#b8c4ff'],coastline:['d','#5ae0c8'],
+    bloom2:['a','#b48cff'],forest:['a','#8fd88f'],aurora2:['d','#6ff0c0'],tidal:['a','#5aa8ff'],dune:['a','#f0b070'],terrain:['d','#d0d0d0'],cosmos:['a','#9b8cff'],
+    royal:['a','#6aa0ff'],champagne:['d','#8a6a3a','#2a1c08'],marble:['d','#8a8070','#1a1a1a'],bordeaux:['a','#ff6a8a'],titanium:['d','#d0d4da'],aura:['a','#c8a8ff'],prism:['a','#b8a8ff'],
+    contrast:['d','#ffffff'],velvet:['a','#7fd8a0'],spectrum:['a','#ff6ab8'],pulse:['d','#c8ff5a'],orbit:['d','#ff6ab8'],chrono:['d','#e0e0e0'],velocity:['d','#5ab4ff'],
+    vortex:['a','#a88cff'],cyan:['d','#2ee6ff'],ignite:['d','#ff8a3c'],vertical:['d','#9fb4ff'],motion:['a','#e0ff3c'],matrix:['d','#5ab4ff'],glass:['a','#c8d8f0'],
+    solstice:['a','#ff9a6a'],halo:['d','#8a8cff'],atelier:['a','#e8c08a'],liquid:['a','#5ad0e8'],monolith:['d','#ff5a5a'],mirage:['a','#c8a8ff'],pixel:['a','#9ab0ff'],
+    meridian:['d','#e8c86a'],celestial:['a','#e8c86a']};
+  const isA=def=>def.els.some(e=>e.k==='hands');
+  K.forEach(e=>{const want=PNG[e[0]];if(!want)return;let def=e[3];const [kind,acc,ink]=want;
+    if(kind==='a'&&!isA(def))def=A(def.bg,'baton','#ffffff',acc,{min:0,hl:10});
+    else if(kind==='d'&&isA(def))def=D(def.bg,'pb',ink||'#ffffff',{s:64,dc:acc});
+    // signaturen från bilderna: en tunn ring i accentfärgen
+    def.deco=[...(def.deco||[]),{k:'ring',x:120,y:143,r:110,c:acc,w:1.2,a:.55}];
+    if(kind==='a')def.els.forEach(x=>{if(x.k==='hands'){x.mc=acc;}});
+    e[3]=def;});
   K.forEach(([k,name,desc,def],i)=>DIGITAL.push({key:'kol_'+k,name,desc,c1:'#ffffff',c2:'#000000',ren:true,fresh:2,koll:Math.floor(i/10)+1,def}));
 })();
 DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');d.def.els.forEach(e=>{if(e.k==='hands')e.sec=0;});   // inget som snurrar runt, inte heller sekundvisare   // inga små snurrande saker: klockan stegar dem, så de rycker
