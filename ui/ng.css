@@ -94,3 +94,6 @@ input,textarea,#logBox,pre{-webkit-user-select:text;user-select:text}
 body.hswap .info{opacity:0;transition:opacity .12s ease}
 .ng-orbit{transition:opacity .25s}
 body.hswap .ng-orbit{opacity:0}
+/* I den riktiga appen sköts menyn av Android */
+html.native #tabs,html.native .tabs{display:none!important}
+html.native .app{padding-bottom:16px!important}
