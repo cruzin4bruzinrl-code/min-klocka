@@ -594,7 +594,7 @@ private fun Tile(i: Int, color: Color, m: Modifier, onClick: (() -> Unit)? = nul
 private fun BentoHome(a: Acts) {
     val s = WatchState
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text("Hej Rob", color = BT_TXT, fontSize = 30.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 4.dp, top = 4.dp))
+        Text("Idag", color = BT_TXT, fontSize = 30.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 4.dp, top = 4.dp))
         Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Tile(0, BT_CARD, Modifier.weight(1.1f).fillMaxHeight(), a.dials) {
                 DialImage(Modifier.fillMaxWidth().aspectRatio(240f / 286f), 22.dp)
