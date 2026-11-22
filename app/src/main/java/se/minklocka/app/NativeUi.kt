@@ -236,7 +236,7 @@ internal fun HomeScreen(a: Acts) {
         }
         Spacer(Modifier.height(14.dp))
         Appear(shown, 0) {
-            ElevatedCard(shape = RoundedCornerShape(32.dp), colors = CardDefaults.elevatedCardColors(containerColor = cs.primaryContainer)) {
+            ElevatedCard(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(32.dp), colors = CardDefaults.elevatedCardColors(containerColor = cs.primaryContainer)) {
                 Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
                     WatchPreview(s.dial, 120.dp, cs.onPrimaryContainer)
                     Spacer(Modifier.width(18.dp))
@@ -251,7 +251,7 @@ internal fun HomeScreen(a: Acts) {
         }
         Spacer(Modifier.height(12.dp))
         Appear(shown, 1) {
-            Card(onClick = onHealth, shape = RoundedCornerShape(28.dp)) {
+            Card(modifier = Modifier.fillMaxWidth(), onClick = onHealth, shape = RoundedCornerShape(28.dp)) {
                 Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
                     StepRing(if (s.steps >= 0) s.steps / s.stepGoal.toFloat() else 0f, 92.dp)
                     Spacer(Modifier.width(18.dp))
@@ -405,7 +405,7 @@ internal fun HealthScreen(a: Acts) {
             }
         }
         Spacer(Modifier.height(14.dp))
-        Card(shape = RoundedCornerShape(32.dp), colors = CardDefaults.cardColors(containerColor = cs.secondaryContainer)) {
+        Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(32.dp), colors = CardDefaults.cardColors(containerColor = cs.secondaryContainer)) {
             Row(Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
                 StepRing(if (s.steps >= 0) s.steps / s.stepGoal.toFloat() else 0f, 112.dp)
                 Spacer(Modifier.width(20.dp))
@@ -417,7 +417,7 @@ internal fun HealthScreen(a: Acts) {
             }
         }
         Spacer(Modifier.height(12.dp))
-        Card(shape = RoundedCornerShape(28.dp)) {
+        Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(28.dp)) {
             Column(Modifier.padding(18.dp)) {
                 Text("Steg per timme", style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(10.dp))
@@ -426,7 +426,7 @@ internal fun HealthScreen(a: Acts) {
             }
         }
         Spacer(Modifier.height(12.dp))
-        Card(shape = RoundedCornerShape(28.dp)) {
+        Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(28.dp)) {
             Column(Modifier.padding(18.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) { BeatingHeart(cs.error); Spacer(Modifier.width(8.dp)); Text("Puls under dagen", style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f)); CountText(s.pulse, 22.sp) }
                 Spacer(Modifier.height(10.dp))
@@ -434,7 +434,7 @@ internal fun HealthScreen(a: Acts) {
             }
         }
         Spacer(Modifier.height(12.dp))
-        Card(shape = RoundedCornerShape(28.dp)) {
+        Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(28.dp)) {
             Column(Modifier.padding(18.dp)) {
                 Text("Veckan", style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(10.dp))

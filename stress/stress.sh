@@ -12,7 +12,7 @@ adb logcat -v time > $OUT/logcat.txt 2>&1 &
 LC=$!
 start(){ adb shell am start -n $A "$@" >/dev/null 2>&1; }
 shot(){ adb exec-out screencap -p > $OUT/shots/$1.png; }
-alive(){ adb shell pidof $P >/dev/null 2>&1 && echo ja || echo NEJ; }
+alive(){ adb get-state >/dev/null 2>&1 || { echo "EMULATORN BORTA"; return; }; [ -n "$(adb shell pidof $P 2>/dev/null)" ] && echo ja || echo NEJ; }
 T0=$(date +%s)
 echo "== start" >> $OUT/steg.txt
 start; sleep 30; shot 00_start
@@ -27,7 +27,7 @@ for s in $STILAR; do
   start --ei tab 1; sleep 4; shot ${s}_1
   adb shell input swipe 540 1900 540 500 400; sleep 2; shot ${s}_1b
   if [ $s = PRICK ]; then adb shell input swipe 900 1200 150 1200 300; sleep 2; shot ${s}_1c; fi
-  for t in 2 3 4; do start --ei tab $t; sleep 4; shot ${s}_$t; done
+  for t in 2 3 4; do start --ei tab $t; sleep 6; shot ${s}_$t; done
   start --ei tab 0 --ez picker true; sleep 3; shot ${s}_val
   adb shell input keyevent KEYCODE_BACK; sleep 2; shot ${s}_val_stangd
   adb shell dumpsys gfxinfo $P > $OUT/gfx_$s.txt 2>&1
