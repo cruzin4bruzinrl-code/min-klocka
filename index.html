@@ -699,6 +699,74 @@ input,textarea,#logBox,pre{-webkit-user-select:text;user-select:text}
 body.hswap .info{opacity:0;transition:opacity .12s ease}
 .ng-orbit{transition:opacity .25s}
 body.hswap .ng-orbit{opacity:0}
+/* ================= 16 teman: färger, former, typsnitt och en levande bakgrund per tema ================= */
+.thbg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;display:none}
+.thbg i{position:absolute;display:block}
+@media (prefers-reduced-motion:reduce){.thbg *{animation:none!important}}
+/* 1 Instrument */
+:root[data-theme="instrument"]{--ink:#e9e6df;--text:#111;--dim:#555;--glass:#e9e6df;--edge:#111;--ov:#111;--a1:#ff5a1f;--a2:#ff5a1f;--onpri:#fff;--pricont:#111;--onpricont:#e9e6df;--navbg:#111;--ok:#2a8a3a;--r:0px;--font:'MonoBold',ui-monospace,monospace;--shadow:none;color-scheme:light}
+:root[data-theme="instrument"] .glass{border:2px solid #111;backdrop-filter:none;box-shadow:none}
+:root[data-theme="instrument"] .cta{border-radius:0;background:#ff5a1f;box-shadow:4px 4px 0 #111;text-transform:uppercase;letter-spacing:2px}
+:root[data-theme="instrument"] .tabs{border-radius:0;color:#e9e6df}:root[data-theme="instrument"] .tabs button.on{color:#ff5a1f}
+/* 2 Prickmatris */
+:root[data-theme="prick"]{--ink:#000;--text:#fff;--dim:#8a8a8a;--glass:#0f0f0f;--edge:#262626;--ov:#fff;--a1:#e8202a;--a2:#e8202a;--onpri:#fff;--pricont:#1a1a1a;--onpricont:#fff;--navbg:#0f0f0f;--ok:#fff;--r:26px;--font:'MonoBold',ui-monospace,monospace;color-scheme:dark}
+:root[data-theme="prick"] body{background-image:radial-gradient(circle,#1c1c1c 1.2px,transparent 1.4px);background-size:12px 12px}
+:root[data-theme="prick"] .glass{backdrop-filter:none}:root[data-theme="prick"] .cta{background:#fff;color:#000;box-shadow:none;border-radius:999px;letter-spacing:2px}
+/* 3 Tidning */
+:root[data-theme="tidning"]{--ink:#f3efe6;--text:#1b1a17;--dim:#6a655a;--glass:#f3efe6;--edge:#1b1a17;--ov:#1b1a17;--a1:#8a1c1c;--a2:#8a1c1c;--onpri:#fff;--pricont:#e8e0cf;--onpricont:#1b1a17;--navbg:#f3efe6;--ok:#2a6a3a;--r:2px;--font:'LoraBold',Georgia,serif;color-scheme:light}
+:root[data-theme="tidning"] .glass{border:0;border-top:1px solid #1b1a17;border-bottom:1px solid #1b1a17;backdrop-filter:none;box-shadow:none}
+:root[data-theme="tidning"] .cta{border-radius:2px;background:#1b1a17;color:#f3efe6;box-shadow:none}:root[data-theme="tidning"] .tabs{border:1px solid #1b1a17;border-radius:4px}
+/* 4 Brutal */
+:root[data-theme="brutal"]{--ink:#fff36b;--text:#000;--dim:#333;--glass:#fff;--edge:#000;--ov:#000;--a1:#ff4fd2;--a2:#4dd2ff;--onpri:#000;--pricont:#b6ff6b;--onpricont:#000;--navbg:#000;--ok:#00a050;--r:16px;color-scheme:light}
+:root[data-theme="brutal"] .glass{border:3px solid #000;box-shadow:6px 6px 0 #000;backdrop-filter:none}
+:root[data-theme="brutal"] .cta{background:#4dd2ff;color:#000;border:3px solid #000;box-shadow:6px 6px 0 #000;border-radius:14px}
+:root[data-theme="brutal"] .tabs{color:#fff;border:3px solid #000}:root[data-theme="brutal"] .tile:nth-child(1){background:#b6ff6b}:root[data-theme="brutal"] .tile:nth-child(2){background:#ff8a5c}:root[data-theme="brutal"] .tile:nth-child(3){background:#9ab6ff}
+/* 5 Ateljé */
+:root[data-theme="atelje"]{--ink:#0b0806;--text:#eadcc2;--dim:#9a8566;--glass:rgba(42,32,23,.6);--edge:rgba(201,169,106,.28);--ov:#eadcc2;--a1:#c9a96a;--a2:#8a6a3a;--onpri:#1a1208;--pricont:#3a2c1c;--onpricont:#f3e6cc;--navbg:rgba(20,15,10,.95);--ok:#c9a96a;--r:22px;--font:'LoraBold',Georgia,serif;color-scheme:dark}
+:root[data-theme="atelje"] body{background:radial-gradient(120% 60% at 50% 0%,#2a2017,#0b0806 70%)}
+/* 6 Kontrollpanel och 14 Cockpit delar grund */
+:root[data-theme="panel"],:root[data-theme="cockpit"]{--ink:#020b10;--text:#bff9ff;--dim:#2a8a99;--glass:rgba(4,24,30,.7);--edge:#0f3b45;--ov:#7ff6ff;--a1:#2ef2ff;--a2:#2ef2ff;--onpri:#001418;--pricont:#0f3b45;--onpricont:#bff9ff;--navbg:#03141a;--ok:#2ef2ff;--r:6px;--font:'CondBold','Arial Narrow',sans-serif;color-scheme:dark}
+:root[data-theme="panel"] .glass,:root[data-theme="cockpit"] .glass{box-shadow:inset 0 0 20px -12px #2ef2ff;letter-spacing:.5px}
+:root[data-theme="panel"] .cta,:root[data-theme="cockpit"] .cta{background:transparent;border:1px solid #2ef2ff;color:#bff9ff;box-shadow:0 0 16px -4px #2ef2ff;border-radius:4px;letter-spacing:3px;text-transform:uppercase}
+:root[data-theme="cockpit"]{--ink:#03090d;--r:4px}
+/* 7 Lera */
+:root[data-theme="lera"]{--ink:#ebe4fb;--text:#3a3159;--dim:#7a6fa0;--glass:#f6f1ff;--edge:transparent;--ov:#3a3159;--a1:#6b4fe0;--a2:#ff8fb2;--onpri:#fff;--pricont:#ddd2ff;--onpricont:#2a1a6a;--navbg:#f6f1ff;--ok:#2e9e5b;--r:30px;color-scheme:light}
+:root[data-theme="lera"] .glass{backdrop-filter:none;box-shadow:inset -6px -8px 14px rgba(120,90,200,.18),inset 6px 6px 12px #fff,10px 14px 28px -10px rgba(110,80,190,.45)}
+:root[data-theme="lera"] .cta{box-shadow:inset -4px -5px 10px rgba(0,0,0,.18),inset 4px 4px 10px rgba(255,255,255,.4),8px 10px 20px -8px #6b4fe0;border-radius:26px}
+/* 8 Bento */
+:root[data-theme="bento"]{--ink:#0b0d12;--text:#f3f4f7;--dim:#8a90a0;--glass:#171a22;--edge:transparent;--ov:#fff;--a1:#ff8a3c;--a2:#ff3d7f;--onpri:#fff;--pricont:#23262f;--onpricont:#fff;--navbg:#171a22;--ok:#3ddc84;--r:22px;color-scheme:dark}
+:root[data-theme="bento"] .glass{backdrop-filter:none}:root[data-theme="bento"] .tile:nth-child(1){background:#1f8a5b}:root[data-theme="bento"] .tile:nth-child(2){background:#e0345c}:root[data-theme="bento"] .tile:nth-child(3){background:#f5b82e;color:#2a1c00}:root[data-theme="bento"] .tile:nth-child(4){background:#5a4bff}
+/* 9-12 Material */
+:root[data-theme="m3ljus"]{--ink:#fdf8fd;--text:#1c1b20;--dim:#48454f;--glass:#f3edf7;--edge:transparent;--ov:#1c1b20;--a1:#65558f;--a2:#65558f;--onpri:#fff;--pricont:#e9ddff;--onpricont:#21005d;--navbg:#f3edf7;--ok:#2e9e5b;--r:28px;color-scheme:light}
+:root[data-theme="m3mork"]{--ink:#0f1511;--text:#dfe4dd;--dim:#bfc9be;--glass:#1b211d;--edge:transparent;--ov:#dfe4dd;--a1:#86d79e;--a2:#86d79e;--onpri:#00391c;--pricont:#005229;--onpricont:#a1f4b8;--navbg:#171d19;--ok:#86d79e;--r:28px;color-scheme:dark}
+:root[data-theme="m3expr"]{--ink:#fff8f6;--text:#231917;--dim:#53433f;--glass:#fceae5;--edge:transparent;--ov:#231917;--a1:#a63b1f;--a2:#7d4dff;--onpri:#fff;--pricont:#ffdbd1;--onpricont:#3b0900;--navbg:#fceae5;--ok:#2e9e5b;--r:34px;color-scheme:light}
+:root[data-theme="m3expr"] .tile{border-radius:40px 18px 40px 18px}:root[data-theme="m3expr"] .cta{border-radius:999px}
+:root[data-theme="m3pixel"]{--ink:#131314;--text:#e3e3e3;--dim:#c4c7c5;--glass:#1e1f20;--edge:transparent;--ov:#e3e3e3;--a1:#a8c7fa;--a2:#a8c7fa;--onpri:#062e6f;--pricont:#0842a0;--onpricont:#d3e3fd;--navbg:#1e1f20;--ok:#86d79e;--r:24px;color-scheme:dark}
+:root[data-theme^="m3"] .glass{backdrop-filter:none;box-shadow:none}:root[data-theme^="m3"] .cta{box-shadow:none;background:var(--a1)}
+/* 13 Flytande glas */
+:root[data-theme="flytglas"]{--ink:#0b1030;--text:#fff;--dim:rgba(255,255,255,.75);--glass:rgba(255,255,255,.12);--edge:rgba(255,255,255,.28);--ov:#fff;--a1:#ff7ac8;--a2:#7aa2ff;--onpri:#fff;--pricont:rgba(255,255,255,.2);--onpricont:#fff;--navbg:rgba(255,255,255,.16);--ok:#7dffb2;--r:28px;color-scheme:dark}
+:root[data-theme="flytglas"] .glass{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 20px 40px -20px rgba(0,0,0,.5)}
+/* 15 Mjuk relief */
+:root[data-theme="relief"]{--ink:#e4e8ee;--text:#3a4250;--dim:#8a93a3;--glass:#e4e8ee;--edge:transparent;--ov:#3a4250;--a1:#5b8def;--a2:#9b7bf0;--onpri:#fff;--pricont:#d6dce6;--onpricont:#2a3a6a;--navbg:#e4e8ee;--ok:#3ba86a;--r:26px;color-scheme:light}
+:root[data-theme="relief"] .glass{backdrop-filter:none;box-shadow:9px 9px 18px #c3c8d0,-9px -9px 18px #fff}
+:root[data-theme="relief"] .cta{background:#e4e8ee;color:#5b8def;box-shadow:9px 9px 18px #c3c8d0,-9px -9px 18px #fff}:root[data-theme="relief"] .cta:active{box-shadow:inset 6px 6px 12px #c3c8d0,inset -6px -6px 12px #fff}
+:root[data-theme="relief"] .tabs{box-shadow:9px 9px 18px #c3c8d0,-9px -9px 18px #fff}
+/* 16 Norrsken */
+:root[data-theme="norrsken"]{--ink:#050814;--text:#eaf6ff;--dim:#9fb4d0;--glass:rgba(10,16,40,.55);--edge:rgba(160,220,255,.18);--ov:#eaf6ff;--a1:#1de9b6;--a2:#7c4dff;--onpri:#00201a;--pricont:rgba(29,233,182,.18);--onpricont:#eaf6ff;--navbg:rgba(5,8,20,.85);--ok:#1de9b6;--r:24px;color-scheme:dark}
+/* levande bakgrunder (bara transform och opacity, så att det går lätt) */
+:root[data-theme="flytglas"] .thbg,:root[data-theme="norrsken"] .thbg,:root[data-theme="cockpit"] .thbg,:root[data-theme="panel"] .thbg,:root[data-theme="prick"] .thbg,:root[data-theme="atelje"] .thbg{display:block}
+.thbg .blob{border-radius:50%;filter:blur(50px);opacity:.8;will-change:transform}
+@keyframes thFloat1{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,90px)}}@keyframes thFloat2{0%,100%{transform:translate(0,0)}50%{transform:translate(-70px,-60px)}}@keyframes thFloat3{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-80px)}}
+.thbg .band{left:-40%;width:180%;height:240px;border-radius:50%;filter:blur(34px);opacity:.7;will-change:transform}
+@keyframes thAur1{0%,100%{transform:translateX(-40px) skewY(-4deg)}50%{transform:translateX(50px) skewY(5deg)}}@keyframes thAur2{0%,100%{transform:translateX(50px) skewY(6deg)}50%{transform:translateX(-60px) skewY(-5deg)}}
+.thbg .scan{left:0;right:0;height:80px;background:linear-gradient(180deg,rgba(46,242,255,0),rgba(46,242,255,.09),rgba(46,242,255,0));animation:thScan 6s linear infinite}
+@keyframes thScan{from{transform:translateY(-100px)}to{transform:translateY(110vh)}}
+.thbg .star{width:2px;height:2px;border-radius:50%;background:#fff;animation:thTw 3s ease-in-out infinite}
+@keyframes thTw{0%,100%{opacity:.15}50%{opacity:.9}}
+.thbg .glow{left:50%;top:-10%;width:120%;height:60%;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(201,169,106,.22),transparent);animation:thBreath 7s ease-in-out infinite}
+@keyframes thBreath{0%,100%{opacity:.6}50%{opacity:1}}
+.thbg .rdot{width:8px;height:8px;border-radius:50%;background:#e8202a;right:22px;top:18px;animation:thTw 1.6s ease-in-out infinite}
+.app,.tabs,#tsheet{position:relative;z-index:1}
 </style>
 </head>
 <body>
@@ -3415,7 +3483,7 @@ $('edSend').addEventListener('click',async()=>{if(!ed||busy)return;const rec=edS
   cat='m';closeEditor();renderGrid();pickDial('m:'+rec.id,true);$('btnSend').click();});
 
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=52;
+const APPV=53;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
@@ -4553,7 +4621,7 @@ function helpCard(){
   th.querySelector('.themes').onclick=e=>{const b=e.target.closest('button');if(!b)return;setTheme(b.dataset.th);};
   markTheme();
 }
-const THEMES=[['nextgen','Next Gen','#05060c','#2a1f6b','#2ee6ff'],['ljus','Ljus','#fdf7ff','#eaddff','#6750a4'],['mint','Mint','#f3fbf6','#c3eed6','#1b7f55'],['persika','Persika','#fff8f4','#ffdbcc','#b5532f'],['hav','Hav','#f4f9fd','#cfe5ff','#0b6aa2'],['mork','Mörk','#0f1513','#1f4d36','#7fd8a6'],['urtavla','Urtavlans färger','#07080c','#ff5aa0','#3ba0ff']];
+const THEMES=[['nextgen','Next Gen','#05060c','#2a1f6b','#2ee6ff'],['instrument','Instrument','#e9e6df','#111111','#ff5a1f'],['prick','Prickmatris','#000000','#1a1a1a','#e8202a'],['tidning','Tidning','#f3efe6','#e8e0cf','#8a1c1c'],['brutal','Brutal','#fff36b','#ff4fd2','#4dd2ff'],['atelje','Ateljé','#0b0806','#3a2c1c','#c9a96a'],['panel','Kontrollpanel','#020b10','#0f3b45','#2ef2ff'],['lera','Lera','#ebe4fb','#f6f1ff','#6b4fe0'],['bento','Bento','#0b0d12','#1f8a5b','#ff8a3c'],['m3ljus','Material ljus','#fdf8fd','#e9ddff','#65558f'],['m3mork','Material mörk','#0f1511','#005229','#86d79e'],['m3expr','Material Expressive','#fff8f6','#ffdbd1','#a63b1f'],['m3pixel','Material Pixel','#131314','#0842a0','#a8c7fa'],['flytglas','Flytande glas','#0b1030','#ff4fa3','#7aa2ff'],['cockpit','Cockpit','#03090d','#0f3b45','#2ef2ff'],['relief','Mjuk relief','#e4e8ee','#d6dce6','#5b8def'],['norrsken','Norrsken','#050814','#1de9b6','#7c4dff'],['ljus','Ljus','#fdf7ff','#eaddff','#6750a4'],['mint','Mint','#f3fbf6','#c3eed6','#1b7f55'],['persika','Persika','#fff8f4','#ffdbcc','#b5532f'],['hav','Hav','#f4f9fd','#cfe5ff','#0b6aa2'],['mork','Mörk','#0f1513','#1f4d36','#7fd8a6'],['urtavla','Urtavlans färger','#07080c','#ff5aa0','#3ba0ff']];
 function markTheme(){const t=document.documentElement.dataset.theme;document.querySelectorAll('.themes button').forEach(b=>b.classList.toggle('on',b.dataset.th===t));
   const m=document.querySelector('meta[name="theme-color"]');if(m)m.content=getComputedStyle(document.documentElement).getPropertyValue('--ink').trim()||'#07080c';}
 function setTheme(t){const r=document.documentElement;r.dataset.theme=t;lsSet('minklocka.tema.v1',t);if(typeof hlRender==="function")setTimeout(()=>hlRender(false),60);
@@ -4694,6 +4762,18 @@ window.ngHideGuide=hideGuide;
 (function(){let t=0,was=document.body.classList.contains('compact');
   new MutationObserver(()=>{const now=document.body.classList.contains('compact');if(now===was)return;was=now;
     document.body.classList.add('hswap');clearTimeout(t);t=setTimeout(()=>document.body.classList.remove('hswap'),430);}).observe(document.body,{attributes:true,attributeFilter:['class']});
+})();
+// ===== Temats levande bakgrund: byggs om när temat byts =====
+(function(){
+  const L=document.createElement('div');L.className='thbg';L.setAttribute('aria-hidden','true');document.body.insertBefore(L,document.body.firstChild);
+  const star=n=>Array.from({length:n},()=>'<i class="star" style="left:'+(Math.random()*100)+'%;top:'+(Math.random()*100)+'%;animation-delay:'+(Math.random()*3).toFixed(2)+'s"></i>').join('');
+  const B={
+    flytglas:'<i class="blob" style="width:300px;height:300px;background:#ff4fa3;left:-80px;top:10%;animation:thFloat1 14s ease-in-out infinite"></i><i class="blob" style="width:280px;height:280px;background:#3a7bff;right:-80px;top:40%;animation:thFloat2 17s ease-in-out infinite"></i><i class="blob" style="width:240px;height:240px;background:#7d4dff;left:20%;top:70%;animation:thFloat3 15s ease-in-out infinite"></i>',
+    norrsken:star(40)+'<i class="band" style="top:-2%;background:linear-gradient(90deg,transparent,#1de9b6,#00b0ff,transparent);animation:thAur1 16s ease-in-out infinite"></i><i class="band" style="top:12%;height:180px;background:linear-gradient(90deg,transparent,#7c4dff,#1de9b6,transparent);animation:thAur2 19s ease-in-out infinite"></i>',
+    cockpit:'<i class="scan"></i>',panel:'<i class="scan" style="animation-duration:9s"></i>',prick:'<i class="rdot"></i>',atelje:'<i class="glow"></i>'};
+  let last=null;
+  function sync(){const t=document.documentElement.dataset.theme;if(t===last)return;last=t;L.innerHTML=B[t]||'';}
+  new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});sync();
 })();
 
 initGallery().then(()=>afterInit());
