@@ -68,9 +68,13 @@ Object.assign(BATTPIC,{
 
 // ================= Egna tolkningar av genrerna i din bild =================
 Object.assign(P2BG,{
-  lekfull(c){c.fillStyle='#050507';c.fillRect(0,0,240,286);const cols=['#ff4d6d','#ffb703','#3ddc84','#4cc9f0','#b388ff','#ff8fab'];
-    for(let i=0;i<60;i++){if(i%5===0)continue;const a=i/60*Math.PI*2;c.fillStyle=cols[Math.floor(i/10)%cols.length];c.beginPath();c.arc(120+Math.sin(a)*108,143-Math.cos(a)*124,3.4,0,7);c.fill();}
-    [[12,'#ff4d6d'],[3,'#4cc9f0'],[6,'#3ddc84'],[9,'#ffb703']].forEach(([h,col])=>{const a=h/12*Math.PI*2;c.save();c.translate(120+Math.sin(a)*78,143-Math.cos(a)*92);c.rotate(-.12);p2txt(c,String(h),0,0,'pb',h===12?54:58,col);c.restore();});},
+  lekfull(c){c.fillStyle='#050507';c.fillRect(0,0,240,286);
+    // vit till röd: prickarna går runt från vitt vid tolv till rött vid sex och tillbaka
+    const mix=t=>{const a=[255,255,255],b=[232,32,42];return 'rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*t)).join(',')+')';};
+    for(let i=0;i<60;i++){if(i%5===0)continue;const a=i/60*Math.PI*2,t=(1-Math.cos(a))/2;c.fillStyle=mix(t);c.beginPath();c.arc(120+Math.sin(a)*96,143-Math.cos(a)*110,3.2,0,7);c.fill();}
+    [[12,0],[3,.5],[6,1],[9,.5]].forEach(([h,t])=>{const a=h/12*Math.PI*2,x=120+Math.sin(a)*68,y=143-Math.cos(a)*80;c.save();c.translate(x,y);c.rotate(-.12);
+      const g=c.createLinearGradient(0,-30,0,30);g.addColorStop(0,mix(Math.max(0,t-.35)));g.addColorStop(1,mix(Math.min(1,t+.35)));c.font=FONTS.pb.css(h===12?46:50);c.textAlign='center';c.textBaseline='middle';c.fillStyle=g;c.fillText(String(h),0,0);c.restore();});
+    p2txt(c,'PULS',34,18,'cb',8,'#ffb3b8');p2txt(c,'STEG',206,18,'cb',8,'#ffb3b8');p2txt(c,'BATT',34,248,'cb',8,'#ffb3b8');p2txt(c,'DAG',206,248,'cb',8,'#ffb3b8');},
   lcdvit(c){c.fillStyle='#d9ddd6';c.fillRect(0,0,240,286);c.strokeStyle='#1c1f1a';c.lineWidth=2;[[60,'h'],[176,'h'],[226,'h']].forEach(([y])=>{c.beginPath();c.moveTo(10,y);c.lineTo(230,y);c.stroke();});
     c.beginPath();c.moveTo(120,10);c.lineTo(120,60);c.moveTo(120,226);c.lineTo(120,276);c.stroke();
     p2txt(c,'DAG',22,36,'mo',11,'#1c1f1a','left');p2txt(c,'STEG',132,24,'mo',9,'#1c1f1a','left');p2txt(c,'KCAL',22,240,'mo',9,'#1c1f1a','left');p2txt(c,'PULS',132,240,'mo',9,'#1c1f1a','left');
@@ -104,3 +108,7 @@ Object.assign(PICFONT,{
 FONTS.ital={n:'Kursiv',css:null,pic:.66};
 BATTPIC.bars=function(e){const out=[],n=10,w=e.w||150,h=e.h||14,gap=3,bw=(w-gap*(n-1))/n;for(let lv=0;lv<7;lv++){const cv=mk(w,h),c=ctxOf(cv),on=Math.round(lv/6*n);
   for(let i=0;i<n;i++){c.fillStyle=i<on?(i<3?'#ff4d6d':i<6?'#ffb703':'#3ddc84'):'#22252b';c.beginPath();c.roundRect(i*(bw+gap),0,bw,h,3);c.fill();}out.push(cv);}return out;};
+
+// Visare som går från vitt vid mitten till rött i spetsen
+HANDPIC.gradpill=function(len,tail,w,col,hub){const hw=Math.max(3,w/2),W=Math.round(hw*2+8),{cv,c,m}=hpCanvas(W,len,10);const g=c.createLinearGradient(0,len,0,0);g.addColorStop(0,'#ffffff');g.addColorStop(1,col);
+  c.save();c.shadowColor='rgba(0,0,0,.5)';c.shadowBlur=4;c.fillStyle=g;c.beginPath();c.roundRect(m-hw,2,hw*2,len+6,hw);c.fill();c.restore();if(hub)p2cap(c,m,len,Math.max(4,hub),'#e8202a');return cv;};

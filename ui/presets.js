@@ -37,8 +37,8 @@ const DIGITAL=[
   els:[vl('day',187,134,15,'cb','#ffffff',''),HN({style:'sword2',hs:'sword2',ms:'sword2',hc:'#d8dce2',mc:'#d8dce2',sec:0,ml:86,hk:.65,w:8})]}}
 
 // ---- Egna tolkningar av genrerna i din bild ----
-,{key:'lekfull',name:'Lekfull',desc:'Stora siffror i fyra färger, en ring av färgprickar och tjocka färgade visare.',c1:'#ffb703',c2:'#050507',fresh:2,pr:1,def:{bg:{t:'p2',id:'lekfull'},
-  els:[HN({style:'pill',hs:'pill',ms:'pill',hc:'#ffb703',mc:'#ff6b35',sec:0,ml:86,hk:.62,w:10})]}}
+,{key:'lekfull',name:'Vit och röd',desc:'Stora siffror och prickar som går från vitt till rött, visare med samma övergång, och puls, steg, batteri och datum i hörnen.',c1:'#e8202a',c2:'#050507',fresh:2,pr:1,def:{bg:{t:'p2',id:'lekfull'},
+  els:[vl('pulse',34,26,14,'pb','#ffffff',''),vl('steps',206,27,11,'pb','#ffffff',''),vl('battv',34,256,14,'pb','#ffffff','',{pct:false}),vl('day',206,256,14,'pb','#ffffff',''),HN({style:'gradpill',hs:'gradpill',ms:'gradpill',hc:'#ff8a8f',mc:'#e8202a',sec:0,ml:78,hk:.62,w:9})]}}
 ,{key:'lcd_vit',name:'Ljus LCD',desc:'Grå LCD med rutor för dag, steg, kalorier och puls, och en liten raket.',c1:'#1c1f1a',c2:'#d9ddd6',fresh:2,pr:1,def:{bg:{t:'p2',id:'lcdvit'},
   els:[vl('day',72,36,22,'sg','#1c1f1a',''),vl('steps',176,40,20,'sg','#1c1f1a',''),tm(120,86,64,'sg','#1c1f1a'),vl('kcal',70,258,20,'sg','#1c1f1a',''),vl('pulse',176,258,20,'sg','#1c1f1a','')]}}
 ,{key:'panel2',exp:1,name:'Instrumentpanel',desc:'Stor tid, steg och puls, batteriet som tio staplar och dag och temperatur i brickor.',c1:'#4cc9f0',c2:'#0c0d10',fresh:2,pr:1,def:{bg:{t:'p2',id:'panel'},
