@@ -702,6 +702,9 @@ body.hswap .ng-orbit{opacity:0}
 /* I den riktiga appen sköts menyn av Android */
 html.native #tabs,html.native .tabs{display:none!important}
 html.native .app{padding-bottom:16px!important}
+/* I appen byts flik av Android: inga egna övergångar som krockar, och ingen plats för den egna menyn */
+html.native .view{transition:none!important;transform:none!important;padding-bottom:24px!important}
+html.native #tabSlide{transition:none!important}
 /* ================= 16 teman: färger, former, typsnitt och en levande bakgrund per tema ================= */
 .thbg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;display:none}
 .thbg i{position:absolute;display:block}
@@ -3485,7 +3488,7 @@ $('edSend').addEventListener('click',async()=>{if(!ed||busy)return;const rec=edS
   cat='m';closeEditor();renderGrid();pickDial('m:'+rec.id,true);$('btnSend').click();});
 
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=55;
+const APPV=56;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
