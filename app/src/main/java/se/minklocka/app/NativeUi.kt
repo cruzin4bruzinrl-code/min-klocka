@@ -102,9 +102,16 @@ private fun App(wv: WebView, js: (String) -> Unit) {
             delay(700)
         }
     }
+    var webVisible by remember { mutableStateOf(false) }
     LaunchedEffect(tab) {
-        // Webbdelen göms bakom de inbyggda skärmarna; dess egen meny visas aldrig
-        js("document.documentElement.classList.add('native');window.showTab&&showTab('" + WEB[tab] + "')")
+        // Sidan byter flik medan den är dold och visas först när bytet är klart, så att den gamla fliken aldrig blinkar fram
+        if (tab >= 2) {
+            js("document.documentElement.classList.add('native');window.showTab&&showTab('" + WEB[tab] + "')")
+            if (!webVisible) { delay(160); webVisible = true }
+        } else {
+            webVisible = false
+            js("document.documentElement.classList.add('native')")
+        }
     }
     LaunchedEffect(stil, dark) {
         prefs.edit().putString("ui_stil", stil.name).apply()
@@ -135,7 +142,7 @@ private fun App(wv: WebView, js: (String) -> Unit) {
             // Webbvyn finns alltid kvar, så att anslutningen och sidans logik fortsätter
             AndroidView(
                 factory = { (wv.parent as? ViewGroup)?.removeView(wv); wv },
-                update = { it.visibility = if (tab >= 2) android.view.View.VISIBLE else android.view.View.INVISIBLE },
+                update = { it.visibility = if (webVisible && tab >= 2) android.view.View.VISIBLE else android.view.View.INVISIBLE },
                 modifier = Modifier.fillMaxSize()
             )
             AnimatedContent(targetState = tab, transitionSpec = { stilTransition(stil, initialState, targetState) }, label = "flik") { t ->
