@@ -69,6 +69,24 @@ object WatchState {
     }
 
     @JvmStatic fun putBattery(p: Int) { battery = p }
+
+    var picking by mutableStateOf(false)
+    var tab by mutableIntStateOf(0)
+    var reqStil by mutableStateOf<String?>(null)
+    var reqTab by mutableIntStateOf(-1)
+
+    @JvmStatic fun closePicker(): Boolean { if (!picking) return false; picking = false; return true }
+    @JvmStatic fun webTab(): Boolean = tab >= 2
+
+    @JvmStatic fun debug(stil: String?, t: Int, picker: Boolean, demo: Boolean) {
+        if (stil != null) reqStil = stil
+        if (t >= 0) reqTab = t
+        if (picker) picking = true
+        if (demo) {
+            putBattery(76)
+            putHealth("""{"steps":6843,"pulse":72,"goal":8000,"hours":[0,0,0,0,0,0,120,640,910,300,220,480,760,350,200,410,900,620,280,130,90,40,0,0],"week":[7420,9105,5230,8012,10433,4120,6843],"days":["tor","fre","lör","sön","mån","tis","Idag"],"hr":[64,62,61,66,74,88,95,79,72,70,76,84,102,91,77,72]}""")
+        }
+    }
 }
 
 internal val TABS = listOf("Klocka", "Hälsa", "Urtavlor", "Verktyg", "Mer")
@@ -92,7 +110,6 @@ private fun App(wv: WebView, js: (String) -> Unit) {
     val scheme = if (dark) dynamicDarkColorScheme(ctx) else dynamicLightColorScheme(ctx)
     val prefs = remember { ctx.getSharedPreferences(WatchService.PREFS, android.content.Context.MODE_PRIVATE) }
     var stil by remember { mutableStateOf(Stil.entries.firstOrNull { it.name == prefs.getString("ui_stil", "") } ?: Stil.MATERIAL) }
-    var picking by remember { mutableStateOf(false) }
     var tab by rememberSaveable { mutableIntStateOf(0) }
     val haptic = LocalHapticFeedback.current
     LaunchedEffect(Unit) {
@@ -102,6 +119,9 @@ private fun App(wv: WebView, js: (String) -> Unit) {
             delay(700)
         }
     }
+    LaunchedEffect(WatchState.reqTab) { val r = WatchState.reqTab; if (r in 0..4) { tab = r; WatchState.reqTab = -1 } }
+    LaunchedEffect(WatchState.reqStil) { val r = WatchState.reqStil ?: return@LaunchedEffect; Stil.entries.firstOrNull { it.name == r }?.let { stil = it }; WatchState.reqStil = null }
+    SideEffect { WatchState.tab = tab }
     var webVisible by remember { mutableStateOf(false) }
     LaunchedEffect(tab) {
         // Sidan byter flik medan den är dold och visas först när bytet är klart, så att den gamla fliken aldrig blinkar fram
@@ -135,7 +155,7 @@ private fun App(wv: WebView, js: (String) -> Unit) {
         find = { js("var b=document.getElementById('btnFind');b&&b.click()") },
         time = { js("var b=document.getElementById('btnTime');b&&b.click()") },
         sync = { js("window.hlSync&&hlSync(true)") },
-        stil = { picking = true }
+        stil = { WatchState.picking = true }
     )
     val body: @Composable () -> Unit = {
         Box(Modifier.fillMaxSize()) {
@@ -157,7 +177,7 @@ private fun App(wv: WebView, js: (String) -> Unit) {
     MaterialTheme(colorScheme = scheme) {
         Box(Modifier.fillMaxSize()) {
             key(stil) { StilShell(stil, tab, onTab, body) }
-            StilPicker(picking, stil, onPick = { stil = it; picking = false }, onClose = { picking = false })
+            StilPicker(WatchState.picking, stil, onPick = { stil = it; WatchState.picking = false }, onClose = { WatchState.picking = false })
         }
     }
 }

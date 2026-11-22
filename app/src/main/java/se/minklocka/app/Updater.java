@@ -47,6 +47,8 @@ public class Updater extends BroadcastReceiver {
     /** manual=true när du trycker Sök ny version. Annars högst var tredje timme. */
     static void check(final Context ctx, final boolean manual) {
         final Context c = ctx.getApplicationContext();
+        // Provbyggen (stresstest) ska aldrig ersättas av den riktiga appen
+        if ((c.getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0) return;
         SharedPreferences p = c.getSharedPreferences(WatchService.PREFS, Context.MODE_PRIVATE);
         long now = System.currentTimeMillis();
         if (busy) return;
