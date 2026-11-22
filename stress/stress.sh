@@ -7,6 +7,7 @@ OUT=stress-out
 mkdir -p $OUT/shots
 adb install -r -g app/build/outputs/apk/debug/app-debug.apk
 adb shell pm grant $P android.permission.POST_NOTIFICATIONS 2>/dev/null || true
+adb shell dumpsys deviceidle whitelist +$P >/dev/null 2>&1
 adb logcat -c
 adb logcat -v time > $OUT/logcat.txt 2>&1 &
 LC=$!
@@ -27,12 +28,13 @@ for s in $STILAR; do
   start --ei tab 1; sleep 4; shot ${s}_1
   adb shell input swipe 540 1900 540 500 400; sleep 2; shot ${s}_1b
   if [ $s = PRICK ]; then adb shell input swipe 900 1200 150 1200 300; sleep 2; shot ${s}_1c; fi
-  for t in 2 3 4; do start --ei tab $t; sleep 6; shot ${s}_$t; done
   start --ei tab 0 --ez picker true; sleep 3; shot ${s}_val
   adb shell input keyevent KEYCODE_BACK; sleep 2; shot ${s}_val_stangd
   adb shell dumpsys gfxinfo $P > $OUT/gfx_$s.txt 2>&1
   echo "$s klar, appen lever: $(alive)" >> $OUT/steg.txt
 done
+echo "== webbflikarna" >> $OUT/steg.txt
+for s in MATERIAL NORRSKEN TIDNING; do start --es stil $s --ei tab 0; sleep 3; for t in 2 3 4; do start --ei tab $t; sleep 6; shot web_${s}_$t; echo "$s flik $t: $(alive)" >> $OUT/steg.txt; done; done
 echo "== snabba flikbyten" >> $OUT/steg.txt
 for i in $(seq 1 80); do start --ei tab $((i % 5)); sleep 0.12; done; sleep 4; shot zz_snabba_flikar
 echo "lever: $(alive)" >> $OUT/steg.txt
