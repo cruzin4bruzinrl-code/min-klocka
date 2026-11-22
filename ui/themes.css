@@ -1,5 +1,5 @@
 /* ================= 16 teman: färger, former, typsnitt och en levande bakgrund per tema ================= */
-.thbg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;display:none}
+.thbg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;display:none}
 .thbg i{position:absolute;display:block}
 @media (prefers-reduced-motion:reduce){.thbg *{animation:none!important}}
 /* 1 Instrument */
@@ -65,4 +65,3 @@
 .thbg .glow{left:50%;top:-10%;width:120%;height:60%;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(201,169,106,.22),transparent);animation:thBreath 7s ease-in-out infinite}
 @keyframes thBreath{0%,100%{opacity:.6}50%{opacity:1}}
 .thbg .rdot{width:8px;height:8px;border-radius:50%;background:#e8202a;right:22px;top:18px;animation:thTw 1.6s ease-in-out infinite}
-.app,.tabs,#tsheet{position:relative;z-index:1}
