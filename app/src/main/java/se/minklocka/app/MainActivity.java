@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
  * Appens enda fönster. Det visar sidan Min klocka (urtavlor och verktyg), och låter sidan prata med klockan
  * genom tjänsten som redan håller kontakten i bakgrunden. Då räcker en app och en anslutning.
  */
-public class MainActivity extends Activity implements WatchService.Web {
+public class MainActivity extends androidx.activity.ComponentActivity implements WatchService.Web {
     static final String HOME = "https://cruzin4bruzinrl-code.github.io/min-klocka/";
     private final Handler ui = new Handler(Looper.getMainLooper());
     private WebView wv;
@@ -108,7 +108,8 @@ public class MainActivity extends Activity implements WatchService.Web {
                 return true;
             }
         });
-        setContentView(wv);
+        // Ramen, menyn och skärmarna Klocka och Hälsa är riktig Android-kod. Sidan visas i de andra flikarna.
+        se.minklocka.app.NativeUi.attach(this, wv, this::js);
         WatchService.web = this;
         begin();
     }
@@ -279,6 +280,18 @@ public class MainActivity extends Activity implements WatchService.Web {
 
     // ---------- från sidan till tjänsten ----------
     private final class Bridge {
+        @JavascriptInterface
+        public void putHealth(String json) {
+            if (!trusted || json == null || json.length() > 20000) return;
+            ui.post(() -> se.minklocka.app.WatchState.putHealth(json));
+        }
+
+        @JavascriptInterface
+        public void putDial(String name, String png) {
+            if (!trusted || png == null || png.length() > 1500000) return;
+            ui.post(() -> se.minklocka.app.WatchState.putDial(name == null ? "" : name, png));
+        }
+
         @JavascriptInterface
         public boolean isReady() {
             return trusted && WatchService.readyNow;

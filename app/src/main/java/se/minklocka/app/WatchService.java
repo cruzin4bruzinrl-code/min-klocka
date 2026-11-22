@@ -824,6 +824,8 @@ public class WatchService extends Service {
         } else if (cmd == 0x04 && key == 0x41 && d.length >= 1) {
             log("Klockans batteri: " + (d[0] & 255) + " %");
             Smart.watchBattery(this, d[0] & 255);
+            final int pct = d[0] & 255;
+            new Handler(Looper.getMainLooper()).post(() -> se.minklocka.app.WatchState.putBattery(pct));
         } else if (cmd == 0x02 && key == 0x20) {
             log("Klockans tid är ställd");
         } else if (cmd == 0x05 && key == 0x51) {
