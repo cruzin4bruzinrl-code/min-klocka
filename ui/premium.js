@@ -144,3 +144,30 @@ drawDeco=function(ctx,d){
       ctx.beginPath();ctx.arc(120+Math.sin(a)*r,143-Math.cos(a)*r*1.12,big?4.2:1.8,0,7);ctx.fillStyle=cols[Math.floor(i/(n*5)*cols.length)];ctx.globalAlpha=big?1:.6;ctx.fill();}ctx.globalAlpha=1;return;}
   _drawDeco3(ctx,d);
 };
+
+// ================= Kollektionen: några ytor till =================
+const _drawBg4=drawBg;
+drawBg=function(ctx,bg,photo){
+  bg=bg||{};
+  if(bg.t==='marble'){const nz=_noise(bg.seed||31),im=ctx.createImageData(DW,DH),d=im.data,a=_hex(bg.c||'#f2efea'),v=_hex(bg.c2||'#8a8580');   // marmor: ljus sten med mörka ådror
+    for(let y=0;y<DH;y++)for(let x=0;x<DW;x++){const t=Math.abs(Math.sin((x*.02+y*.035+nz(x/60,y/60,5)*7)));const f=Math.pow(1-t,6)*.85+nz(x/12,y/12,2)*.08,i=(y*DW+x)*4;
+      d[i]=a[0]+(v[0]-a[0])*f;d[i+1]=a[1]+(v[1]-a[1])*f;d[i+2]=a[2]+(v[2]-a[2])*f;d[i+3]=255;}ctx.putImageData(im,0,0);}
+  else if(bg.t==='velvet'){const nz=_noise(bg.seed||41),im=ctx.createImageData(DW,DH),d=im.data,a=_hex(bg.c||'#5a0f22'),b=_hex(bg.c2||'#12020a');   // sammet: mjukt ljus och fint flor
+    for(let y=0;y<DH;y++)for(let x=0;x<DW;x++){const r=Math.hypot(x-(bg.lx||90),y-(bg.ly||90))/230,f=Math.max(0,Math.min(1,1-r+nz(x/30,y/30,3)*.25-.1)),i=(y*DW+x)*4;
+      d[i]=b[0]+(a[0]-b[0])*f;d[i+1]=b[1]+(a[1]-b[1])*f;d[i+2]=b[2]+(a[2]-b[2])*f;d[i+3]=255;}ctx.putImageData(im,0,0);}
+  else if(bg.t==='stars'){const g=ctx.createRadialGradient(150,100,10,120,143,240);g.addColorStop(0,bg.c||'#2a1a5a');g.addColorStop(1,bg.c2||'#02020a');ctx.fillStyle=g;ctx.fillRect(0,0,DW,DH);const r=_rng(bg.seed||5);   // stjärnhimmel med en svag nebulosa
+    if(bg.neb){const n=ctx.createRadialGradient(80,200,0,80,200,140);n.addColorStop(0,bg.neb+'88');n.addColorStop(1,bg.neb+'00');ctx.fillStyle=n;ctx.fillRect(0,0,DW,DH);}
+    for(let i=0;i<(bg.n||180);i++){const s=r()<.08?1.6:r()*.9+.3;ctx.globalAlpha=.3+r()*.7;ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(r()*DW,r()*DH,s,0,7);ctx.fill();}ctx.globalAlpha=1;}
+  else if(bg.t==='pixels'){ctx.fillStyle=bg.c2||'#05060a';ctx.fillRect(0,0,DW,DH);const r=_rng(bg.seed||13),s=bg.s||12,cols=bg.cols||['#ff3b6b','#ffb02e','#3ddc84','#2e9bff','#a35cff'];   // pixlar som tonar uppåt
+    for(let y=0;y<DH;y+=s)for(let x=0;x<DW;x+=s){if(r()>(y/DH)*.9)continue;ctx.globalAlpha=.25+.6*(y/DH)*r();ctx.fillStyle=cols[Math.floor(r()*cols.length)];ctx.fillRect(x+1,y+1,s-2,s-2);}ctx.globalAlpha=1;}
+  else if(bg.t==='rain'){ctx.fillStyle='#000';ctx.fillRect(0,0,DW,DH);const r=_rng(bg.seed||17),c=bg.c||'#3dff7a';ctx.font='bold 11px monospace';ctx.textAlign='center';   // stillastående teckenregn
+    for(let x=6;x<DW;x+=12){const len=6+Math.floor(r()*18),top=Math.floor(r()*24)*12-60;for(let k=0;k<len;k++){ctx.globalAlpha=k===len-1?1:.12+.6*(k/len);ctx.fillStyle=k===len-1?'#eafff0':c;ctx.fillText(String.fromCharCode(0x30+Math.floor(r()*10)),x,top+k*12);}}ctx.globalAlpha=1;}
+  else if(bg.t==='halo'){ctx.fillStyle=bg.c2||'#000';ctx.fillRect(0,0,DW,DH);const c=bg.c||'#2ee6ff',R=bg.r||92;   // en ring av ljus
+    for(let k=6;k>=0;k--){ctx.beginPath();ctx.arc(120,143,R,0,7);ctx.strokeStyle=c;ctx.globalAlpha=k?.06:1;ctx.lineWidth=k?k*6:2.5;ctx.stroke();}ctx.globalAlpha=1;}
+  else if(bg.t==='prism'){const n=bg.n||14,cols=bg.cols||['#ff5f6d','#ffc371','#7bf1a8','#4facfe','#a18cd1'];   // kilar i glasfärger runt mitten
+    ctx.fillStyle='#000';ctx.fillRect(0,0,DW,DH);for(let i=0;i<n;i++){const a0=i/n*Math.PI*2,a1=(i+1)/n*Math.PI*2;ctx.beginPath();ctx.moveTo(120,143);ctx.arc(120,143,260,a0,a1);ctx.closePath();
+      const g=ctx.createLinearGradient(120,143,120+Math.cos(a0)*200,143+Math.sin(a0)*200);g.addColorStop(0,'#000');g.addColorStop(1,cols[i%cols.length]);ctx.fillStyle=g;ctx.globalAlpha=.85;ctx.fill();}ctx.globalAlpha=1;}
+  else if(bg.t==='silk'){const g=ctx.createLinearGradient(0,0,DW,DH);g.addColorStop(0,bg.c||'#f3e3c3');g.addColorStop(1,bg.c2||'#b48a52');ctx.fillStyle=g;ctx.fillRect(0,0,DW,DH);   // veckat siden
+    for(let k=0;k<7;k++){ctx.beginPath();ctx.moveTo(-20,40+k*40);ctx.bezierCurveTo(80,k*40-30,150,120+k*30,260,60+k*38);ctx.lineTo(260,DH+40);ctx.lineTo(-20,DH+40);ctx.closePath();ctx.fillStyle=k%2?'rgba(255,255,255,.07)':'rgba(0,0,0,.08)';ctx.fill();}}
+  else _drawBg4(ctx,bg,photo);
+};

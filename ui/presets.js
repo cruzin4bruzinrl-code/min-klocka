@@ -508,5 +508,79 @@ const DIGITAL=[
   deco:[TX('12',120,12,90,'pb','#efe4cf','c'),TX('3',204,92,96,'pb','#efe4cf','c'),TX('6',120,184,96,'pb','#efe4cf','c'),TX('9',38,92,96,'pb','#efe4cf','c')],els:[HN({style:'baton',hs:'baton',ms:'baton',hc:'#ffffff',mc:'#ffffff',sec:0,ml:80,w:7})]}}
 
 ];
+// ---- Kollektionen: 50 urtavlor i fem serier. Egna motiv, inget som snurrar. ----
+(function(){
+  // a = analog: yta, visartyp, färg på visare, index, extra
+  const A=(bg,hs,hc,tc,o)=>{o=o||{};const els=[];
+    if(o.min!==0)els.push(TK(60,o.tr||110,o.ml||4,o.mc||tc,{}));
+    els.push(TK(12,o.tr||110,o.hl||12,tc,o.nums?{nums:1,ns:o.ns||16,f:o.nf||'pb'}:{}));
+    if(o.date)els.push(vl('day',o.dx||178,o.dy||135,15,'pb',o.dc||tc,''));
+    els.push(HN({style:hs,hs,ms:hs,hc,mc:hc,sec:0,ml:o.hml||98,w:o.w||8}));
+    return {bg,deco:o.deco||[{k:'glassref',a:.08}],els};};
+  // d = digital: yta, typsnitt, färg, upplägg
+  const D=(bg,f,c,o)=>{o=o||{};const els=[],deco=o.deco?[...o.deco]:[];
+    if(o.lay==='stack')els.push(tm(120,o.y||30,o.s||92,f,c,{lay:'stack',gap:2}));else els.push(tm(120,o.y||70,o.s||64,f,c));
+    if(o.date!==0)els.push(vl('day',120,o.dy||(o.lay==='stack'?248:150),16,'pm',o.dc||c,''));
+    if(o.stats){const b=BADGES(o.sy||196,{bg:o.sb||'#000000',a:.5});deco.push(...b.deco);els.push(...b.els);}
+    return {bg,deco,els};};
+  const K=[
+   // 1. Midnatt
+   ['midnight','Midnight','Svart och stram, vita index och vita visare.',A({t:'grad',c:'#16181d',c2:'#000',a:180},'baton','#ffffff','#ffffff',{hl:14})],
+   ['eclipse','Eclipse','En svart sol med en tunn ljusring runt mitten.',A({t:'halo',c:'#ffb36b',r:96},'dauphine','#f4f1ea','#7a6a58',{min:0,hl:8})],
+   ['obsidian','Obsidian','Svart glas med blank kant och stålvisare.',A({t:'sunburst',c:'#24262b',c2:'#030304',n:160},'dauphine','#dfe3ea','#9aa1ad',{deco:[{k:'bezel',r:119,w:5,c:'#5a606c'},{k:'glassref',a:.14}]})],
+   ['nightfall','Nightfall','Natthimmel med stor blå tid och datum.',D({t:'stars',c:'#0f1a3a',c2:'#02030a',n:120},'pl','#9fc4ff',{s:70})],
+   ['deepspace','Deep Space','Rymd med en violett nebulosa.',A({t:'stars',c:'#2a1458',c2:'#03020a',neb:'#a23cff',n:220},'baton','#ffffff','#c9b8ff',{min:0})],
+   ['copper','Copper','Varmt koppar med borstad yta.',A({t:'brushed',c:'#8a4b2a',c2:'#2a120a'},'sword','#ffe0c2','#ffcfa8',{date:1,dc:'#ffe0c2'})],
+   ['carbon2','Carbon','Kolfiber med röda index.',A({t:'carbon',c:'#121418',c2:'#050607',s:6},'lumed','#e8e8e8','#ff3b3b',{hl:14})],
+   ['mono','Mono','Svartvitt med stora siffror.',A({t:'solid',c:'#000000'},'baton','#ffffff','#ffffff',{nums:1,ns:24,tr:104})],
+   ['smoke2','Smoke','Grå rök och en ljus tid.',D({t:'smoke',c:'#b8c0c8',c2:'#050505',seed:37},'pl','#ffffff',{s:66})],
+   ['emerald','Emerald','Djupgrön gravyr med guld.',A({t:'guilloche',c:'#0d4a36',c2:'#031a12',lc:'210,190,120',lobes:30},'dauphine','#e8cf8a','#e8cf8a',{date:1,deco:[{k:'bezel',r:119,w:5,c:'#d8b86a'}]})],
+   // 2. Natur
+   ['summit','Summit','Bergstoppar i kallt blått gryningsljus.',A({t:'ridges',c:'#c8d8ec',c2:'#1a2a40',c3:'#0a1220',n:7,seed:8},'baton','#ffffff','#ffffff',{min:0})],
+   ['lunar','Lunar','Månen bakom tunna vita visare.',A({t:'moon',r:92},'thin','#ffffff','#666666',{min:0,hl:6,w:5})],
+   ['coastline','Coastline','Turkos kust, tid och datum.',D({t:'hills',cols:['#1a5d78','#1f8fa6','#4fc3c8','#a8ece0']},'pb','#ffffff',{y:44,s:54,dy:110})],
+   ['bloom2','Bloom','En blomma i rosa och korall.',A({t:'petals',cols:['#ff4f8b','#ff8a5c','#ffd1dc']},'baton','#ffffff','#ffffff',{min:0,hl:0})],
+   ['forest','Forest','Skogsåsar i dimma.',A({t:'ridges',c:'#b9d4b0',c2:'#1d3322',c3:'#0b170f',n:7,seed:21},'baton','#ffffff','#ffffff',{min:0})],
+   ['aurora2','Aurora','Norrsken över mörk himmel.',D({t:'aurora',c:'#040a14',cs:['#1de9b6','#7c4dff','#00b0ff']},'pl','#ffffff',{s:64})],
+   ['tidal','Tidal','Böljor i djupblått.',A({t:'hills',c:'#04142a',cols:['#0c2c5a','#123f7a','#1c58a0','#3a7ccc']},'baton','#ffffff','#ffffff',{min:0})],
+   ['dune','Dune','Sanddyner i värme.',D({t:'ridges',c:'#f5d5a5',c2:'#8a5a2a',c3:'#4a2a10',n:5,seed:44},'pb','#3a1f08',{y:40,s:58,dy:106,dc:'#5a3414'})],
+   ['terrain','Terrain','Höjdkurvor i grönt.',A({t:'contour',c:'#7cffb0',c2:'#03100a',k:11,seed:19},'baton','#ffffff','#7cffb0',{min:0})],
+   ['cosmos','Cosmos','Stjärnor och en blå nebulosa, stor tid.',D({t:'stars',c:'#0a1430',c2:'#000',neb:'#2e6bff',n:200,seed:9},'pb','#ffffff',{s:62})],
+   // 3. Lyx
+   ['royal','Royal','Kungsblått satin och silver.',A({t:'satin',c:'#2449c8',c2:'#0a1a60'},'dauphine','#eef2f8','#dfe6f2',{deco:[{k:'bezel',r:119,w:5,c:'#c9d2e0'}]})],
+   ['champagne','Champagne','Ljust guld med solstrålar.',A({t:'sunburst',c:'#e8d2a0',c2:'#8a6a3a',n:140},'dauphine','#4a3410','#4a3410',{date:1,dc:'#4a3410'})],
+   ['marble','Marble','Vit marmor och mörka visare.',A({t:'marble'},'baton','#1a1a1a','#1a1a1a',{min:0})],
+   ['bordeaux','Bordeaux','Vinröd sammet och guld.',A({t:'velvet',c:'#6a0f2a',c2:'#14020a'},'dauphine','#e8cf8a','#e8cf8a',{deco:[{k:'ring',x:120,y:143,r:112,c:'#d8b86a',w:1,a:.4}]})],
+   ['titanium','Titanium','Grått titan med borstad yta och stora index.',A({t:'brushed',c:'#7a8088',c2:'#2a2e34'},'sword','#ffffff','#ffffff',{hl:16,date:1})],
+   ['aura','Aura','Mjukt ljus i rosa och lila.',D({t:'bloom',c:'#ff6fb0',c2:'#7b5cff',c3:'#0a0610'},'pl','#ffffff',{s:66})],
+   ['prism','Prism','Glasfärgade kilar som strålar ut från mitten.',A({t:'prism'},'baton','#ffffff','#ffffff',{min:0,hl:0})],
+   ['contrast','Contrast','Halv svart, halv vit.',A({t:'solid',c:'#000'},'baton','#ff5a1f','#888888',{deco:[R(120,0,120,286,0,'#f2f2f2',1)]})],
+   ['velvet','Velvet','Mörkgrön sammet med guld.',A({t:'velvet',c:'#0f4a32',c2:'#02100a'},'sword','#e8cf8a','#e8cf8a',{min:0})],
+   ['spectrum','Spectrum','Regnbågslinjer, stor staplad tid.',D({t:'streaks'},'pb','#ffffff',{lay:'stack',y:28,s:88})],
+   // 4. Digital och sport
+   ['pulse','Pulse','Stor tid, puls, steg och batteri under.',D({t:'grad',c:'#2a0a12',c2:'#000',a:180},'pb','#ffffff',{y:40,s:66,dy:120,stats:1,sy:170})],
+   ['orbit','Orbit','Mörkblå med en lysande ring runt tiden.',D({t:'halo',c:'#5aa8ff',r:96},'pl','#ffffff',{s:56,y:84,dy:150})],
+   ['chrono','Chrono','Mörk sportig med datum och index.',A({t:'carbon',c:'#1a1c20',c2:'#060708',s:5},'lumed','#ffffff','#ffd23c',{nums:1,ns:15,date:1})],
+   ['velocity','Velocity','Snabba linjer och stor tid.',D({t:'streaks',cols:['#ff3b3b','#ff8a2e','#ffd23c']},'pb','#ffffff',{s:70,y:56,dy:136})],
+   ['vortex','Vortex','Kilar i neon runt mitten.',A({t:'prism',n:20,cols:['#00e5ff','#7c4dff','#ff3df0']},'baton','#ffffff','#ffffff',{min:0,hl:0})],
+   ['cyan','Cyan','Svart med cyan tid och värden.',D({t:'solid',c:'#000'},'mo','#2ee6ff',{y:46,s:62,dy:120,stats:1,sy:170})],
+   ['ignite','Ignite','Glöd i orange och rött, stor tid.',D({t:'bloom',c:'#ff3b1f',c2:'#ffa62e',c3:'#0a0302',x1:60,y1:240,x2:190,y2:60},'pb','#ffffff',{s:68})],
+   ['vertical','Vertical','Stor tid staplad, rent svart.',D({t:'solid',c:'#000'},'pl','#ffffff',{lay:'stack',y:26,s:96})],
+   ['motion','Motion','Pixlar i färg som stiger, tid överst.',D({t:'pixels'},'pb','#ffffff',{y:34,s:58,dy:104})],
+   ['matrix','Matrix','Grönt teckenregn bakom tiden.',D({t:'rain'},'mo','#eafff0',{s:58,deco:[R(20,108,200,80,14,'#000000',.75)],y:112,dy:170})],
+   // 5. Signatur
+   ['glass','Glass','Frostat glas med mjukt ljus.',D({t:'bloom',c:'#9ad8ff',c2:'#e3c8ff',c3:'#1a2030'},'pl','#ffffff',{s:66,deco:[{k:'glassref',a:.22}]})],
+   ['solstice','Solstice','Solnedgång i siden, guldvisare.',A({t:'silk',c:'#ffcf9a',c2:'#c2552a'},'dauphine','#3a1a08','#3a1a08',{min:0})],
+   ['halo','Halo','En ring av cyan ljus och tunna visare.',A({t:'halo',c:'#2ee6ff',r:100},'thin','#ffffff','#2ee6ff',{min:0,hl:0,w:5})],
+   ['atelier','Atelier','Krämvitt papper med siffror och blå visare.',A({t:'paper',c:'#f1ead8'},'baton','#1f4fa8','#1a1a1a',{nums:1,ns:18,nf:'se'})],
+   ['liquid','Liquid','Flytande silver.',A({t:'marble',c:'#d8dde4',c2:'#3a404a',seed:52},'dauphine','#101418','#101418',{min:0})],
+   ['monolith','Monolith','Ett svart block med en tunn guldlinje.',A({t:'solid',c:'#0a0a0a'},'baton','#e8cf8a','#e8cf8a',{min:0,hl:0,deco:[R(118,10,4,266,2,'#e8cf8a',.5)]})],
+   ['mirage','Mirage','Rosa och turkos hetta.',D({t:'bloom',c:'#ff7ab8',c2:'#3ee8d0',c3:'#140a18'},'pb','#ffffff',{lay:'stack',y:30,s:88})],
+   ['pixel','Pixel','Pixlar i neon och tid i mitten.',D({t:'pixels',cols:['#00e5ff','#ff3df0','#ffe14a'],s:10,seed:71},'mo','#ffffff',{s:60})],
+   ['meridian','Meridian','Blå gravyr med vita romerska tal.',A({t:'guilloche',c:'#0f2a5a',c2:'#040c1e',lc:'190,210,255',lobes:40,amp:1.2},'sword','#ffffff','#dfe6f2',{deco:[TX('XII',120,40,20,'se','#e6ecf6','c'),TX('VI',120,226,20,'se','#e6ecf6','c')]})],
+   ['celestial','Celestial','Stjärnhimmel med guldvisare och tunn guldring.',A({t:'stars',c:'#13163a',c2:'#02020a',n:160,seed:33},'dauphine','#e8cf8a','#e8cf8a',{min:0,deco:[{k:'ring',x:120,y:143,r:108,c:'#e8cf8a',w:1,a:.5}]})]
+  ];
+  K.forEach(([k,name,desc,def],i)=>DIGITAL.push({key:'kol_'+k,name,desc,c1:'#ffffff',c2:'#000000',ren:true,fresh:2,koll:Math.floor(i/10)+1,def}));
+})();
 DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');d.def.els.forEach(e=>{if(e.k==='hands')e.sec=0;});   // inget som snurrar runt, inte heller sekundvisare   // inga små snurrande saker: klockan stegar dem, så de rycker
   d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.ren=!!d.ren||/^p_/.test(d.key);d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});
