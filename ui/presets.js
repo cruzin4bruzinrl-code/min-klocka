@@ -493,6 +493,20 @@ const DIGITAL=[
   deco:[{k:'glassref',a:.1}],
   els:[tm(120,26,96,'pb','#fff4e8',{lay:'stack',gap:2}),vl('day',120,246,17,'pm','#ffe2c8','')]}}
 
+// ---- Natur och ljus: egna motiv ritade av koden. Inga foton, inga figurer, inget som snurrar. ----
+,{key:'nt_mane',name:'Måne',desc:'En fullmåne med kratrar och hav, ritad punkt för punkt. Vita visare.',c1:'#d8d8d8',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'moon',r:100},els:[HN({style:'baton',hs:'baton',ms:'baton',hc:'#ffffff',mc:'#ffffff',sec:0,ml:98,w:7})]}}
+,{key:'nt_berg',name:'Bergsdis',desc:'Bergskedjor i dis som blir mörkare närmare dig. Lugn och varm.',c1:'#d9c6aa',c2:'#2a231c',ren:true,fresh:2,def:{bg:{t:'ridges',c:'#e2cfb2',c2:'#3a3027',c3:'#1a1511',n:6},els:[HN({style:'baton',hs:'baton',ms:'baton',hc:'#ffffff',mc:'#ffffff',sec:0,ml:98,w:7})]}}
+,{key:'nt_hojd',name:'Höjdkurvor',desc:'Vita höjdkurvor som på en karta, på svart.',c1:'#ffffff',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'contour',c:'#ffffff',c2:'#000000',k:13},
+  deco:[{k:'ring',x:120,y:143,r:16,c:'#000000',w:30,a:1}],els:[HN({style:'baton',hs:'baton',ms:'baton',hc:'#ffffff',mc:'#ffffff',sec:0,ml:98,w:8})]}}
+,{key:'nt_rok',name:'Rök',desc:'Mjuk blågrå rök som driver över svart.',c1:'#8fc4cc',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'smoke',c:'#8fc4cc',c2:'#000000',seed:23},els:[HN({style:'baton',hs:'baton',ms:'baton',hc:'#ffffff',mc:'#ffffff',sec:0,ml:98,w:7})]}}
+,{key:'nt_blom',name:'Blomma',desc:'En lysande blomma i blått, violett och cyan med varm mitt.',c1:'#6b3bff',c2:'#07040f',ren:true,fresh:2,def:{bg:{t:'petals'},els:[HN({style:'baton',hs:'baton',ms:'baton',hc:'#ffffff',mc:'#ffffff',sec:0,ml:100,w:7})]}}
+,{key:'nt_satin',name:'Satin',desc:'Kungsblått med glänsande diagonala band.',c1:'#2f63ff',c2:'#0a1f7a',ren:true,fresh:2,def:{bg:{t:'satin'},els:[HN({style:'baton',hs:'baton',ms:'baton',hc:'#ffffff',mc:'#ffffff',sec:0,ml:98,w:7})]}}
+,{key:'nt_kust',name:'Kust',desc:'Böljande kullar i turkos, tid och datum överst.',c1:'#5fd1b8',c2:'#0b2540',ren:true,fresh:2,def:{bg:{t:'hills'},els:[vl('day',120,34,16,'pm','#ffffff',''),tm(120,56,52,'pb','#ffffff')]}}
+,{key:'nt_strimmor',name:'Strimmor',desc:'Regnbågsfärgade linjer som svänger upp åt höger. Tid och datum till vänster.',c1:'#ff9a2e',c2:'#050508',ren:true,fresh:2,def:{bg:{t:'streaks'},els:[vl('day',120,30,15,'pm','#ffffff',''),tm(120,50,50,'pm','#ffffff')]}}
+,{key:'nt_prickar',name:'Färgprickar',desc:'En ring av färgade prickar runt en ren svart urtavla.',c1:'#ffd84a',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'solid',c:'#000000'},deco:[{k:'dotring',r:100}],els:[HN({style:'baton',hs:'baton',ms:'baton',hc:'#ffffff',mc:'#ffffff',sec:0,ml:98,w:7})]}}
+,{key:'nt_siffror',name:'Stora siffror',desc:'Fyra stora krämvita siffror som fyller urtavlan.',c1:'#efe4cf',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'solid',c:'#000000'},
+  deco:[TX('12',120,12,90,'pb','#efe4cf','c'),TX('3',204,92,96,'pb','#efe4cf','c'),TX('6',120,184,96,'pb','#efe4cf','c'),TX('9',38,92,96,'pb','#efe4cf','c')],els:[HN({style:'baton',hs:'baton',ms:'baton',hc:'#ffffff',mc:'#ffffff',sec:0,ml:80,w:7})]}}
+
 ];
 DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');d.def.els.forEach(e=>{if(e.k==='hands')e.sec=0;});   // inget som snurrar runt, inte heller sekundvisare   // inga små snurrande saker: klockan stegar dem, så de rycker
   d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.ren=!!d.ren||/^p_/.test(d.key);d.exp=!!d.exp;d.fresh=d.fresh===2?2:(d.fresh?1:0);});
