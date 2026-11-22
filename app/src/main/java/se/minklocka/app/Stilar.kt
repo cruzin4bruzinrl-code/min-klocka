@@ -311,10 +311,11 @@ private fun Gauge(f: Float, label: String, value: String, m: Modifier, col: Colo
                 drawLine(if (lit) col else CK_DIM, Offset(c.x + cos(ang).toFloat() * r1, c.y + sin(ang).toFloat() * r1), Offset(c.x + cos(ang).toFloat() * r2, c.y + sin(ang).toFloat() * r2), if (long) 3.5f else 1.6f)
             }
             val ang = Math.toRadians(150.0 + 240.0 * a)
-            drawLine(CK_AMB, c, Offset(c.x + cos(ang).toFloat() * r * .7f, c.y + sin(ang).toFloat() * r * .7f), r * .035f, StrokeCap.Round)
+            drawLine(CK_AMB, c, Offset(c.x + cos(ang).toFloat() * r * .66f, c.y + sin(ang).toFloat() * r * .66f), r * .035f, StrokeCap.Round)
             drawCircle(CK_AMB, r * .06f, c)
         }
-        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(top = if (big) 70.dp else 34.dp)) {
+        // Värdet står i öppningen längst ner, där visaren aldrig går
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = if (big) 4.dp else 0.dp)) {
             Text(value, color = CK_TXT, fontFamily = MONO, fontSize = if (big) 26.sp else 15.sp, fontWeight = FontWeight.Bold)
             Text(label, color = CK_CY.copy(alpha = .7f), fontFamily = MONO, fontSize = if (big) 11.sp else 9.sp, letterSpacing = 2.sp)
         }

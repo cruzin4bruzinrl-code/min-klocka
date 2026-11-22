@@ -110,6 +110,7 @@ public class MainActivity extends androidx.activity.ComponentActivity implements
         });
         // Ramen, menyn och skärmarna Klocka och Hälsa är riktig Android-kod. Sidan visas i de andra flikarna.
         se.minklocka.app.NativeUi.attach(this, wv, this::js);
+        restoreCache();
         debug(getIntent());
         WatchService.web = this;
         begin();
@@ -228,6 +229,23 @@ public class MainActivity extends androidx.activity.ComponentActivity implements
         debug(i);
     }
 
+    /** Visar det som sist var känt direkt, innan sidan hunnit ladda. */
+    private void restoreCache() {
+        String h = prefs().getString("cache_halsa", null);
+        if (h != null) se.minklocka.app.WatchState.putHealth(h);
+        int b = prefs().getInt("cache_batt", -1);
+        if (b >= 0) se.minklocka.app.WatchState.putBattery(b);
+        try {
+            java.io.File f = new java.io.File(getFilesDir(), "urtavla.txt");
+            if (f.exists()) {
+                String all = new String(java.nio.file.Files.readAllBytes(f.toPath()), java.nio.charset.StandardCharsets.UTF_8);
+                int i = all.indexOf('\n');
+                if (i >= 0) se.minklocka.app.WatchState.putDial(all.substring(0, i), all.substring(i + 1));
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
     /** Bara i provbyggen: stresstestet styr stil, flik och exempeldata utifrån. */
     private void debug(Intent i) {
         if (i == null || (getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) == 0) return;
@@ -300,12 +318,18 @@ public class MainActivity extends androidx.activity.ComponentActivity implements
         public void putHealth(String json) {
             if (!trusted || json == null || json.length() > 20000) return;
             ui.post(() -> se.minklocka.app.WatchState.putHealth(json));
+            prefs().edit().putString("cache_halsa", json).apply();
         }
 
         @JavascriptInterface
         public void putDial(String name, String png) {
             if (!trusted || png == null || png.length() > 1500000) return;
             ui.post(() -> se.minklocka.app.WatchState.putDial(name == null ? "" : name, png));
+            // Sparas, så att Klocka visar urtavlan direkt nästa gång appen startar
+            try (java.io.FileOutputStream o = new java.io.FileOutputStream(new java.io.File(getFilesDir(), "urtavla.txt"))) {
+                o.write(((name == null ? "" : name) + "\n" + png).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            } catch (Exception ignored) {
+            }
         }
 
         @JavascriptInterface

@@ -826,6 +826,7 @@ public class WatchService extends Service {
             Smart.watchBattery(this, d[0] & 255);
             final int pct = d[0] & 255;
             new Handler(Looper.getMainLooper()).post(() -> se.minklocka.app.WatchState.putBattery(pct));
+            getSharedPreferences(PREFS, MODE_PRIVATE).edit().putInt("cache_batt", pct).apply();
         } else if (cmd == 0x02 && key == 0x20) {
             log("Klockans tid är ställd");
         } else if (cmd == 0x05 && key == 0x51) {
