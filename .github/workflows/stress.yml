@@ -1,5 +1,7 @@
 name: Stresstest
 on:
+  push:
+    branches: [stresstest]
   workflow_dispatch:
 permissions:
   contents: read
