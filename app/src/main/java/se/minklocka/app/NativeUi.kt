@@ -71,7 +71,7 @@ object WatchState {
     @JvmStatic fun putBattery(p: Int) { battery = p }
 }
 
-private val TABS = listOf("Klocka", "Hälsa", "Urtavlor", "Verktyg", "Mer")
+internal val TABS = listOf("Klocka", "Hälsa", "Urtavlor", "Verktyg", "Mer")
 private val WEB = listOf("home", "health", "dials", "tools", "log")
 
 /** Bygger hela appens ram i riktig Android-kod. Webbdelen visas bara i flikarna som ännu inte är omgjorda. */
@@ -90,6 +90,9 @@ private fun App(wv: WebView, js: (String) -> Unit) {
     val dark = isSystemInDarkTheme()
     val ctx = LocalContext.current
     val scheme = if (dark) dynamicDarkColorScheme(ctx) else dynamicLightColorScheme(ctx)
+    val prefs = remember { ctx.getSharedPreferences(WatchService.PREFS, android.content.Context.MODE_PRIVATE) }
+    var stil by remember { mutableStateOf(Stil.entries.firstOrNull { it.name == prefs.getString("ui_stil", "") } ?: Stil.MATERIAL) }
+    var picking by remember { mutableStateOf(false) }
     var tab by rememberSaveable { mutableIntStateOf(0) }
     val haptic = LocalHapticFeedback.current
     LaunchedEffect(Unit) {
@@ -103,58 +106,76 @@ private fun App(wv: WebView, js: (String) -> Unit) {
         // Webbdelen göms bakom de inbyggda skärmarna; dess egen meny visas aldrig
         js("document.documentElement.classList.add('native');window.showTab&&showTab('" + WEB[tab] + "')")
     }
+    LaunchedEffect(stil, dark) {
+        prefs.edit().putString("ui_stil", stil.name).apply()
+        // Flikarna som ännu är webb får samma stil
+        js("window.setTheme&&setTheme('" + stil.web(dark) + "')")
+    }
     val act = ctx as? android.app.Activity
+    val bars = stil.bars(scheme, dark)
     SideEffect {
         act?.window?.let { w ->
-            w.statusBarColor = scheme.surface.toArgb()
-            w.navigationBarColor = scheme.surfaceContainer.toArgb()
+            w.statusBarColor = bars.first.toArgb()
+            w.navigationBarColor = bars.first.toArgb()
             androidx.core.view.WindowCompat.getInsetsController(w, w.decorView).apply {
-                isAppearanceLightStatusBars = !dark; isAppearanceLightNavigationBars = !dark
+                isAppearanceLightStatusBars = bars.second; isAppearanceLightNavigationBars = bars.second
+            }
+        }
+    }
+    val onTab: (Int) -> Unit = { i -> if (tab != i) { haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove); tab = i } }
+    val acts = Acts(
+        dials = { onTab(2) }, health = { onTab(1) },
+        find = { js("var b=document.getElementById('btnFind');b&&b.click()") },
+        time = { js("var b=document.getElementById('btnTime');b&&b.click()") },
+        sync = { js("window.hlSync&&hlSync(true)") },
+        stil = { picking = true }
+    )
+    val body: @Composable () -> Unit = {
+        Box(Modifier.fillMaxSize()) {
+            // Webbvyn finns alltid kvar, så att anslutningen och sidans logik fortsätter
+            AndroidView(
+                factory = { (wv.parent as? ViewGroup)?.removeView(wv); wv },
+                update = { it.visibility = if (tab >= 2) android.view.View.VISIBLE else android.view.View.INVISIBLE },
+                modifier = Modifier.fillMaxSize()
+            )
+            AnimatedContent(targetState = tab, transitionSpec = { stilTransition(stil, initialState, targetState) }, label = "flik") { t ->
+                when (t) {
+                    0 -> StilHome(stil, acts)
+                    1 -> StilHealth(stil, acts)
+                    else -> Spacer(Modifier.fillMaxSize())
+                }
             }
         }
     }
     MaterialTheme(colorScheme = scheme) {
-        Scaffold(
-            containerColor = MaterialTheme.colorScheme.surface,
-            bottomBar = {
-                NavigationBar {
-                    TABS.forEachIndexed { i, t ->
-                        NavigationBarItem(
-                            selected = tab == i,
-                            onClick = { if (tab != i) { haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove); tab = i } },
-                            icon = { TabIcon(i, tab == i) },
-                            label = { Text(t) }
-                        )
-                    }
-                }
-            }
-        ) { pad ->
-            Box(Modifier.fillMaxSize().padding(pad)) {
-                // Webbvyn finns alltid kvar, så att anslutningen och sidans logik fortsätter
-                AndroidView(factory = { wv }, modifier = Modifier.fillMaxSize())
-                AnimatedContent(
-                    targetState = tab,
-                    transitionSpec = {
-                        val dir = if (targetState > initialState) 1 else -1
-                        (slideInHorizontally(tween(320, easing = FastOutSlowInEasing)) { it / 6 * dir } + fadeIn(tween(220))) togetherWith
-                            (slideOutHorizontally(tween(260)) { -it / 8 * dir } + fadeOut(tween(160)))
-                    }, label = "flik"
-                ) { t ->
-                    when (t) {
-                        0 -> HomeScreen(onDials = { tab = 2 }, onHealth = { tab = 1 }, js = js)
-                        1 -> HealthScreen(js)
-                        else -> Spacer(Modifier.fillMaxSize())
-                    }
-                }
-            }
+        Box(Modifier.fillMaxSize()) {
+            key(stil) { StilShell(stil, tab, onTab, body) }
+            StilPicker(picking, stil, onPick = { stil = it; picking = false }, onClose = { picking = false })
         }
     }
 }
 
+/** Det som knapparna på de inbyggda skärmarna gör. */
+class Acts(val dials: () -> Unit, val health: () -> Unit, val find: () -> Unit, val time: () -> Unit, val sync: () -> Unit, val stil: () -> Unit)
+
 @Composable
-private fun TabIcon(i: Int, on: Boolean) {
-    val c = LocalContentColor.current
-    Canvas(Modifier.size(24.dp)) {
+internal fun MaterialShell(tab: Int, onTab: (Int) -> Unit, body: @Composable () -> Unit) {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.surface,
+        bottomBar = {
+            NavigationBar {
+                TABS.forEachIndexed { i, t ->
+                    NavigationBarItem(selected = tab == i, onClick = { onTab(i) }, icon = { TabIcon(i, tab == i) }, label = { Text(t) })
+                }
+            }
+        }
+    ) { pad -> Box(Modifier.fillMaxSize().padding(pad)) { body() } }
+}
+
+@Composable
+internal fun TabIcon(i: Int, on: Boolean, tint: Color = Color.Unspecified, sz: androidx.compose.ui.unit.Dp = 24.dp) {
+    val c = if (tint == Color.Unspecified) LocalContentColor.current else tint
+    Canvas(Modifier.size(sz)) {
         val w = size.width
         when (i) {
             0 -> { drawRoundRect(c, Offset(w * .22f, w * .12f), Size(w * .56f, w * .76f), androidx.compose.ui.geometry.CornerRadius(w * .16f), style = if (on) androidx.compose.ui.graphics.drawscope.Fill else Stroke(w * .09f)) }
@@ -169,14 +190,18 @@ private fun TabIcon(i: Int, on: Boolean) {
 
 // ---------------- Klocka ----------------
 @Composable
-private fun HomeScreen(onDials: () -> Unit, onHealth: () -> Unit, js: (String) -> Unit) {
+internal fun HomeScreen(a: Acts) {
+    val onDials = a.dials; val onHealth = a.health
     val s = WatchState
     val cs = MaterialTheme.colorScheme
     var shown by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { shown = true }
     Column(Modifier.fillMaxSize().background(cs.surface).verticalScroll(rememberScrollState()).padding(horizontal = 16.dp)) {
         Spacer(Modifier.height(12.dp))
-        Text("Min klocka", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(start = 4.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Min klocka", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f).padding(start = 4.dp))
+            FilledTonalButton(onClick = a.stil) { Text("Stil") }
+        }
         Spacer(Modifier.height(10.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(start = 4.dp)) {
             StatusChip(s.ready, s.status)
@@ -233,8 +258,8 @@ private fun HomeScreen(onDials: () -> Unit, onHealth: () -> Unit, js: (String) -
         Spacer(Modifier.height(12.dp))
         Appear(shown, 3) {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                FilledTonalButton(onClick = { js("window.findWatch&&findWatch()") }, modifier = Modifier.weight(1f)) { Text("Hitta klockan") }
-                FilledTonalButton(onClick = { js("window.syncTime&&syncTime()") }, modifier = Modifier.weight(1f)) { Text("Ställ tiden") }
+                FilledTonalButton(onClick = a.find, modifier = Modifier.weight(1f)) { Text("Hitta klockan") }
+                FilledTonalButton(onClick = a.time, modifier = Modifier.weight(1f)) { Text("Ställ tiden") }
             }
         }
         Spacer(Modifier.height(24.dp))
@@ -242,7 +267,7 @@ private fun HomeScreen(onDials: () -> Unit, onHealth: () -> Unit, js: (String) -
 }
 
 @Composable
-private fun StatusChip(ready: Boolean, status: String) {
+internal fun StatusChip(ready: Boolean, status: String) {
     val inf = rememberInfiniteTransition(label = "puls")
     val a by inf.animateFloat(1f, 0f, infiniteRepeatable(tween(1400), RepeatMode.Restart), label = "ring")
     val col = if (ready) Color(0xFF3DDC84) else MaterialTheme.colorScheme.outline
@@ -255,7 +280,7 @@ private fun StatusChip(ready: Boolean, status: String) {
 }
 
 @Composable
-private fun BatteryIcon(f: Float) {
+internal fun BatteryIcon(f: Float) {
     val c = LocalContentColor.current
     val anim by animateFloatAsState(f, tween(1200, easing = FastOutSlowInEasing), label = "batt")
     Canvas(Modifier.size(22.dp, 12.dp)) {
@@ -267,7 +292,7 @@ private fun BatteryIcon(f: Float) {
 }
 
 @Composable
-private fun WatchPreview(img: ImageBitmap?, w: androidx.compose.ui.unit.Dp, ink: Color) {
+internal fun WatchPreview(img: ImageBitmap?, w: androidx.compose.ui.unit.Dp, ink: Color) {
     val inf = rememberInfiniteTransition(label = "andas")
     val glow by inf.animateFloat(.35f, .8f, infiniteRepeatable(tween(2600, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "glow")
     Box(Modifier.size(w, w * 1.19f), contentAlignment = Alignment.Center) {
@@ -279,7 +304,7 @@ private fun WatchPreview(img: ImageBitmap?, w: androidx.compose.ui.unit.Dp, ink:
 }
 
 @Composable
-private fun StepRing(f: Float, d: androidx.compose.ui.unit.Dp) {
+internal fun StepRing(f: Float, d: androidx.compose.ui.unit.Dp) {
     val cs = MaterialTheme.colorScheme
     val anim by animateFloatAsState(f.coerceIn(0f, 1f), tween(1400, easing = FastOutSlowInEasing), label = "ring")
     Canvas(Modifier.size(d)) {
@@ -290,13 +315,13 @@ private fun StepRing(f: Float, d: androidx.compose.ui.unit.Dp) {
 }
 
 @Composable
-private fun CountText(v: Int, size: androidx.compose.ui.unit.TextUnit) {
+internal fun CountText(v: Int, size: androidx.compose.ui.unit.TextUnit, color: Color = Color.Unspecified) {
     val anim by animateIntAsState(maxOf(0, v), tween(1300, easing = FastOutSlowInEasing), label = "tal")
-    Text(if (v < 0) "–" else fmt(anim), fontSize = size, fontWeight = FontWeight.SemiBold)
+    Text(if (v < 0) "–" else fmt(anim), fontSize = size, fontWeight = FontWeight.SemiBold, color = color)
 }
 
 @Composable
-private fun BeatingHeart(c: Color) {
+internal fun BeatingHeart(c: Color) {
     val inf = rememberInfiniteTransition(label = "hjärta")
     val s by inf.animateFloat(1f, 1f, infiniteRepeatable(keyframes { durationMillis = 1100; 1f at 0; 1.28f at 160; 1.02f at 300; 1f at 1100 }), label = "slag")
     Canvas(Modifier.size(16.dp).scale(s)) {
@@ -306,7 +331,7 @@ private fun BeatingHeart(c: Color) {
 }
 
 @Composable
-private fun Spark(v: List<Int>, c: Color, m: Modifier) {
+internal fun Spark(v: List<Int>, c: Color, m: Modifier) {
     val p by animateFloatAsState(if (v.isEmpty()) 0f else 1f, tween(1500), label = "kurva")
     Canvas(m) {
         if (v.size < 2) { drawLine(c.copy(alpha = .3f), Offset(0f, size.height / 2), Offset(size.width, size.height / 2), 3f); return@Canvas }
@@ -318,7 +343,7 @@ private fun Spark(v: List<Int>, c: Color, m: Modifier) {
 }
 
 @Composable
-private fun Bars(v: List<Int>, c: Color, m: Modifier) {
+internal fun Bars(v: List<Int>, c: Color, m: Modifier) {
     val p by animateFloatAsState(if (v.any { it > 0 }) 1f else 0f, tween(1100, easing = FastOutSlowInEasing), label = "staplar")
     Canvas(m) {
         val mx = maxOf(1, v.maxOrNull() ?: 1).toFloat(); val bw = size.width / v.size.coerceAtLeast(1)
@@ -330,15 +355,15 @@ private fun Bars(v: List<Int>, c: Color, m: Modifier) {
 }
 
 @Composable
-private fun Appear(on: Boolean, i: Int, content: @Composable () -> Unit) {
+internal fun Appear(on: Boolean, i: Int, content: @Composable () -> Unit) {
     AnimatedVisibility(on, enter = fadeIn(tween(400, delayMillis = 70 * i)) + slideInVertically(spring(dampingRatio = .8f, stiffness = 300f)) { it / 5 }) { content() }
 }
 
-private fun fmt(n: Int) = "%,d".format(n).replace(',', ' ')
+internal fun fmt(n: Int) = "%,d".format(java.util.Locale.ROOT, n).replace(',', ' ')
 
 // ---------------- Hälsa ----------------
 @Composable
-private fun HealthScreen(js: (String) -> Unit) {
+internal fun HealthScreen(a: Acts) {
     val s = WatchState
     val cs = MaterialTheme.colorScheme
     var busy by remember { mutableStateOf(false) }
@@ -347,7 +372,7 @@ private fun HealthScreen(js: (String) -> Unit) {
         Spacer(Modifier.height(12.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Hälsa", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f).padding(start = 4.dp))
-            Button(onClick = { busy = true; js("window.hlSync&&hlSync(true)") }, enabled = !busy) {
+            Button(onClick = { busy = true; a.sync() }, enabled = !busy) {
                 if (busy) { CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp); Spacer(Modifier.width(8.dp)) }
                 Text(if (busy) "Hämtar" else "Hämta nu")
             }
