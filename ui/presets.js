@@ -43,16 +43,45 @@ const DIGITAL=[
   els:[vl('day',72,36,22,'sg','#1c1f1a',''),vl('steps',176,40,20,'sg','#1c1f1a',''),tm(120,86,64,'sg','#1c1f1a'),vl('kcal',70,258,20,'sg','#1c1f1a',''),vl('pulse',176,258,20,'sg','#1c1f1a','')]}}
 ,{key:'panel2',exp:1,name:'Instrumentpanel',desc:'Stor tid, steg och puls, batteriet som tio staplar och dag och temperatur i brickor.',c1:'#4cc9f0',c2:'#0c0d10',fresh:2,pr:1,def:{bg:{t:'p2',id:'panel'},
   els:[vl('steps',58,86,18,'pm','#ffffff',''),vl('pulse',182,86,18,'pm','#ff4d6d',''),tm(120,112,58,'pb','#ffffff'),{k:'batt',style:'bars',x:120,y:198,w:170,h:14},vl('day',76,248,16,'pb','#ffffff',''),vl('temp',172,248,16,'pb','#ffffff','')]}}
-,{key:'racing',name:'Racing',desc:'Svart, vitt och rött. Stor kursiv tid, röd ring med steg och fartlinjer.',c1:'#e8202a',c2:'#050505',fresh:2,pr:1,def:{bg:{t:'p2',id:'racing'},
-  els:[vl('steps',150,58,13,'pb','#ffffff',''),tm(120,120,68,'ital','#ffffff'),vl('day',90,258,15,'pb','#ffffff','')]}}
-,{key:'korsbar',name:'Körsbär',desc:'En blommande körsbärsgren på svart. Tid i rosa, puls och datum.',c1:'#ff8fab',c2:'#050405',fresh:2,pr:1,def:{bg:{t:'p2',id:'korsbar'},
-  els:[tm(176,150,56,'pl','#ff8fab',{lay:'stack',gap:0}),vl('pulse',40,214,15,'pm','#ffffff','PULS'),vl('day',40,244,15,'pm','#ffffff','DAG')]}}
 ,{key:'pastell',name:'Pastell',desc:'Mjuka vågor i rosa, lila och blått med tunna vita visare.',c1:'#c9a7ff',c2:'#ffd1dc',fresh:2,pr:1,def:{bg:{t:'p2',id:'pastell'},
   els:[HN({style:'pill',hs:'pill',ms:'pill',hc:'#ffffff',mc:'#ffffff',sec:0,ml:96,hk:.62,w:5})]}}
 ,{key:'kakel',name:'Kakel',desc:'Ljusgröna upphöjda brickor: stor tid, dag, puls och steg.',c1:'#3a4236',c2:'#c9cfc4',fresh:2,pr:1,def:{bg:{t:'p2',id:'kakel'},
   els:[tm(120,30,72,'mo','#2a3026'),vl('day',64,166,22,'mo','#2a3026',''),vl('pulse',176,166,22,'mo','#2a3026',''),vl('steps',120,240,26,'mo','#2a3026','')]}}
 
+// ---- Från din bild: urtavlorna ChatGPT skapade åt dig, så nära upplägget det går ----
+,{key:'tre_cirklar',name:'Tre cirklar',secs:1,desc:'Vit minutskala, tre färgade cirklar med puls, sträcka och kalorier, veckodag och röd sekundvisare.',c1:'#ff3b5c',c2:'#000000',fresh:2,pr:1,def:{bg:{t:'p2',id:'trecirklar'},
+  els:[{k:'week',x:110,y:84,c:'#ffffff'},vl('day',150,84,14,'pb','#ffffff',''),vl('pulse',66,122,15,'pb','#ffffff',''),vl('km',160,178,13,'pb','#ffffff',''),vl('kcal',86,198,13,'pb','#ffffff',''),
+    HN({style:'pill',hs:'pill',ms:'pill',hc:'#ffffff',mc:'#ffffff',sec:1,sc:'#ff3b30',ml:96,hk:.62,w:6})]}}
+,{key:'vagor_rosa',name:'Rosa vågor',secs:1,desc:'Vågor i persika, rosa och lila med vita visare och tunn sekundvisare.',c1:'#ff7eb3',c2:'#7a5cff',fresh:2,pr:1,def:{bg:{t:'p2',id:'vagor2'},
+  els:[HN({style:'pill',hs:'pill',ms:'pill',hc:'#ffffff',mc:'#ffffff',sec:1,sc:'#ffffff',ml:96,hk:.62,w:6})]}}
+,{key:'bla_bagar',name:'Blå bågar',desc:'Svart med tunna blå bågar och stor tid staplad, med datum.',c1:'#3c6eff',c2:'#000000',fresh:2,pr:1,def:{bg:{t:'p2',id:'blabagar'},
+  els:[tm(110,40,92,'pl','#ffffff',{lay:'stack',gap:0}),vl('day',196,64,16,'pm','#8fb0ff','')]}}
+,{key:'neon_cyan',name:'Neon cyan',secs:1,desc:'Lysande cyan ram och index, ihåliga cyan visare och veckodag.',c1:'#2ef2ff',c2:'#020608',fresh:2,pr:1,def:{bg:{t:'p2',id:'neoncyan'},
+  els:[{k:'week',x:72,y:176,c:'#2ef2ff'},HN({style:'hollow',hs:'hollow',ms:'hollow',hc:'#2ef2ff',mc:'#2ef2ff',sec:1,sc:'#2ef2ff',ml:92,hk:.62,w:9})]}}
+,{key:'fargsiffror',name:'Färgsiffror',desc:'Stora siffror och prickar i många färger, gul och orange visare och data i hörnen.',c1:'#ffd23f',c2:'#050507',fresh:2,pr:1,def:{bg:{t:'p2',id:'fargsiffror'},
+  els:[vl('pulse',46,22,13,'pb','#ffffff',''),vl('kcal',190,22,13,'pb','#ffffff',''),vl('km',48,262,13,'pb','#ffffff',''),vl('steps',182,262,12,'pb','#ffffff',''),HN({style:'pill',hs:'pill',ms:'pill',hc:'#ffd23f',mc:'#ff9f1c',sec:0,ml:84,hk:.62,w:10})]}}
+,{key:'lcd_astro',name:'LCD med rymdfarare',desc:'Ljus LCD: datum, steg, stor tid, veckodag, puls, kalorier och sträcka, och en egen liten rymdfarare.',c1:'#15170f',c2:'#eceee6',fresh:2,pr:1,def:{bg:{t:'p2',id:'lcdastro'},
+  els:[vl('day',54,28,22,'sg','#15170f',''),vl('steps',166,28,20,'sg','#15170f',''),tm(120,62,58,'sg','#15170f'),{k:'week',x:42,y:132,c:'#15170f'},vl('pulse',80,172,34,'sg','#15170f',''),vl('kcal',70,262,18,'sg','#15170f',''),vl('km',180,262,18,'sg','#15170f','')]}}
+,{key:'minimal_tal',name:'Fin skala',secs:1,desc:'Svart med fin minutskala, små siffror, röd sekundvisare, kalorier och puls.',c1:'#ff3b30',c2:'#000000',fresh:2,pr:1,def:{bg:{t:'p2',id:'minimaltal'},
+  els:[vl('day',176,136,12,'pb','#ff6a5a',''),vl('kcal',46,244,12,'pb','#ff6a5a',''),vl('pulse',218,244,12,'pb','#ff6a5a',''),HN({style:'pill',hs:'pill',ms:'pill',hc:'#ffffff',mc:'#ffffff',sec:1,sc:'#ff3b30',ml:96,hk:.62,w:5})]}}
+,{key:'korsbar2',name:'Körsbär',desc:'Blommande körsbärsgren och vita fåglar. Puls, datum och veckodag, stor rosa tid.',c1:'#ff8fab',c2:'#050405',fresh:2,pr:1,def:{bg:{t:'p2',id:'korsbar2'},
+  els:[vl('pulse',46,186,13,'pm','#ffffff',''),vl('day',28,208,13,'pm','#ffffff',''),{k:'week',x:30,y:230,c:'#ffffff'},tm(176,150,56,'pm','#ff8fab',{lay:'stack',gap:0})]}}
+,{key:'dashboard',name:'Instrument',desc:'Steg i en båge, puls, stor tid, batteriet som staplar, sträcka och kalorier.',c1:'#ff4d6d',c2:'#0b0c0f',fresh:2,pr:1,def:{bg:{t:'p2',id:'dashboard'},
+  els:[vl('steps',40,54,11,'pb','#ffffff',''),vl('pulse',178,62,22,'pb','#ffffff',''),tm(120,116,60,'pb','#ffffff'),vl('day',202,170,14,'pb','#8a90a4',''),{k:'batt',style:'bars',x:120,y:214,w:190,h:12},vl('km',60,262,16,'pb','#ffffff',''),vl('kcal',168,262,16,'pb','#ffffff','')]}}
+,{key:'svep',name:'Svep',secs:1,desc:'Ett band i orange och blått, små urtavlor med puls och kalorier, steg och datum. Guldvisare.',c1:'#ff8a3c',c2:'#0a0a0c',fresh:2,pr:1,def:{bg:{t:'p2',id:'svep'},
+  els:[vl('pulse',60,150,15,'pl','#ffffff',''),vl('kcal',120,232,14,'pl','#ffffff',''),vl('steps',196,58,13,'pm','#ffffff',''),vl('day',196,136,13,'pb','#ffffff',''),HN({style:'facet',hs:'facet',ms:'facet',hc:'#f2c46a',mc:'#f2c46a',sec:1,sc:'#ff8a3c',ml:96,hk:.62,w:7})]}}
+,{key:'lutande',name:'Lutande tal',desc:'Stora lutande siffror runt vänsterkanten, gula visare.',c1:'#ffd23f',c2:'#000000',fresh:2,pr:1,def:{bg:{t:'p2',id:'lutande'},
+  els:[HN({style:'pill',hs:'pill',ms:'pill',hc:'#ffd23f',mc:'#ffd23f',sec:0,ml:96,hk:.6,w:7})]}}
+,{key:'ringdig',name:'Färgringar',desc:'Stor tid överst, veckodag och datum, färgade ringar och sträcka, puls och kalorier.',c1:'#ff9f1c',c2:'#000000',fresh:2,pr:1,def:{bg:{t:'p2',id:'ringdig'},
+  els:[tm(126,48,62,'pb','#ffffff'),{k:'week',x:176,y:110,c:'#ffffff'},vl('day',214,110,15,'pb','#ffffff',''),vl('km',176,170,18,'pb','#ffffff',''),vl('pulse',176,206,18,'pb','#ffffff',''),vl('kcal',176,242,18,'pb','#ffffff','')]}}
+,{key:'konturspar',name:'Konturspår',desc:'Dubbel ram med prickar, liten digital tid och veckodag, och visare ovanpå.',c1:'#e8e8e8',c2:'#000000',fresh:2,pr:1,def:{bg:{t:'p2',id:'konturspar'},
+  els:[tm(120,44,30,'pb','#e8e8e8'),{k:'week',x:104,y:226,c:'#e8e8e8'},vl('day',146,226,14,'pb','#e8e8e8',''),HN({style:'pill',hs:'pill',ms:'pill',hc:'#ffffff',mc:'#ffffff',sec:0,ml:90,hk:.62,w:5})]}}
+,{key:'sportgra',name:'Sport grå',desc:'Ljus panel med steg och stor tid. Puls i en cirkel, kalorier, sträcka och batteri.',c1:'#3ddc84',c2:'#0b0c0f',fresh:2,pr:1,def:{bg:{t:'p2',id:'sportgra'},
+  els:[vl('steps',96,28,18,'pb','#1a1c20',''),{k:'week',x:196,y:28,c:'#1a1c20'},tm(120,62,62,'pb','#1a1c20'),vl('pulse',48,208,20,'pb','#ffffff',''),vl('kcal',160,186,16,'pb','#ffffff',''),vl('km',160,218,16,'pb','#ffffff',''),{k:'batt',style:'dotcell',x:96,y:254}]}}
+,{key:'racing',name:'Racing',desc:'Röd ring med steg, sträcka och puls, stor kursiv tid och veckodag med datum.',c1:'#e8202a',c2:'#050505',fresh:2,pr:1,def:{bg:{t:'p2',id:'racing2'},
+  els:[vl('steps',120,60,12,'pb','#ffffff',''),vl('km',28,56,13,'pb','#ffffff',''),vl('pulse',212,56,13,'pb','#e8202a',''),tm(120,122,66,'ital','#ffffff'),{k:'week',x:70,y:240,c:'#e8202a'},vl('day',130,240,16,'pb','#e8202a','')]}}
+
 ];
-DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');d.def.els.forEach(e=>{if(e.k==='hands')e.sec=0;});   // inget som snurrar runt, inte heller sekundvisare   // inga små snurrande saker: klockan stegar dem, så de rycker
+DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');d.def.els.forEach(e=>{if(e.k==='hands'&&!d.secs)e.sec=0;});   // inget som snurrar runt, inte heller sekundvisare   // inga små snurrande saker: klockan stegar dem, så de rycker
   d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.ren=!!d.ren||/^p_/.test(d.key);d.exp=!!d.exp||d.def.els.some(e=>e.k==='week');   // veckodagen är inte provad på klockan, så den räknas som experiment
   d.fresh=d.fresh===2?2:(d.fresh?1:0);});
