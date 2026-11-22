@@ -36,10 +36,12 @@ let pass=0,fail=0;const ok=(n,c,x)=>{c?pass++:fail++;console.log((c?'ok   ':'FEL
   ok('batteriet läses',await p.textContent('#stBatt')==='38 %',await p.textContent('#stBatt'));
   ok('Visa alla enheter är dold',await p.evaluate(()=>getComputedStyle(document.getElementById('btnConnectAll')).display==='none'));
   // skicka en urtavla genom appen
-  await p.click('#tabs [data-v="dials"]');await p.click('#dialGrid [data-k="d:rutnat"]');last=null;await p.click('#btnSend');
+  await p.click('#tabs [data-v="dials"]');await p.click('#dialGrid [data-k="d:atelier_noir"]');last=null;await p.click('#btnSend');
   await p.waitForFunction(()=>/finns nu på klockan/.test(document.getElementById('stProg').textContent)&&!busy,null,{timeout:90000});
   const exp=Buffer.from(await p.evaluate(()=>{let s='';const f=window.__lastSent;for(let i=0;i<f.length;i+=8192)s+=String.fromCharCode.apply(null,f.subarray(i,i+8192));return btoa(s);}),'base64');
   ok('urtavlan kommer fram oförändrad genom appen',!!last&&last.equals(exp),last&&last.length);
+  // en oprovad urtavla frågar hur den ser ut efteråt; svara så att sidan blir fri
+  await p.waitForTimeout(1500);await p.evaluate(()=>{const b=document.querySelector('#shB button[data-r="ok"]')||document.querySelector('#shB button');if(b&&!document.getElementById('shade').hidden)b.click();});await p.waitForTimeout(400);
   // musikknapp från klockan syns
   await p.evaluate(()=>window.__push(0x0D,7,[]));await p.waitForTimeout(200);
   ok('klockans knappar når sidan',await p.evaluate(()=>/Knapp på klockan: nästa låt/.test(document.getElementById('log').textContent)));

@@ -110,7 +110,7 @@ async function initGallery(){
   loadMine();cur=null;renderGrid();
   try{await Promise.all(FONTLOAD.map(f=>document.fonts.load(f,'0123456789ÅÄÖ')));}catch(e){}
   await Promise.all(MINE.map(m=>ensurePhoto(m.def)).concat(ANALOG.map(loadLive)));
-  renderGrid();pickDial('d:rutnat',true);window.__galleryReady=true;
+  renderGrid();pickDial('d:atelier_noir',true);window.__galleryReady=true;
   setInterval(tick,200);document.addEventListener('visibilitychange',()=>{lastTick='';tick();});
   let sc=0;const onScroll=()=>{if(sc)return;sc=requestAnimationFrame(()=>{sc=0;if(!document.body.classList.contains('editing'))paintGrid(nowT(),false);});};
   $('view-dials').addEventListener('scroll',onScroll,{passive:true});window.addEventListener('scroll',onScroll,{passive:true});

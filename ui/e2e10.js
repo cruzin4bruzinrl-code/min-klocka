@@ -15,8 +15,8 @@ let pass=0,fail=0;const ok=(n,c,x)=>{c?pass++:fail++;console.log((c?'ok   ':'FEL
   ok('steget anslut har en knapp i webbläsaren',await p.evaluate(()=>!!document.querySelector('#tour [data-a="conn"]')));
   await p.click('#tour .tr-next');await p.waitForTimeout(400);
   ok('urtavlor att välja bland, ritade',await p.evaluate(()=>document.querySelectorAll('#tour .ob-faces canvas').length===6));
-  await p.click('#tour .ob-faces button[data-k="astronauten"]');await p.waitForTimeout(200);
-  ok('ett tryck väljer urtavlan',await p.evaluate(()=>cur&&cur.key==='astronauten'));
+  await p.click('#tour .ob-faces button[data-k="kalibr"]');await p.waitForTimeout(200);
+  ok('ett tryck väljer urtavlan',await p.evaluate(()=>cur&&cur.key==='kalibr'));
   await p.click('#tour .tr-back');await p.waitForTimeout(200);ok('tillbaka fungerar',await p.evaluate(()=>!!document.querySelector('#tour [data-a="conn"]')));
   await p.click('#tour .tr-next');await p.click('#tour .tr-next');await p.waitForTimeout(250);
   await p.click('#tour .themes button[data-th="mint"]');await p.waitForTimeout(200);ok('tema väljs i guiden',await p.evaluate(()=>document.documentElement.dataset.theme==='mint'));

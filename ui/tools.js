@@ -140,7 +140,7 @@ function tour(force){
   if(CLASSIC&&!force)return;if(!force&&lsGet(OBKEY,false))return;if($('tour'))return;
   const N=window.MinKlockaNative||null,hasPerm=!!(N&&N.perms);
   const perm=()=>{try{return JSON.parse(N.perms());}catch(e){return {};}};
-  const PICKS=['rutnat','astronauten','marschen','solrosen','dansgolvet','sovkatten'];
+  const PICKS=['atelier_noir','chrono_bla','kalibr','lekfull','racing','kakel'];
   const steps=[
     {k:'hej',art:()=>tourArt('link'),h:'Hej! Nu kopplar vi ihop din klocka',p:'Det tar en minut. Du kan hoppa över allt och göra det senare under Mer.',next:'Kom igång'},
     hasPerm&&{k:'lov',art:()=>tourArt('bg'),h:'Låt klockan få veta saker',p:'Med lov kan appen skicka aviseringar och sms till klockan, och du kan svara från den.',body:()=>{const p=perm();
