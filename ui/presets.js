@@ -509,8 +509,8 @@ const DIGITAL=[
 
 // ---- Från dina bilder: egna tolkningar av stilen, inga kopior ----
 ,{key:'bi_prickar',name:'Prickfält',desc:'Ringar av färgade prickar, tid i två färger och värden.',c1:'#2ee6c0',c2:'#050505',ren:true,fresh:2,def:{bg:{t:'dotfield',rings:7,r0:94,dim:.75},
-  deco:[IC('bolt',78,180,14,'#ffb02e'),IC('heart',134,180,14,'#ff4a4a'),IC('feet',70,206,14,'#4aa8ff')],
-  els:[vl('day',120,66,17,'pm','#d8dce4',''),tm(120,90,58,'pb','#ff8a2e',{c2:'#3ddc84'}),vl('battv',106,178,17,'pm','#ffffff','',{pct:false}),vl('pulse',160,178,17,'pm','#ffffff',''),vl('steps',126,204,17,'pm','#c8ccd4','')]}}
+  deco:[{k:'doticon',n:'heart',x:134,y:175,s:24,g:6,c:'#ff4a5a'},{k:'doticon',n:'feet',x:80,y:201,s:26,g:7,c:'#4aa8ff'}],
+  els:[{k:'week',x:100,y:64,c:'#d8dce4'},vl('day',146,64,17,'pm','#d8dce4',''),tm(120,90,58,'pb','#ff8a2e',{c2:'#3ddc84'}),{k:'batt',style:'dotcell',x:88,y:180},vl('pulse',166,178,17,'pm','#ffffff',''),vl('steps',130,204,17,'pm','#c8ccd4','')]}}
 ,{key:'bi_kontur',name:'Kontur',desc:'Stora ihåliga siffror i blått, datum och batteri.',c1:'#2a9bff',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'solid',c:'#000000'},
   els:[tm(120,40,90,'outline','#2a9bff',{lay:'stack',gap:6}),vl('day',120,252,16,'pb','#7cc4ff',''),vl('battv',200,252,15,'pb','#4fa8c8','',{pct:false})]}}
 ,{key:'bi_virvel',name:'Virvel',desc:'Prickar i en virvel från grönt till blått, rena vita visare.',c1:'#2ee6a0',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'spiral'},

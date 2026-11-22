@@ -193,3 +193,19 @@ drawBg=function(ctx,bg,photo){
       ctx.beginPath();ctx.arc(x,y,1.2+t*3.3,0,7);ctx.fillStyle='rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*f))+')';ctx.globalAlpha=.35+.65*t;ctx.fill();}ctx.globalAlpha=1;}
   else _drawBg5(ctx,bg,photo);
 };
+
+// ================= Ikoner av prickar, i samma språk som prickfältet =================
+// Ikonen ritas först som vanligt i en liten bild, sedan läses den av i ett rutnät och ritas om som prickar.
+const _drawDeco4=drawDeco;
+drawDeco=function(ctx,d){
+  if(d.k==='doticon'&&ICONS[d.n]){const S=d.s||20,g=d.g||7,cv=mk(S,S),c=ctxOf(cv);c.fillStyle='#fff';ICONS[d.n](c,S);const px=c.getImageData(0,0,S,S).data,step=S/g;
+    for(let j=0;j<g;j++)for(let i=0;i<g;i++){const x=Math.floor((i+.5)*step),y=Math.floor((j+.5)*step),a=px[(y*S+x)*4+3];if(a<90)continue;
+      ctx.beginPath();ctx.arc(d.x-S/2+(i+.5)*step,d.y+(j+.5)*step,step*.4,0,7);ctx.fillStyle=Array.isArray(d.c)?d.c[(i+j)%d.c.length]:d.c;ctx.fill();}return;}
+  _drawDeco4(ctx,d);
+};
+// Ett batteri av prickar: fylls kolumn för kolumn och går från rött via gult till grönt. Klockan väljer bild efter nivån.
+BATTPIC.dotcell=function(e){const cols=8,rows=4,d=e.d||5,w=cols*d+d+2,h=rows*d+2,out=[];
+  for(let lv=0;lv<7;lv++){const cv=mk(w,h),c=ctxOf(cv),fill=Math.round(lv/6*cols),col=lv<=1?'#ff5a5a':lv<=3?'#ffc83a':'#3ddc84';
+    for(let i=0;i<cols;i++)for(let j=0;j<rows;j++){c.beginPath();c.arc(1+d/2+i*d,1+d/2+j*d,d*.38,0,7);c.fillStyle=i<fill?col:'rgba(255,255,255,.16)';c.fill();}
+    c.fillStyle='rgba(255,255,255,.4)';c.fillRect(w-d+1,1+d,d*.5,d*2);out.push(cv);}
+  return out;};
