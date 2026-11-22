@@ -507,6 +507,20 @@ const DIGITAL=[
 ,{key:'nt_siffror',name:'Stora siffror',desc:'Fyra stora krämvita siffror som fyller urtavlan.',c1:'#efe4cf',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'solid',c:'#000000'},
   deco:[TX('12',120,12,90,'pb','#efe4cf','c'),TX('3',204,92,96,'pb','#efe4cf','c'),TX('6',120,184,96,'pb','#efe4cf','c'),TX('9',38,92,96,'pb','#efe4cf','c')],els:[HN({style:'baton',hs:'baton',ms:'baton',hc:'#ffffff',mc:'#ffffff',sec:0,ml:80,w:7})]}}
 
+// ---- Från dina bilder: egna tolkningar av stilen, inga kopior ----
+,{key:'bi_prickar',name:'Prickfält',desc:'Ringar av färgade prickar, tid i två färger och värden.',c1:'#2ee6c0',c2:'#050505',ren:true,fresh:2,def:{bg:{t:'dotfield'},
+  deco:[R(46,60,148,170,40,'#050505',1),IC('bolt',80,192,14,'#ffb02e'),IC('heart',136,192,14,'#ff4a4a'),IC('feet',92,218,14,'#4aa8ff')],
+  els:[vl('day',120,72,17,'pm','#ffffff',''),tm(120,96,56,'pb','#ff8a2e',{c2:'#3ddc84'}),vl('battv',108,190,17,'pm','#ffffff','',{pct:false}),vl('pulse',162,190,17,'pm','#ffffff',''),vl('steps',126,216,17,'pm','#ffffff','')]}}
+,{key:'bi_kontur',name:'Kontur',desc:'Stora ihåliga siffror i blått, datum och batteri.',c1:'#2a9bff',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'solid',c:'#000000'},
+  els:[tm(120,40,90,'outline','#2a9bff',{lay:'stack',gap:6}),vl('day',120,252,16,'pb','#7cc4ff',''),vl('battv',200,252,15,'pb','#4fa8c8','',{pct:false})]}}
+,{key:'bi_virvel',name:'Virvel',desc:'Prickar i en virvel från grönt till blått, rena vita visare.',c1:'#2ee6a0',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'spiral'},
+  els:[HN({style:'baton',hs:'baton',ms:'baton',hc:'#ffffff',mc:'#ffffff',sec:0,ml:96,w:7})]}}
+,{key:'bi_turkos',name:'Turkos',desc:'Stor turkos tid, datum och tre ringar med puls, steg och batteri.',c1:'#7fd8cf',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'solid',c:'#000000'},
+  deco:[...BADGES(176,{bg:'#000000',a:1,hc:'#7fd8cf',sc:'#7fd8cf',bc:'#7fd8cf'}).deco],
+  els:[vl('day',120,40,18,'pm','#7fd8cf',''),tm(120,64,76,'pl','#7fd8cf'),...BADGES(176,{bg:'#000000',a:1,hc:'#7fd8cf',sc:'#7fd8cf',bc:'#7fd8cf'}).els]}}
+,{key:'bi_ihalig',name:'Ihålig',desc:'Helt svart med ihåliga vita visare. Inget annat.',c1:'#ffffff',c2:'#000000',ren:true,fresh:2,def:{bg:{t:'solid',c:'#000000'},
+  els:[HN({style:'hollow',hs:'hollow',ms:'hollow',hc:'#ffffff',mc:'#ffffff',sec:0,ml:100,w:8})]}}
+
 ];
 // ---- Kollektionen: 50 urtavlor i fem serier. Egna motiv, inget som snurrar. ----
 (function(){

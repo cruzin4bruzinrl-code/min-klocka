@@ -171,3 +171,25 @@ drawBg=function(ctx,bg,photo){
     for(let k=0;k<7;k++){ctx.beginPath();ctx.moveTo(-20,40+k*40);ctx.bezierCurveTo(80,k*40-30,150,120+k*30,260,60+k*38);ctx.lineTo(260,DH+40);ctx.lineTo(-20,DH+40);ctx.closePath();ctx.fillStyle=k%2?'rgba(255,255,255,.07)':'rgba(0,0,0,.08)';ctx.fill();}}
   else _drawBg4(ctx,bg,photo);
 };
+
+// ================= Kontursiffror, ihåliga visare, prickfält och virvel =================
+Object.assign(PICFONT,{
+  outline(c,ch,x,y,w,h){const col=c.fillStyle;c.save();c.font='700 '+Math.round(h*1.02)+'px PoppinsApp';c.textAlign='center';c.textBaseline='middle';c.lineJoin='round';c.lineWidth=Math.max(1.6,h*.05);c.strokeStyle=col;c.strokeText(ch,x+w/2,y+h*.56);c.restore();}
+});
+FONTS.outline={n:'Kontur',css:null,pic:.7};
+Object.assign(HANDPIC,{
+  hollow(len,tail,w,col,hub){const W=Math.max(14,Math.round(w)+8),{cv,c,m}=hpCanvas(W,len,8),hw=Math.max(2.6,w/2);   // ihålig visare: bara konturen, och ett glapp mot mitten
+    c.lineWidth=1.8;c.strokeStyle=col;c.beginPath();c.roundRect(m-hw,4,hw*2,len-22,hw);c.stroke();c.beginPath();c.moveTo(m,len-18);c.lineTo(m,len-4);c.stroke();
+    c.beginPath();c.arc(m,len,3.4,0,7);c.stroke();return cv;}
+});
+const _drawBg5=drawBg;
+drawBg=function(ctx,bg,photo){
+  bg=bg||{};
+  if(bg.t==='dotfield'){ctx.fillStyle=bg.c2||'#050505';ctx.fillRect(0,0,DW,DH);const cols=bg.cols||['#2ee6c0','#ffd84a','#ff6a6a','#2ee6c0'],rings=bg.rings||8,r0=bg.r0||90;   // ringar av prickar som blir mindre utåt
+    for(let k=0;k<rings;k++){const r=r0+k*9,n=Math.round(r*.62),s=Math.max(.8,3.4-k*.36);for(let i=0;i<n;i++){const a=i/n*Math.PI*2+(k%2)*Math.PI/n;
+      ctx.beginPath();ctx.arc(120+Math.cos(a)*r,143+Math.sin(a)*r*1.08,s,0,7);ctx.fillStyle=cols[k%cols.length];ctx.globalAlpha=1-k/(rings+2);ctx.fill();}}ctx.globalAlpha=1;}
+  else if(bg.t==='spiral'){ctx.fillStyle='#000';ctx.fillRect(0,0,DW,DH);const a=_hex(bg.c||'#2ee6a0'),b=_hex(bg.c2||'#2e6bff'),arms=bg.arms||34,steps=bg.steps||16;   // prickar i en virvel från ett tomt centrum
+    for(let j=0;j<arms;j++)for(let k=0;k<steps;k++){const t=k/(steps-1),r=56+t*58,ang=j/arms*Math.PI*2+t*1.4,x=120+Math.cos(ang)*r,y=143+Math.sin(ang)*r*1.12,f=(Math.sin(ang)+1)/2;
+      ctx.beginPath();ctx.arc(x,y,1.2+t*3.3,0,7);ctx.fillStyle='rgb('+a.map((v,i)=>Math.round(v+(b[i]-v)*f))+')';ctx.globalAlpha=.35+.65*t;ctx.fill();}ctx.globalAlpha=1;}
+  else _drawBg5(ctx,bg,photo);
+};
