@@ -202,7 +202,7 @@ private val SHORT3 = listOf("klocka", "hälsa", "tavlor", "verktyg", "mer")
 private fun Typed(lines: List<Pair<String, Color>>, onClick: Map<Int, () -> Unit> = emptyMap()) {
     var chars by remember { mutableIntStateOf(0) }
     val total = lines.sumOf { it.first.length }
-    LaunchedEffect(total) { while (chars < total) { chars = minOf(total, chars + 6); delay(16) } }
+    LaunchedEffect(total) { while (chars < total) { chars = minOf(total, chars + 45); delay(25) } }
     var left = chars
     Column {
         lines.forEachIndexed { i, (t, c) ->
@@ -765,7 +765,7 @@ private fun Deck(cards: List<Card3>, m: Modifier) {
             }.shadow(12.dp, RoundedCornerShape(30.dp)).clip(RoundedCornerShape(30.dp)).background(Color.White)) {
                 Column {
                     Box(Modifier.fillMaxWidth().background(cards[p].c).padding(18.dp)) { Text(cards[p].t, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold) }
-                    Box(Modifier.fillMaxSize().padding(18.dp)) { cards[p].body() }
+                    Box(Modifier.fillMaxSize().padding(22.dp), contentAlignment = Alignment.Center) { cards[p].body() }
                 }
             }
         }
@@ -775,7 +775,7 @@ private fun Deck(cards: List<Card3>, m: Modifier) {
     }
 }
 
-@Composable private fun Big(t: String, c: Color = C_INK) = Text(t, color = c, fontSize = 56.sp, fontWeight = FontWeight.Black, lineHeight = 58.sp)
+@Composable private fun Big(t: String, c: Color = C_INK) = Text(t, color = c, fontSize = 72.sp, fontWeight = FontWeight.Black, lineHeight = 74.sp)
 @Composable private fun Sub(t: String) = Text(t, color = C_INK.copy(alpha = .6f), fontSize = 15.sp)
 
 @Composable
@@ -784,7 +784,7 @@ private fun KortHome(a: Acts) {
         Deck(listOf(
             Card3("Urtavla", C_ACC) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                    Box(Modifier.size(170.dp, 202.dp).clip(RoundedCornerShape(36.dp)).clickable(onClick = a.dials)) { Dial(Modifier.fillMaxSize()) }
+                    Box(Modifier.size(220.dp, 262.dp).clip(RoundedCornerShape(44.dp)).clickable(onClick = a.dials)) { Dial(Modifier.fillMaxSize()) }
                     Spacer(Modifier.height(10.dp)); Text(S.dialName.ifEmpty { "–" }, color = C_INK, fontSize = 20.sp, fontWeight = FontWeight.Bold); Sub("Tryck på bilden för att byta")
                 }
             },
