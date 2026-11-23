@@ -1,0 +1,94 @@
+== start
+MATERIAL klar, appen lever: ja
+COCKPIT klar, appen lever: ja
+TIDNING klar, appen lever: ja
+BENTO klar, appen lever: ja
+BRUTAL klar, appen lever: ja
+NORRSKEN klar, appen lever: ja
+PRICK klar, appen lever: ja
+== webbflikarna
+MATERIAL flik 2: ja
+MATERIAL flik 3: ja
+MATERIAL flik 4: ja
+NORRSKEN flik 2: ja
+NORRSKEN flik 3: ja
+NORRSKEN flik 4: ja
+TIDNING flik 2: ja
+TIDNING flik 3: ja
+TIDNING flik 4: ja
+== snabba flikbyten
+lever: ja
+== snabba stilbyten
+lever: ja
+== mörkt och ljust
+== bakgrund och förgrund
+lever: ja
+== minnesbrist
+lever: ja
+== processdöd
+lever: ja
+== slumpade tryck (5000)
+lever: ja
+tid: 781 s
+== tomma ytor (andel enfärgat under rubriken)
+00_start.png 52%
+BENTO_0.png 21%
+BENTO_0b.png 21%
+BENTO_1.png 20%
+BENTO_1b.png 21%
+BENTO_val.png 45%
+BENTO_val_stangd.png 21%
+BRUTAL_0.png 22%
+BRUTAL_0b.png 22%
+BRUTAL_1.png 26%
+BRUTAL_1b.png 38%
+BRUTAL_val.png 53%
+BRUTAL_val_stangd.png 22%
+COCKPIT_0.png 45%
+COCKPIT_0b.png 47%
+COCKPIT_1.png 56%
+COCKPIT_1b.png 45%
+COCKPIT_val.png 38%
+COCKPIT_val_stangd.png 45%
+MATERIAL_0.png 51%
+MATERIAL_0b.png 51%
+MATERIAL_1.png 47%
+MATERIAL_1b.png 47%
+MATERIAL_val.png 39%
+MATERIAL_val_stangd.png 51%
+NORRSKEN_0.png 24%
+NORRSKEN_0b.png 19%
+NORRSKEN_1.png 25%
+NORRSKEN_1b.png 21%
+NORRSKEN_val.png 53%
+NORRSKEN_val_stangd.png 18%
+PRICK_0.png 85%
+PRICK_0b.png 85%
+PRICK_1.png 91% <-- TOMT?
+PRICK_1b.png 91% <-- TOMT?
+PRICK_1c.png 83%
+PRICK_val.png 53%
+PRICK_val_stangd.png 85%
+TIDNING_0.png 50%
+TIDNING_0b.png 46%
+TIDNING_1.png 66%
+TIDNING_1b.png 75%
+TIDNING_val.png 39%
+TIDNING_val_stangd.png 50%
+web_MATERIAL_2.png 30%
+web_MATERIAL_3.png 30%
+web_MATERIAL_4.png 30%
+web_NORRSKEN_2.png 48%
+web_NORRSKEN_3.png 60%
+web_NORRSKEN_4.png 60%
+web_TIDNING_2.png 31%
+web_TIDNING_3.png 32%
+web_TIDNING_4.png 31%
+zz_efter_bakgrund.png 51%
+zz_efter_processdod.png 20%
+zz_efter_slump.png 42%
+zz_material_ljus.png 51%
+zz_material_mork.png 50%
+zz_minnesbrist.png 51%
+zz_snabba_flikar.png 50%
+zz_snabba_stilar.png 22%

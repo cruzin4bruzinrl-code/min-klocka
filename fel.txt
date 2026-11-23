@@ -1,0 +1,202 @@
+11-23 08:46:59.701 W/chromium( 1964): [1123/084659.701237:WARNING:dns_config_service_android.cc(81)] Failed to read DnsConfig.
+11-23 08:47:00.153 V/SplashScreenExceptionList(  544): SplashScreen checking exception for package se.minklocka.app (target sdk:34) -> false
+11-23 08:47:00.929 W/ziparchive( 2584): Unable to open '/data/app/~~i8UwJNIoNjn97FSM4cmc5g==/se.minklocka.app-6pZ_rVG5H0ZvNEmps6IYYw==/base.dm': No such file or directory
+11-23 08:47:00.929 W/ziparchive( 2584): Unable to open '/data/app/~~i8UwJNIoNjn97FSM4cmc5g==/se.minklocka.app-6pZ_rVG5H0ZvNEmps6IYYw==/base.dm': No such file or directory
+11-23 08:47:02.579 W/chromium( 2584): [WARNING:dns_config_service_android.cc(115)] Failed to read DnsConfig.
+11-23 08:47:05.561 W/JobServiceContext(  544): Sending onNetworkChanged for a job that isn't started. JobStatus{f08f0ef #u0a133/110 com.google.android.webview/org.chromium.android_webview.nonembedded.AwComponentUpdateService u=0 s=10133 NET READY}
+11-23 08:47:06.233 W/ziparchive(  544): Unable to open '/data/app/~~i8UwJNIoNjn97FSM4cmc5g==/se.minklocka.app-6pZ_rVG5H0ZvNEmps6IYYw==/base.dm': No such file or directory
+11-23 08:47:06.753 W/cr_AWNetworkFetcherTask( 3298): 	at org.chromium.android_webview.nonembedded.NetworkFetcherTask.download(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:48)
+11-23 08:47:07.835 W/InputManager-JNI(  544): Input channel object 'e3fafb Splash Screen se.minklocka.app (client)' was disposed without first being removed with the input manager!
+11-23 08:47:08.605 W/NotificationService(  544): Toast already killed. pkg=se.minklocka.app token=android.os.BinderProxy@ed2cbb5
+11-23 08:47:18.008 W/earchbox:search( 1935): Long monitor contention with owner CronetInit (4263) at void il.run()(:com.google.android.gms.dynamite_cronetdynamite@231818047@23.18.18 (190800-0):3) waiters=0 in iu org.chromium.net.impl.CronetUrlRequestContext.b(java.lang.String, org.chromium.net.UrlRequest$Callback, java.util.concurrent.Executor, int, java.util.Collection, boolean, boolean, boolean, boolean, int, boolean, int, org.chromium.net.RequestFinishedInfo$Listener, int, long) for 116ms
+11-23 08:53:17.667 W/.apps.messaging( 7794): Verification of void org.chromium.net.impl.CronetUrlRequestContext.onRttObservation(int, long, int) took 128.879ms (356.92 bytecodes/s) (2960B approximate peak alloc)
+11-23 08:53:42.761 W/ActivityTaskManager(  544): Activity top resumed state loss timeout for ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7}
+11-23 08:53:44.969 W/ActivityTaskManager(  544): Activity top resumed state loss timeout for ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7}
+11-23 08:53:46.808 W/ActivityTaskManager(  544): Activity top resumed state loss timeout for ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7}
+11-23 08:53:52.503 W/ActivityTaskManager(  544): Activity top resumed state loss timeout for ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7}
+11-23 08:53:55.819 W/ziparchive(  544): Unable to open '/data/app/~~i8UwJNIoNjn97FSM4cmc5g==/se.minklocka.app-6pZ_rVG5H0ZvNEmps6IYYw==/base.dm': No such file or directory
+11-23 08:53:58.268 W/ActivityTaskManager(  544): Activity top resumed state loss timeout for ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7}
+11-23 08:53:58.727 W/ziparchive(  544): Unable to open '/data/app/~~i8UwJNIoNjn97FSM4cmc5g==/se.minklocka.app-6pZ_rVG5H0ZvNEmps6IYYw==/base.dm': No such file or directory
+11-23 08:54:00.151 W/ActivityTaskManager(  544): Activity top resumed state loss timeout for ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7}
+11-23 08:54:02.167 W/ActivityTaskManager(  544): Activity top resumed state loss timeout for ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7}
+11-23 08:54:04.090 W/ActivityTaskManager(  544): Activity top resumed state loss timeout for ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7}
+11-23 08:54:17.269 W/ActivityTaskManager(  544): Activity top resumed state loss timeout for ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7}
+11-23 08:54:21.617 W/ziparchive(  544): Unable to open '/data/app/~~i8UwJNIoNjn97FSM4cmc5g==/se.minklocka.app-6pZ_rVG5H0ZvNEmps6IYYw==/base.dm': No such file or directory
+11-23 08:54:47.663 W/Monkey  ( 8731): args: [-p, se.minklocka.app, --pct-syskeys, 0, --pct-appswitch, 0, --pct-anyevent, 0, --throttle, 35, -s, 42, -v, 5000]
+11-23 08:54:47.663 W/Monkey  ( 8731):  arg: "se.minklocka.app"
+11-23 08:54:47.664 W/Monkey  ( 8731): data="se.minklocka.app"
+11-23 08:54:49.639 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:54:49.724 W/InputDispatcher(  544): Waiting because no window has focus but ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7} may eventually add a window when it finishes starting up. Will wait for 5000ms
+11-23 08:54:54.212 W/InputDispatcher(  544): Waiting because no window has focus but ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7} may eventually add a window when it finishes starting up. Will wait for 5000ms
+11-23 08:55:30.824 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:48.268 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:52.776 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:53.279 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:53.839 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:54.793 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:55.299 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:55.837 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:56.340 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:56.886 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:57.511 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:58.165 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:58.670 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:59.216 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:55:59.719 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:00.270 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:02.797 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:03.374 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:03.915 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:04.918 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:05.423 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:05.966 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:07.742 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:08.608 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:09.437 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:09.593 W/FrameTracker( 2584): Missed SF frame:PREDICTION_ERROR, 62525, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:56:09.593 W/FrameTracker( 2584): Missed SF frame:PREDICTION_ERROR, 62547, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:56:09.593 W/FrameTracker( 2584): Missed SF frame:PREDICTION_ERROR, 62555, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:56:09.593 W/FrameTracker( 2584): Missed SF frame:PREDICTION_ERROR, 62563, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:56:09.593 W/FrameTracker( 2584): Missed SF frame:JANK_SURFACEFLINGER_DEADLINE_MISSED, 62570, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:56:09.593 W/FrameTracker( 2584): Missed SF frame:JANK_SURFACEFLINGER_DEADLINE_MISSED, 62579, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:56:09.593 W/FrameTracker( 2584): Missed SF frame:JANK_SURFACEFLINGER_DEADLINE_MISSED, 62594, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:56:09.593 W/FrameTracker( 2584): Missed SF frame:JANK_SURFACEFLINGER_DEADLINE_MISSED, 62602, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:56:09.593 W/FrameTracker( 2584): Missed App frame:UNKNOWN: 10, 62610, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:56:09.593 W/FrameTracker( 2584): Missed SF frame:UNKNOWN: 10, 62610, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:56:09.593 W/FrameTracker( 2584): Missed App frame:JANK_APP_DEADLINE_MISSED, 62626, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:56:10.911 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:11.720 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:13.520 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:14.085 W/FrameTracker( 2584): Missed SF frame:JANK_SURFACEFLINGER_DEADLINE_MISSED, 64416, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>
+11-23 08:56:14.620 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:16.313 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:16.852 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:17.362 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:18.147 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:18.729 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:19.385 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:19.936 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:20.476 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:20.982 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:22.291 E/FrameTracker( 2584): force finish cuj, time out: J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>
+11-23 08:56:23.501 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:27.303 W/ActivityTaskManager(  544): startActivity called from non-Activity context; forcing Intent.FLAG_ACTIVITY_NEW_TASK for: Intent { cmp=se.minklocka.app/.MainActivity }
+11-23 08:56:27.359 W/InputDispatcher(  544): Waiting because no window has focus but ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7} may eventually add a window when it finishes starting up. Will wait for 5000ms
+11-23 08:56:27.787 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:28.410 W/InputDispatcher(  544): Waiting because no window has focus but ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7} may eventually add a window when it finishes starting up. Will wait for 5000ms
+11-23 08:56:29.210 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:29.749 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:30.255 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:30.888 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:31.390 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:32.501 E/FrameTracker( 2584): force finish cuj, time out: J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:56:52.053 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:54.467 W/FrameTracker( 2584): Missed SF frame:JANK_SURFACEFLINGER_DEADLINE_MISSED, 69635, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>
+11-23 08:56:57.166 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:56:57.578 W/ActivityManager(  544): Scheduling restart of crashed service com.google.android.webview/org.chromium.android_webview.services.MetricsBridgeService in 1000ms for connection
+11-23 08:56:57.604 W/ActivityManager(  544): Scheduling restart of crashed service com.android.chrome/org.chromium.chrome.browser.customtabs.CustomTabsConnectionService in 10974ms for connection
+11-23 08:57:06.469 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:14.790 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:15.310 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:15.880 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:16.523 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:17.186 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:17.728 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:18.297 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:19.159 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:19.664 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:20.762 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:21.519 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:22.528 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:26.552 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:27.868 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:28.434 W/FrameTracker( 2584): Missed App frame:UNKNOWN: 73, 73819, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>
+11-23 08:57:28.434 W/FrameTracker( 2584): Missed SF frame:UNKNOWN: 73, 73819, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>
+11-23 08:57:31.282 E/FrameTracker( 2584): force finish cuj, time out: J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:57:33.096 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:33.609 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:34.195 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:34.767 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:35.277 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:35.973 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:36.476 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:36.575 E/FrameTracker( 2584): force finish cuj, time out: J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>
+11-23 08:57:38.125 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:38.627 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:39.401 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:40.217 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:57:42.090 W/FrameTracker( 2584): Missed SF frame:JANK_SURFACEFLINGER_DEADLINE_MISSED, 76015, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>
+11-23 08:57:42.096 W/FrameTracker( 2584): Missed SF frame:JANK_SURFACEFLINGER_DEADLINE_MISSED, 76029, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>
+11-23 08:57:42.096 W/FrameTracker( 2584): Missed SF frame:JANK_SURFACEFLINGER_DEADLINE_MISSED, 76038, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>
+11-23 08:57:49.290 W/InputDispatcher(  544): Waiting because no window has focus but ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7} may eventually add a window when it finishes starting up. Will wait for 5000ms
+11-23 08:57:50.124 E/FrameTracker( 2584): force finish cuj, time out: J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:57:50.124 E/FrameTracker( 2584): force finish cuj, time out: J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>
+11-23 08:58:05.604 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:06.111 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:07.070 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:07.631 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:14.493 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:14.995 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:18.494 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:18.997 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:19.552 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:20.059 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:20.653 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:21.235 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:21.740 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:22.517 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:22.680 W/FrameTracker( 2584): Missed App frame:UNKNOWN: 74, 81256, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:58:22.680 W/FrameTracker( 2584): Missed SF frame:UNKNOWN: 74, 81256, 0, CUJ=J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:58:23.019 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:23.676 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:24.217 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:24.753 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:25.256 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:25.793 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:26.295 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:26.841 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:26.939 E/cr_SmartSelProvider( 2584): 	at al0.b(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:42)
+11-23 08:58:26.939 E/cr_SmartSelProvider( 2584): 	at d7.call(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:10)
+11-23 08:58:26.939 E/cr_SmartSelProvider( 2584): 	at e7.run(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:25)
+11-23 08:58:26.939 E/cr_SmartSelProvider( 2584): 	at oi0.run(chromium-TrichromeWebViewGoogle6432.apk-stable-567263637:5)
+11-23 08:58:27.503 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:28.194 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:58:29.884 W/FrameTracker( 2584): Missed SF frame:JANK_SURFACEFLINGER_DEADLINE_MISSED, 83152, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>
+11-23 08:58:36.594 W/InputDispatcher(  544): Waiting because no window has focus but ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7} may eventually add a window when it finishes starting up. Will wait for 5000ms
+11-23 08:58:40.923 W/InputDispatcher(  544): Waiting because no window has focus but ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7} may eventually add a window when it finishes starting up. Will wait for 5000ms
+11-23 08:58:41.183 E/FrameTracker( 2584): force finish cuj, time out: J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>
+11-23 08:58:48.382 W/InputDispatcher(  544): Waiting because no window has focus but ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7} may eventually add a window when it finishes starting up. Will wait for 5000ms
+11-23 08:58:54.583 W/InputDispatcher(  544): Waiting because no window has focus but ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7} may eventually add a window when it finishes starting up. Will wait for 5000ms
+11-23 08:59:02.631 W/InputDispatcher(  544): Waiting because no window has focus but ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7} may eventually add a window when it finishes starting up. Will wait for 5000ms
+11-23 08:59:04.582 W/ActivityTaskManager(  544): startActivity called from non-Activity context; forcing Intent.FLAG_ACTIVITY_NEW_TASK for: Intent { cmp=se.minklocka.app/.MainActivity }
+11-23 08:59:04.766 W/InputDispatcher(  544): Waiting because no window has focus but ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7} may eventually add a window when it finishes starting up. Will wait for 5000ms
+11-23 08:59:04.954 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:06.460 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:08.208 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:15.811 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:16.844 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:17.355 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:17.891 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:18.394 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:18.931 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:19.433 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:19.717 W/InputDispatcher(  544): Waiting because no window has focus but ActivityRecord{587ef07 u0 se.minklocka.app/.MainActivity t7} may eventually add a window when it finishes starting up. Will wait for 5000ms
+11-23 08:59:21.680 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:22.260 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:22.761 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:24.308 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:24.809 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:25.358 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:25.860 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:26.983 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:28.171 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:30.135 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:32.345 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:33.134 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:36.148 E/FrameTracker( 2584): force finish cuj, time out: J<IME_INSETS_ANIMATION::0@0@se.minklocka.app>
+11-23 08:59:38.095 E/FrameTracker( 2584): force finish cuj, time out: J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>
+11-23 08:59:43.413 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:44.758 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:45.264 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:47.862 W/InputDispatcher(  544): Dispatching key to a20e3c4 se.minklocka.app/se.minklocka.app.MainActivity even though there are other unprocessed events
+11-23 08:59:48.173 W/FrameTracker( 2584): Missed SF frame:JANK_SURFACEFLINGER_DEADLINE_MISSED, 93706, 0, CUJ=J<IME_INSETS_ANIMATION::1@0@se.minklocka.app>

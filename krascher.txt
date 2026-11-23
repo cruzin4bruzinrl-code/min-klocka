@@ -1,0 +1,439 @@
+36303:11-23 08:48:35.647 I/ActivityManager(  544): Process com.google.android.gms.persistent (pid 1532) has died: fg  BFGS
+36304-11-23 08:48:35.648 I/ServiceWatcher(  544): [GeofenceProxy] disconnected from 10128/com.google.android.gms/com.google.android.location.internal.GoogleLocationManagerService@1
+36305-11-23 08:48:35.661 D/BtGatt.GattService( 1114): Binder is dead - unregistering scanner (2)!
+36306-11-23 08:48:35.662 D/BtGatt.GattService( 1114): Binder is dead - unregistering scanner (1)!
+36307-11-23 08:48:35.662 D/BtGatt.GattService( 1114): stopScan() - queue size =3
+36308-11-23 08:48:35.663 D/ActivityAttributionService( 1114): notifyActivityAttributionInfo UID=1002 packageName=com.google.android.bluetooth deviceAddress=no_active_device_address
+36309-11-23 08:48:35.663 I/bt_btif ( 1114): packages/modules/Bluetooth/system/btif/src/bluetooth.cc:829 get_profile_interface: get_profile_interface: id = activity_attribution
+36310-11-23 08:48:35.663 D/BtGatt.ScanManager( 1114): handling stopping scan  [ScanClient scanModeApp -1 scanModeUsed -1 [appScanStats com.google.uid.shared:10128]]
+36311-11-23 08:48:35.663 D/BtGatt.ScanManager( 1114): app died, unregister scanner - 1
+36312-11-23 08:48:35.663 D/BtGatt.GattService( 1114): unregisterScanner() - scannerId=1
+36313-11-23 08:48:35.663 I/bt_stack( 1114): [INFO:le_scanning_manager.cc(162)] Unregister in shim layer, scanner_id:1
+36314-11-23 08:48:35.663 D/BtGatt.GattService( 1114): stopScan() - queue size =2
+36315-11-23 08:48:35.663 D/ActivityAttributionService( 1114): notifyActivityAttributionInfo UID=1002 packageName=com.google.android.bluetooth deviceAddress=no_active_device_address
+36316-11-23 08:48:35.663 I/bt_btif ( 1114): packages/modules/Bluetooth/system/btif/src/bluetooth.cc:829 get_profile_interface: get_profile_interface: id = activity_attribution
+36317-11-23 08:48:35.664 D/BtGatt.ScanManager( 1114): handling stopping scan  [ScanClient scanModeApp -1 scanModeUsed -1 [appScanStats com.google.uid.shared:10128]]
+36318-11-23 08:48:35.664 D/BtGatt.ScanManager( 1114): app died, unregister scanner - 2
+36319-11-23 08:48:35.664 D/BtGatt.GattService( 1114): unregisterScanner() - scannerId=2
+36320-11-23 08:48:35.664 I/bt_stack( 1114): [INFO:le_scanning_manager.cc(162)] Unregister in shim layer, scanner_id:2
+36321-11-23 08:48:35.664 I/ServiceWatcher(  544): [RealLocationTimeZoneProviderProxy] disconnected from 10128/com.google.android.gms/.geotimezone.GeoTimeZoneService@1
+36322-11-23 08:48:35.664 I/ServiceWatcher(  544): [HardwareActivityRecognitionProxy] disconnected from 10128/com.google.android.gms/com.google.android.location.internal.server.HardwareArProviderService@1
+36323-11-23 08:48:35.664 I/ServiceWatcher(  544): [GeocoderProxy] disconnected from 10128/com.google.android.gms/.location.geocode.GeocodeService@2
+36324-11-23 08:48:35.664 I/ServiceWatcher(  544): [network] disconnected from 10128/com.google.android.gms/com.google.android.location.network.NetworkLocationService@2
+36325-11-23 08:48:35.664 I/ServiceWatcher(  544): [fused] disconnected from 10128/com.google.android.gms/com.google.android.location.fused.FusedLocationService@1
+36326-11-23 08:48:35.664 D/PackageManager(  544): Binder to instant app resolver died
+36327-11-23 08:48:35.665 V/PackageManager(  544): [Optimistic Bind] Binding to instant app resolver
+36328-11-23 08:48:35.666 I/Zygote  (  359): Process 1532 exited due to signal 9 (Killed)
+--
+36369:11-23 08:48:35.711 I/ActivityManager(  544): Process com.google.android.gms (pid 1570) has died: fg  SVC 
+36370-11-23 08:48:35.712 W/ActivityManager(  544): Scheduling restart of crashed service com.google.android.gms/.chimera.container.ExternalFileApkService in 260937ms for start-requested
+36371-11-23 08:48:35.712 W/ActivityManager(  544): Scheduling restart of crashed service com.google.android.gms/.chimera.GmsIntentOperationService in 270937ms for start-requested
+36372-11-23 08:48:35.713 I/libprocessgroup(  544): Successfully killed process cgroup uid 10128 pid 1570 in 0ms
+36373-11-23 08:48:35.715 I/ActivityManager(  544): Start proc 5770:com.google.android.gms.persistent/u0a128 for restart com.google.android.gms.persistent
+36374-11-23 08:48:35.722 D/CompatibilityChangeReporter(  544): Compat change id reported: 265195908; UID 10128; state: ENABLED
+36375-11-23 08:48:35.776 I/.gms.persistent( 5770): Using CollectorTypeCC GC.
+36376-11-23 08:48:35.776 W/.gms.persistent( 5770): Unexpected CPU variant for x86: x86_64.
+36377-11-23 08:48:35.776 W/.gms.persistent( 5770): Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, tremont, kabylake, default
+36378-11-23 08:48:35.778 E/.gms.persistent( 5770): Not starting debugger since process cannot load the jdwp agent.
+36379-11-23 08:48:35.783 D/CompatibilityChangeReporter(  544): Compat change id reported: 168419799; UID 10128; state: DISABLED
+36380-11-23 08:48:35.783 D/CompatibilityChangeReporter(  544): Compat change id reported: 273564678; UID 10128; state: DISABLED
+36381-11-23 08:48:35.790 I/OpenGLRenderer( 2584): Davey! duration=853ms; Flags=0, FrameTimelineVsyncId=12597, IntendedVsync=124910991002, Vsync=125244324322, InputEventId=0, HandleInputStart=125253739856, AnimationStart=125253742770, PerformTraversalsStart=125262443087, DrawStart=125262560972, FrameDeadline=125660990972, FrameInterval=125253346202, FrameStartTime=16666666, SyncQueued=125310565365, SyncStart=125499615394, IssueDrawCommandsStart=125499736103, SwapBuffers=125810894864, FrameCompleted=125953436049, DequeueBufferDuration=2904, QueueBufferDuration=128531, GpuCompleted=125953436049, SwapBuffersCompleted=125811725366, DisplayPresentTime=0, CommandSubmissionCompleted=125810894864, 
+36382-11-23 08:48:35.795 D/CompatibilityChangeReporter( 5770): Compat change id reported: 171979766; UID 10128; state: ENABLED
+36383-11-23 08:48:35.795 D/CompatibilityChangeReporter( 5770): Compat change id reported: 242716250; UID 10128; state: DISABLED
+36384-11-23 08:48:35.796 D/CompatibilityChangeReporter(  544): Compat change id reported: 170503758; UID 10128; state: ENABLED
+36385-11-23 08:48:35.801 D/nativeloader( 5770): Configuring clns-6 for other apk /system/framework/org.apache.http.legacy.jar. target_sdk_version=33, uses_libraries=ALL, library_path=/product/priv-app/PrebuiltGmsCore/lib/x86_64:/product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+36386-11-23 08:48:35.802 D/nativeloader( 5770): Configuring clns-7 for other apk /system/framework/com.android.media.remotedisplay.jar. target_sdk_version=33, uses_libraries=ALL, library_path=/product/priv-app/PrebuiltGmsCore/lib/x86_64:/product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+36387-11-23 08:48:35.806 D/nativeloader( 5770): Configuring clns-8 for other apk /system/framework/com.android.location.provider.jar. target_sdk_version=33, uses_libraries=ALL, library_path=/product/priv-app/PrebuiltGmsCore/lib/x86_64:/product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk!/lib/x86_64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms
+36388-11-23 08:48:35.806 D/ApplicationLoaders( 5770): Returning zygote-cached class loader: /system_ext/framework/androidx.window.extensions.jar
+36389-11-23 08:48:35.806 D/ApplicationLoaders( 5770): Returning zygote-cached class loader: /system_ext/framework/androidx.window.sidecar.jar
+36390-11-23 08:48:35.821 W/ActivityManager(  544): Rescheduling restart of crashed service com.google.android.gms/.chimera.container.ExternalFileApkService in 891ms for other
+36391-11-23 08:48:35.821 W/ActivityManager(  544): Rescheduling restart of crashed service com.google.android.gms/.chimera.GmsIntentOperationService in 10891ms for other
+36392-11-23 08:48:35.829 D/nativeloader( 5770): InitLlndkLibrariesProduct: libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libRS.so:libandroid_net.so:libbinder_ndk.so:libc.so:libcgrouprc.so:libclang_rt.asan-x86_64-android.so:libcom.android.tethering.connectivity_native.so:libdl.so:libft2.so:liblog.so:libm.so:libmediandk.so:libnativewindow.so:libneuralnetworks.so:libselinux.so:libsync.so:libvndksupport.so:libvulkan.so
+36393-11-23 08:48:35.829 D/nativeloader( 5770): Configuring product-clns-9 for unbundled product apk /product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk. target_sdk_version=33, uses_libraries=, library_path=/product/priv-app/PrebuiltGmsCore/lib/x86_64:/product/priv-app/PrebuiltGmsCore/PrebuiltGmsCore.apk!/lib/x86_64:/product/lib64:/system/product/lib64, permitted_path=/data:/mnt/expand:/data/user/0/com.google.android.gms:/product/lib64:/system/product/lib64
+36394-11-23 08:48:35.830 D/nativeloader( 5770): InitVndkspLibrariesProduct: android.hardware.common-V2-ndk.so:android.hardware.common.fmq-V1-ndk.so:android.hardware.graphics.allocator-V2-ndk.so:android.hardware.graphics.common-V4-ndk.so:android.hardware.graphics.common@1.0.so:android.hardware.graphics.common@1.1.so:android.hardware.graphics.common@1.2.so:android.hardware.graphics.composer3-V1-ndk.so:android.hardware.graphics.mapper@2.0.so:android.hardware.graphics.mapper@2.1.so:android.hardware.graphics.mapper@3.0.so:android.hardware.graphics.mapper@4.0.so:android.hardware.renderscript@1.0.so:android.hidl.memory.token@1.0.so:android.hidl.memory@1.0-impl.so:android.hidl.memory@1.0.so:android.hidl.safe_union@1.0.so:libRSCpuRef.so:libRSDriver.so:libRS_internal.so:libbase.so:libbcinfo.so:libblas.so:libc++.so:libcompiler_rt.so:libcutils.so:libdmabufheap.so:libgralloctypes.so:libhardware.so:libhidlbase.so:libhidlmemory.so:libion.so:libjsoncpp.so:liblzma.so:libprocessgroup.so:libunwindstack.so:libutils.so:libutilscallstack.so:libz.so
+--
+36905:11-23 08:48:39.209 I/ActivityManager(  544): Process com.google.android.gms.ui (pid 4403) has died: fg  SVC 
+36906-11-23 08:48:39.210 W/ActivityManager(  544): Scheduling restart of crashed service com.google.android.gms/.chimera.UiIntentOperationService in 1000ms for start-requested
+36907-11-23 08:48:39.218 I/libprocessgroup(  544): Successfully killed process cgroup uid 10128 pid 4403 in 0ms
+36908-11-23 08:48:39.219 D/CompatibilityChangeReporter(  544): Compat change id reported: 229362273; UID 10128; state: ENABLED
+36909-11-23 08:48:39.219 D/CompatibilityChangeReporter(  544): Compat change id reported: 229362273; UID 10128; state: DISABLED
+36910-11-23 08:48:39.225 I/GmsDebugLogger( 5819): [46] container:2318189190800
+36911-11-23 08:48:39.267 I/Nearby  ( 5770): is blocked device type false, isAuto=false, isIot=false, isLatchsky=false, isChinaWearable=false, isTv=false, isWearable=false (supportWearOs=false), isChromeOsDevice=false (supportChromeOs=false) [CONTEXT service_id=49 ]
+36912-11-23 08:48:39.274 I/LocationHistory( 5819): [IntentOperation] Handling action android.location.PROVIDERS_CHANGED [CONTEXT service_id=314 ]
+36913-11-23 08:48:39.275 I/NearbyDiscovery( 5770): DiscoveryService created [CONTEXT service_id=265 ]
+36914-11-23 08:48:39.277 I/LocationHistory( 5819): [IntentOperation] Device settings changed to ENABLED. Scheduling periodic tasks. [CONTEXT service_id=314 ]
+36915-11-23 08:48:39.278 W/ChimeraUtils( 5770): Module com.google.android.gms.nearby missing resource null(0)
+36916-11-23 08:48:39.279 W/ChimeraUtils( 5770): Module com.google.android.gms.nearby missing resource null(0)
+36917-11-23 08:48:39.295 I/ChimeraConfigurator( 5819): Checking 1 listeners. All downloaded: false
+36918-11-23 08:48:39.296 I/GmsDebugLogger( 5819): [83] 1 [tflite_dynamite]
+36919-11-23 08:48:39.297 D/BoundBrokerSvc( 5819): onBind: Intent { act=com.google.android.gms.chimera.container.moduleinstall.ModuleInstallService.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+36920-11-23 08:48:39.297 D/BoundBrokerSvc( 5819): Loading bound service for intent: Intent { act=com.google.android.gms.chimera.container.moduleinstall.ModuleInstallService.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+36921-11-23 08:48:39.299 E/IPCThreadState( 5819): Binder transaction failure: 523067/29189/-22
+36922-11-23 08:48:39.299 E/ChimeraUPLUtils( 5819): Failed to invoke updateComplete: android.os.DeadObjectException
+36923-11-23 08:48:39.300 I/ChimeraConfigurator( 5819): Starting update, reason: 4 urgentFeatures: vision.ocr:-1
+36924-11-23 08:48:39.302 I/OpenGLRenderer( 2584): Davey! duration=790ms; Flags=0, FrameTimelineVsyncId=12856, IntendedVsync=128444324194, Vsync=128827657512, InputEventId=0, HandleInputStart=128839337151, AnimationStart=128839340346, PerformTraversalsStart=128851382950, DrawStart=128851523198, FrameDeadline=129177657498, FrameInterval=128839174159, FrameStartTime=16666666, SyncQueued=128855261935, SyncStart=129103456221, IssueDrawCommandsStart=129103977615, SwapBuffers=129429960819, FrameCompleted=129482810188, DequeueBufferDuration=2834, QueueBufferDuration=338813, GpuCompleted=129482810188, SwapBuffersCompleted=129430839332, DisplayPresentTime=0, CommandSubmissionCompleted=129429960819, 
+36925-11-23 08:48:39.305 D/ActivityManager(  544): sync unfroze 1656 com.google.android.apps.wellbeing for 3
+36926-11-23 08:48:39.520 W/healthd (    0): battery l=100 v=5000 t=25.0 h=2 st=2 c=900000 fc=3000000 cc=10 chg=a
+36927-11-23 08:48:39.321 D/BluetoothAdapter( 5770): registerBluetoothConnectionCallback()
+36928-11-23 08:48:39.339 I/NearbyShared( 5770): BTConnStateMgr: BluetoothConnectionCallback registered.
+36929-11-23 08:48:39.350 I/NearbyFastPair( 5770): NearbyAppHelper: Check Mainline Tethering module version code. [CONTEXT service_id=265 ]
+36930-11-23 08:48:39.355 I/NearbyFastPair( 5770): NearbyAppHelper: Tethering package version code: 340818080 [CONTEXT service_id=265 ]
+--
+40457:11-23 08:49:06.405 I/ActivityManager(  544): Process com.android.settings (pid 1145) has died: cch+95 CEM 
+40458-11-23 08:49:06.423 I/MR2ServiceImpl(  544): unregisterManager | package: com.android.settings, user: 0, manager: 2
+40459-11-23 08:49:06.423 V/ActivityManager(  544): Got obituary of 1145:com.android.settings
+40460-11-23 08:49:06.424 E/IPCThreadState( 5324): Binder transaction failure: 609001/29189/-3
+40461-11-23 08:49:06.424 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@5d478d9
+40462-11-23 08:49:06.424 I/Zygote  (  359): Process 1145 exited due to signal 9 (Killed)
+40463-11-23 08:49:06.425 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@91fc29e
+40464-11-23 08:49:06.426 I/libprocessgroup(  544): Successfully killed process cgroup uid 1000 pid 1145 in 20ms
+40465-11-23 08:49:06.625 I/binder_alloc(    0): 1145: binder_alloc_buf, no vma
+40466-11-23 08:49:06.625 I/binder  (    0): undelivered transaction 602093, process died.
+40467-11-23 08:49:06.626 I/binder  (    0): cannot allocate buffer: vma cleared, target dead or dying
+40468-11-23 08:49:06.626 I/binder  (    0): 5324:6364 transaction call to 1145:0 failed 609001/29189/-3, size 764-16 line 3406
+40469-11-23 08:49:06.436 I/A       ( 1935): Refusing EXCLUSIVE task 21, it is already pending. Try again in 359 seconds.
+40470-11-23 08:49:06.437 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@406317f
+40471-11-23 08:49:06.437 W/ActivityManager(  544): setHasOverlayUi called on unknown pid: 1145
+40472-11-23 08:49:06.446 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@f1f54c
+40473-11-23 08:49:06.452 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@48ac995
+40474-11-23 08:49:06.463 W/SearchServiceCore( 1935): Abort, client detached.
+40475-11-23 08:49:06.463 W/SearchServiceCore( 1935): Abort, client detached.
+40476-11-23 08:49:06.463 W/SearchServiceCore( 1935): Abort, client detached.
+40477-11-23 08:49:06.464 I/BgTaskExecutorImpl( 1935): Starting EXCLUSIVE background task FETCH_CONFIGS_FROM_PHENOTYPE.
+40478-11-23 08:49:06.465 W/SearchServiceCore( 1935): Abort, client detached.
+40479-11-23 08:49:06.470 I/.gms.persistent( 5770): Background concurrent copying GC freed 505760(20MB) AllocSpace objects, 11(424KB) LOS objects, 49% free, 17MB/35MB, paused 131us,20us total 688.424ms
+40480-11-23 08:49:06.472 W/SearchServiceCore( 1935): Abort, client detached.
+40481-11-23 08:49:06.482 I/Icing   ( 5819): Usage reports ok 0, Failed Usage reports 0, indexed 0, rejected 0
+40482-11-23 08:49:06.483 W/Icing   ( 5819): No valid account for uploading user actions
+--
+43159:11-23 08:49:09.214 I/ActivityManager(  544): Process com.android.emergency (pid 4387) has died: cch+99 CEM 
+43160-11-23 08:49:09.215 D/DisplayManagerService(  544): Drop pending events for gone uid 10165
+43161-11-23 08:49:09.231 I/libprocessgroup(  544): Successfully killed process cgroup uid 10165 pid 4387 in 15ms
+43162-11-23 08:49:09.236 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@4fe5757
+43163-11-23 08:49:09.256 I/NamespaceManager( 5770): Package com.android.refreshratecontrol name not found! Using module version.
+43164-11-23 08:49:09.256 I/DckStubModuleInit( 5819): Loading stub module components [CONTEXT service_id=289 ]
+43165-11-23 08:49:09.260 I/Dck     ( 5819): doesDeviceHaveSupportedWirelessCapabilities: wccSysProp:0, wccMendel:3, deviceWccOverride:false [CONTEXT service_id=289 ]
+43166-11-23 08:49:09.261 I/NamespaceManager( 5770): Package com.google.oslo name not found! Using module version.
+43167-11-23 08:49:09.261 I/Dck     ( 5819): isDckModuleEligible: isAtLeastR:true, hasWccSupport:false, downloadAllowed:false [CONTEXT service_id=289 ]
+43168-11-23 08:49:09.261 W/Dck     ( 5819): Dck module not eligible for asynchronous downloading [CONTEXT service_id=289 ]
+43169-11-23 08:49:09.263 I/NamespaceManager( 5770): Package com.android.media name not found! Using module version.
+43170-11-23 08:49:09.264 I/NamespaceManager( 5770): Package com.android.media.swcodec name not found! Using module version.
+43171-11-23 08:49:09.264 I/NamespaceManager( 5770): Package com.android.neuralnetworks name not found! Using module version.
+43172-11-23 08:49:09.264 I/NamespaceManager( 5770): Package com.android.media name not found! Using module version.
+43173-11-23 08:49:09.264 I/NamespaceManager( 5770): Package 1 name not found! Using module version.
+43174-11-23 08:49:09.264 I/NamespaceManager( 5770): Package rkpd name not found! Using module version.
+43175-11-23 08:49:09.264 I/NamespaceManager( 5770): Package android.companion name not found! Using module version.
+43176-11-23 08:49:09.264 I/NamespaceManager( 5770): Package com.google.android.aicore name not found! Using module version.
+43177-11-23 08:49:09.264 I/NamespaceManager( 5770): Package com.google.android.apps.agentunderstander name not found! Using module version.
+43178-11-23 08:49:09.265 I/NamespaceManager( 5770): Package com.google.android.audioproxy name not found! Using module version.
+43179-11-23 08:49:09.265 I/NamespaceManager( 5770): Package com.google.android.apps.pixel.psi name not found! Using module version.
+43180-11-23 08:49:09.265 I/NamespaceManager( 5770): Package com.google.android.apps.safetycore name not found! Using module version.
+43181-11-23 08:49:09.265 I/NamespaceManager( 5770): Package com.google.android.crashrecovery name not found! Using module version.
+43182-11-23 08:49:09.266 I/NamespaceManager( 5770): Package com.google.android.profiling name not found! Using module version.
+43183-11-23 08:49:09.266 I/NamespaceManager( 5770): Package com.google.android.bt name not found! Using module version.
+43184-11-23 08:49:09.266 I/NamespaceManager( 5770): Package com.google.android.nfcservices name not found! Using module version.
+--
+43204:11-23 08:49:09.270 I/ActivityManager(  544): Process com.android.traceur (pid 3475) has died: cch+55 CEM 
+43205-11-23 08:49:09.271 D/DisplayManagerService(  544): Drop pending events for gone uid 10116
+43206-11-23 08:49:09.276 D/CompatibilityChangeReporter(  544): Compat change id reported: 135634846; UID 10165; state: DISABLED
+43207-11-23 08:49:09.276 D/CompatibilityChangeReporter(  544): Compat change id reported: 177438394; UID 10165; state: DISABLED
+43208-11-23 08:49:09.276 D/CompatibilityChangeReporter(  544): Compat change id reported: 135772972; UID 10165; state: DISABLED
+43209-11-23 08:49:09.276 D/CompatibilityChangeReporter(  544): Compat change id reported: 135754954; UID 10165; state: ENABLED
+43210-11-23 08:49:09.276 D/CompatibilityChangeReporter(  544): Compat change id reported: 143937733; UID 10165; state: ENABLED
+43211-11-23 08:49:09.279 W/ActivityManager(  544): ProcessRecord{47b645f 0:com.android.traceur/u0a116} is attached to a previous process 3475
+43212-11-23 08:49:09.284 D/CompatibilityChangeReporter(  544): Compat change id reported: 135634846; UID 10116; state: DISABLED
+43213-11-23 08:49:09.286 W/fyg     ( 1656): <DWB> Unsupported: feature flag disabled.
+43214-11-23 08:49:09.287 E/IPCThreadState( 5324): Binder transaction failure: 619269/29202/0
+43215-11-23 08:49:09.287 E/JavaBinder( 5324): !!! FAILED BINDER TRANSACTION !!!  (parcel size = 572)
+43216-11-23 08:49:09.287 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@31185ba
+43217-11-23 08:49:09.288 I/Zygote  (  359): Process 4387 exited due to signal 9 (Killed)
+43218-11-23 08:49:09.290 D/CompatibilityChangeReporter(  544): Compat change id reported: 177438394; UID 10116; state: DISABLED
+43219-11-23 08:49:09.290 D/CompatibilityChangeReporter(  544): Compat change id reported: 135772972; UID 10116; state: DISABLED
+43220-11-23 08:49:09.290 D/CompatibilityChangeReporter(  544): Compat change id reported: 135754954; UID 10116; state: ENABLED
+43221-11-23 08:49:09.290 E/IPCThreadState(  544): Binder transaction failure: 619289/29202/0
+43222-11-23 08:49:09.290 I/ActivityManager(  544): Process com.google.android.cellbroadcastreceiver (pid 1396) early provider death
+43223:11-23 08:49:09.297 I/ActivityManager(  544): Process com.google.android.cellbroadcastreceiver (pid 1396) has died: cch+99 CEM 
+43224-11-23 08:49:09.297 D/DisplayManagerService(  544): Drop pending events for gone uid 10175
+43225-11-23 08:49:09.304 I/libprocessgroup(  544): Successfully killed process cgroup uid 10116 pid 3475 in 0ms
+43226-11-23 08:49:09.307 W/ActivityManager(  544): ProcessRecord{1c85e6f 0:com.google.android.cellbroadcastreceiver/u0a175} is attached to a previous process 1396
+43227-11-23 08:49:09.307 D/CompatibilityChangeReporter(  544): Compat change id reported: 135634846; UID 10175; state: DISABLED
+43228-11-23 08:49:09.308 W/RemoteCallableBase( 5324): Null cursor. Cannot add index data for Uri: content://com.google.android.apps.wellbeing/settings/dynamic_indexables_raw
+43229-11-23 08:49:09.308 D/CompatibilityChangeReporter(  544): Compat change id reported: 177438394; UID 10175; state: DISABLED
+43230-11-23 08:49:09.308 D/CompatibilityChangeReporter(  544): Compat change id reported: 135772972; UID 10175; state: DISABLED
+43231-11-23 08:49:09.308 D/CompatibilityChangeReporter(  544): Compat change id reported: 135754954; UID 10175; state: ENABLED
+43232-11-23 08:49:09.322 D/Zygote  (  359): Forked child process 6464
+43233-11-23 08:49:09.322 I/ActivityManager(  544): Start proc 6464:com.android.emergency/u0a165 for content provider {com.android.emergency/com.android.emergency.EmergencySearchIndexablesProvider}
+43234-11-23 08:49:09.339 I/Zygote  (  359): Process 1396 exited due to signal 9 (Killed)
+43235-11-23 08:49:09.343 V/ActivityManager(  544): Got obituary of 1396:com.google.android.cellbroadcastreceiver
+43236-11-23 08:49:09.345 I/Bugle   ( 4400): MessagesSearchIndexablesProvider: Querying XmlResources.
+43237-11-23 08:49:09.346 D/CompatibilityChangeReporter(  544): Compat change id reported: 143937733; UID 10175; state: ENABLED
+43238-11-23 08:49:09.356 I/NearbySharing( 5819): SharingTileService destroyed [CONTEXT service_id=194 ]
+43239-11-23 08:49:09.356 D/BoundBrokerSvc( 5819): onUnbind: Intent { act=com.google.android.gms.pay.service.BIND dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+43240-11-23 08:49:09.359 V/ActivityManager(  544): Got obituary of 3475:com.android.traceur
+43241-11-23 08:49:09.360 I/libprocessgroup(  544): Successfully killed process cgroup uid 10175 pid 1396 in 0ms
+43242-11-23 08:49:09.365 E/MDD     ( 5819): FileGroupManager: Trying to add expired group enpromo-state-config.
+43243-11-23 08:49:09.366 W/MDD     ( 5819): MDDManager class cqfz
+43244-11-23 08:49:09.367 I/Zygote  (  359): Process 3475 exited due to signal 9 (Killed)
+43245-11-23 08:49:09.373 D/OomAdjuster(  544): Not killing cached processes
+43246-11-23 08:49:09.378 D/Zygote  (  359): Forked child process 6469
+43247-11-23 08:49:09.382 W/ActivityManager(  544): Slow operation: 76ms so far, now at startProcess: returned from zygote!
+43248-11-23 08:49:09.385 W/ActivityManager(  544): Slow operation: 78ms so far, now at startProcess: done updating battery stats
+--
+43260:11-23 08:49:09.391 I/ActivityManager(  544): Process com.google.android.gms.ui (pid 6011) has died: cch+55 CEM 
+43261-11-23 08:49:09.394 W/ActivityManager(  544): ProcessRecord{2cf2ba3 0:com.google.android.gms.ui/u0a128} is attached to a previous process 6011
+43262-11-23 08:49:09.397 D/CompatibilityChangeReporter(  544): Compat change id reported: 135634846; UID 10128; state: DISABLED
+43263-11-23 08:49:09.397 W/ActivityManager(  544): ProcessRecord{2cf2ba3 0:com.google.android.gms.ui/u0a128} is attached to a previous process 6011
+43264-11-23 08:49:09.404 I/libprocessgroup(  544): Successfully killed process cgroup uid 10128 pid 6011 in 11ms
+43265-11-23 08:49:09.404 I/NamespaceManager( 5770): Package com.android.refreshratecontrol name not found! Using module version.
+43266-11-23 08:49:09.405 E/IPCThreadState( 5324): Binder transaction failure: 619622/29202/0
+43267-11-23 08:49:09.405 E/JavaBinder( 5324): !!! FAILED BINDER TRANSACTION !!!  (parcel size = 576)
+43268-11-23 08:49:09.405 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@465e809
+43269-11-23 08:49:09.406 I/SettingsSearchIndexablesProvider( 1637): SettingsSearchIndexablesProvider.queryXmlResources():81 queryXmlResources
+43270-11-23 08:49:09.408 E/IPCThreadState(  544): Binder transaction failure: 619640/29202/0
+43271-11-23 08:49:09.408 I/ActivityManager(  544): Process com.google.android.healthconnect.controller (pid 4448) early provider death
+43272-11-23 08:49:09.408 D/Zygote  (  359): Forked child process 6474
+43273:11-23 08:49:09.408 I/ActivityManager(  544): Process com.google.android.healthconnect.controller (pid 4448) has died: cch+99 CEM 
+43274-11-23 08:49:09.410 I/NamespaceManager( 5770): Package com.google.oslo name not found! Using module version.
+43275-11-23 08:49:09.413 I/NamespaceManager( 5770): Package com.android.media name not found! Using module version.
+43276-11-23 08:49:09.414 I/NamespaceManager( 5770): Package com.android.media.swcodec name not found! Using module version.
+43277-11-23 08:49:09.414 I/NamespaceManager( 5770): Package com.android.neuralnetworks name not found! Using module version.
+43278-11-23 08:49:09.415 I/NamespaceManager( 5770): Package com.android.media name not found! Using module version.
+43279-11-23 08:49:09.416 I/NamespaceManager( 5770): Package 1 name not found! Using module version.
+43280-11-23 08:49:09.416 I/NamespaceManager( 5770): Package rkpd name not found! Using module version.
+43281-11-23 08:49:09.416 I/NamespaceManager( 5770): Package android.companion name not found! Using module version.
+43282-11-23 08:49:09.416 I/NamespaceManager( 5770): Package com.google.android.aicore name not found! Using module version.
+43283-11-23 08:49:09.416 I/NamespaceManager( 5770): Package com.google.android.apps.agentunderstander name not found! Using module version.
+43284-11-23 08:49:09.416 I/NamespaceManager( 5770): Package com.google.android.audioproxy name not found! Using module version.
+43285-11-23 08:49:09.416 I/NamespaceManager( 5770): Package com.google.android.apps.pixel.psi name not found! Using module version.
+43286-11-23 08:49:09.416 I/NamespaceManager( 5770): Package com.google.android.apps.safetycore name not found! Using module version.
+43287-11-23 08:49:09.416 I/NamespaceManager( 5770): Package com.google.android.crashrecovery name not found! Using module version.
+43288-11-23 08:49:09.416 I/NamespaceManager( 5770): Package com.google.android.profiling name not found! Using module version.
+43289-11-23 08:49:09.416 I/NamespaceManager( 5770): Package com.google.android.bt name not found! Using module version.
+43290-11-23 08:49:09.417 I/NamespaceManager( 5770): Package com.google.android.nfcservices name not found! Using module version.
+43291-11-23 08:49:09.417 I/NamespaceManager( 5770): Package com.google.android.webapp name not found! Using module version.
+43292-11-23 08:49:09.417 I/NamespaceManager( 5770): Package com.google.android.telephonycore name not found! Using module version.
+43293-11-23 08:49:09.417 I/NamespaceManager( 5770): Package com.google.android.uprobestats name not found! Using module version.
+43294-11-23 08:49:09.417 W/PhenotypeConfigurationU( 5770): Update for unknown DeviceConfig package com.google.android.gms.ocr [CONTEXT service_id=204 ]
+43295-11-23 08:49:09.417 W/PhenotypeConfigurationU( 5770): bwix: No package exists for config package: com.google.android.gms.ocr
+43296-11-23 08:49:09.417 W/PhenotypeConfigurationU( 5770): 	at com.google.android.gms.platformconfigurator.PhenotypeConfigurationUpdateListener.b(:com.google.android.gms@231818047@23.18.18 (190800-535401451):6)
+43297-11-23 08:49:09.417 W/PhenotypeConfigurationU( 5770): 	at com.google.android.gms.platformconfigurator.PhenotypeConfigurationUpdateListener.a(:com.google.android.gms@231818047@23.18.18 (190800-535401451):4)
+43298-11-23 08:49:09.417 W/PhenotypeConfigurationU( 5770): 	at com.google.android.gms.platformconfigurator.PhenotypeConfigurationUpdateListener.onHandleIntent(:com.google.android.gms@231818047@23.18.18 (190800-535401451):21)
+--
+57301:11-23 08:53:01.177 I/ActivityManager(  544): Process com.android.traceur (pid 6474) has died: cch+75 CEM 
+57302-11-23 08:53:01.178 E/IPCThreadState( 5324): Binder transaction failure: 689682/29202/0
+57303-11-23 08:53:01.178 E/JavaBinder( 5324): !!! FAILED BINDER TRANSACTION !!!  (parcel size = 764)
+57304-11-23 08:53:01.178 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@b15e87a
+57305-11-23 08:53:01.179 W/ActivityManager(  544): ProcessRecord{440f418 0:com.android.traceur/u0a116} is attached to a previous process 6474
+57306-11-23 08:53:01.179 D/CompatibilityChangeReporter(  544): Compat change id reported: 135634846; UID 10116; state: DISABLED
+57307-11-23 08:53:01.179 D/CompatibilityChangeReporter(  544): Compat change id reported: 177438394; UID 10116; state: DISABLED
+57308-11-23 08:53:01.179 D/CompatibilityChangeReporter(  544): Compat change id reported: 135772972; UID 10116; state: DISABLED
+57309-11-23 08:53:01.179 D/CompatibilityChangeReporter(  544): Compat change id reported: 135754954; UID 10116; state: ENABLED
+57310-11-23 08:53:01.185 E/IPCThreadState(  544): Binder transaction failure: 689713/29202/0
+57311-11-23 08:53:01.381 I/binder  (    0): 1880:544 dead process or thread
+57312-11-23 08:53:01.185 I/ActivityManager(  544): Process com.android.emergency (pid 6464) early provider death
+57313:11-23 08:53:01.185 I/ActivityManager(  544): Process com.android.emergency (pid 6464) has died: cch+65 CEM 
+57314-11-23 08:53:01.383 I/binder  (    0): 544:1880 transaction call to 6464:0 failed 689713/29202/0, size 0-0 line 3830
+57315-11-23 08:53:01.188 W/ActivityManager(  544): ProcessRecord{f81fbfb 0:com.android.emergency/u0a165} is attached to a previous process 6464
+57316-11-23 08:53:01.188 D/CompatibilityChangeReporter(  544): Compat change id reported: 135634846; UID 10165; state: DISABLED
+57317-11-23 08:53:01.188 D/CompatibilityChangeReporter(  544): Compat change id reported: 177438394; UID 10165; state: DISABLED
+57318-11-23 08:53:01.188 D/CompatibilityChangeReporter(  544): Compat change id reported: 135772972; UID 10165; state: DISABLED
+57319-11-23 08:53:01.189 D/CompatibilityChangeReporter(  544): Compat change id reported: 135754954; UID 10165; state: ENABLED
+57320-11-23 08:53:01.192 D/DisplayManagerService(  544): Drop pending events for gone uid 10116
+57321-11-23 08:53:01.194 D/DisplayManagerService(  544): Drop pending events for gone uid 10165
+57322-11-23 08:53:01.197 D/CompatibilityChangeReporter(  544): Compat change id reported: 265195908; UID 10116; state: ENABLED
+57323-11-23 08:53:01.210 I/libprocessgroup(  544): Successfully killed process cgroup uid 10116 pid 6474 in 33ms
+57324-11-23 08:53:01.216 E/BLASTSyncEngine(  544): WM sent Transaction to organized, but never received commit callback. Application ANR likely to follow.
+57325-11-23 08:53:01.421 I/binder  (    0): 6455:5324 dead process or thread
+57326-11-23 08:53:01.423 I/binder  (    0): 5324:6455 transaction call to 4400:0 failed 689760/29202/0, size 792-16 line 3830
+57327-11-23 08:53:01.219 V/ActivityManager(  544): Got obituary of 6474:com.android.traceur
+57328-11-23 08:53:01.221 D/CompatibilityChangeReporter(  544): Compat change id reported: 143937733; UID 10116; state: ENABLED
+57329-11-23 08:53:01.221 I/libprocessgroup(  544): Successfully killed process cgroup uid 10165 pid 6464 in 0ms
+57330-11-23 08:53:01.221 I/Zygote  (  359): Process 6474 exited due to signal 9 (Killed)
+57331-11-23 08:53:01.222 V/ActivityManager(  544): Got obituary of 6464:com.android.emergency
+57332-11-23 08:53:01.228 E/IPCThreadState( 5324): Binder transaction failure: 689760/29202/0
+57333-11-23 08:53:01.228 E/JavaBinder( 5324): !!! FAILED BINDER TRANSACTION !!!  (parcel size = 792)
+57334-11-23 08:53:01.228 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@a1246
+57335-11-23 08:53:01.228 E/IPCThreadState(  544): Binder transaction failure: 689766/29202/0
+57336-11-23 08:53:01.228 I/ActivityManager(  544): Process com.google.android.apps.messaging (pid 4400) early provider death
+57337:11-23 08:53:01.228 I/ActivityManager(  544): Process com.google.android.apps.messaging (pid 4400) has died: cch+45 CEM 
+57338-11-23 08:53:01.230 W/ActivityManager(  544): ProcessRecord{c40da6e 0:com.google.android.apps.messaging/u0a131} is attached to a previous process 4400
+57339-11-23 08:53:01.230 D/CompatibilityChangeReporter(  544): Compat change id reported: 135634846; UID 10131; state: DISABLED
+57340-11-23 08:53:01.232 D/Zygote  (  359): Forked child process 7740
+57341-11-23 08:53:01.232 I/Zygote  (  359): Process 6464 exited due to signal 9 (Killed)
+57342-11-23 08:53:01.232 W/ActivityManager(  544): Slow operation: 53ms so far, now at startProcess: returned from zygote!
+57343-11-23 08:53:01.232 W/ActivityManager(  544): Slow operation: 53ms so far, now at startProcess: done updating battery stats
+57344-11-23 08:53:01.232 W/ActivityManager(  544): Slow operation: 53ms so far, now at startProcess: building log message
+57345-11-23 08:53:01.232 I/ActivityManager(  544): Start proc 7740:com.android.traceur/u0a116 for content provider {com.android.traceur/com.android.traceur.SearchProvider}
+57346-11-23 08:53:01.232 W/ActivityManager(  544): Slow operation: 54ms so far, now at startProcess: starting to update pids map
+57347-11-23 08:53:01.232 W/ActivityManager(  544): Slow operation: 54ms so far, now at startProcess: done updating pids map
+57348-11-23 08:53:01.232 W/RemoteCallableBase( 5324): Null cursor. Cannot add index data for Uri: content://com.google.android.apps.nexuslauncher/settings/dynamic_indexables_raw
+57349-11-23 08:53:01.232 D/CompatibilityChangeReporter(  544): Compat change id reported: 143937733; UID 10165; state: ENABLED
+57350-11-23 08:53:01.233 E/IPCThreadState( 5324): Binder transaction failure: 689792/29202/0
+57351-11-23 08:53:01.233 E/JavaBinder( 5324): !!! FAILED BINDER TRANSACTION !!!  (parcel size = 776)
+57352-11-23 08:53:01.233 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@e48aca0
+57353-11-23 08:53:01.234 E/IPCThreadState(  544): Binder transaction failure: 689796/29202/0
+57354-11-23 08:53:01.234 I/ActivityManager(  544): Process com.google.android.apps.wellbeing (pid 1656) early provider death
+57355:11-23 08:53:01.235 I/ActivityManager(  544): Process com.google.android.apps.wellbeing (pid 1656) has died: cch+95 CEM 
+57356-11-23 08:53:01.238 D/CompatibilityChangeReporter(  544): Compat change id reported: 265195908; UID 10165; state: ENABLED
+57357-11-23 08:53:01.239 I/libprocessgroup(  544): Successfully killed process cgroup uid 10131 pid 4400 in 10ms
+57358-11-23 08:53:01.243 W/ActivityManager(  544): ProcessRecord{f0bbc4d 0:com.google.android.apps.wellbeing/u0a120} is attached to a previous process 1656
+57359-11-23 08:53:01.244 D/CompatibilityChangeReporter(  544): Compat change id reported: 135634846; UID 10120; state: DISABLED
+57360-11-23 08:53:01.244 D/CompatibilityChangeReporter(  544): Compat change id reported: 177438394; UID 10120; state: DISABLED
+57361-11-23 08:53:01.244 D/CompatibilityChangeReporter(  544): Compat change id reported: 135772972; UID 10120; state: DISABLED
+57362-11-23 08:53:01.244 D/CompatibilityChangeReporter(  544): Compat change id reported: 135754954; UID 10120; state: ENABLED
+57363-11-23 08:53:01.246 D/DisplayManagerService(  544): Drop pending events for gone uid 10120
+57364-11-23 08:53:01.257 E/IPCThreadState( 5324): Binder transaction failure: 689915/29202/0
+57365-11-23 08:53:01.257 E/JavaBinder( 5324): !!! FAILED BINDER TRANSACTION !!!  (parcel size = 828)
+57366-11-23 08:53:01.257 E/IPCThreadState( 5324): Binder transaction failure: 689943/29202/0
+57367-11-23 08:53:01.257 E/JavaBinder( 5324): !!! FAILED BINDER TRANSACTION !!!  (parcel size = 792)
+57368-11-23 08:53:01.257 E/IPCThreadState( 5324): Binder transaction failure: 689922/29202/0
+57369-11-23 08:53:01.257 E/JavaBinder( 5324): !!! FAILED BINDER TRANSACTION !!!  (parcel size = 768)
+57370-11-23 08:53:01.257 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@d402ba6
+57371-11-23 08:53:01.257 E/IPCThreadState( 5324): Binder transaction failure: 689918/29202/0
+57372-11-23 08:53:01.257 E/JavaBinder( 5324): !!! FAILED BINDER TRANSACTION !!!  (parcel size = 780)
+57373-11-23 08:53:01.257 E/IPCThreadState( 5324): Binder transaction failure: 689931/29202/0
+57374-11-23 08:53:01.257 E/JavaBinder( 5324): !!! FAILED BINDER TRANSACTION !!!  (parcel size = 776)
+57375-11-23 08:53:01.258 V/ActivityManager(  544): Got obituary of 4400:com.google.android.apps.messaging
+57376-11-23 08:53:01.258 D/ConnectivityService(  544): releasing NetworkRequest [ REQUEST id=126, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10131 RequestorUid: 10131 RequestorPkg: com.google.android.apps.messaging UnderlyingNetworks: Null] ] (release request)
+57377-11-23 08:53:01.259 E/IPCThreadState(  544): Binder transaction failure: 689956/29202/0
+57378-11-23 08:53:01.259 I/ActivityManager(  544): Process com.google.android.gms.ui (pid 6516) early provider death
+57379:11-23 08:53:01.259 I/ActivityManager(  544): Process com.google.android.gms.ui (pid 6516) has died: cch+15 CEM 
+57380-11-23 08:53:01.261 I/libprocessgroup(  544): Successfully killed process cgroup uid 10120 pid 1656 in 0ms
+57381-11-23 08:53:01.262 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@a0359e7
+57382-11-23 08:53:01.262 W/ActivityManager(  544): ProcessRecord{4e0afe2 0:com.google.android.gms.ui/u0a128} is attached to a previous process 6516
+57383-11-23 08:53:01.263 D/CompatibilityChangeReporter(  544): Compat change id reported: 135634846; UID 10128; state: DISABLED
+57384-11-23 08:53:01.263 E/IPCThreadState(  544): Binder transaction failure: 689970/29202/0
+57385-11-23 08:53:01.263 I/ActivityManager(  544): Process com.google.android.healthconnect.controller (pid 6539) early provider death
+57386:11-23 08:53:01.263 I/ActivityManager(  544): Process com.google.android.healthconnect.controller (pid 6539) has died: cch+55 CEM 
+57387-11-23 08:53:01.263 D/DisplayManagerService(  544): Drop pending events for gone uid 10184
+57388-11-23 08:53:01.265 V/ActivityManager(  544): Got obituary of 1656:com.google.android.apps.wellbeing
+57389-11-23 08:53:01.266 D/Zygote  (  359): Forked child process 7744
+57390-11-23 08:53:01.266 I/libprocessgroup(  544): Successfully killed process cgroup uid 10128 pid 6516 in 0ms
+57391-11-23 08:53:01.268 W/RemoteCallableBase( 5324): Null cursor. Cannot add index data for Uri: content://com.google.android.inputmethod.latin/settings/dynamic_indexables_raw
+57392-11-23 08:53:01.269 W/ActivityManager(  544): ProcessRecord{8a7fd5c 0:com.google.android.healthconnect.controller/u0a184} is attached to a previous process 6539
+57393-11-23 08:53:01.269 D/CompatibilityChangeReporter(  544): Compat change id reported: 135634846; UID 10184; state: DISABLED
+57394-11-23 08:53:01.269 D/CompatibilityChangeReporter(  544): Compat change id reported: 177438394; UID 10184; state: DISABLED
+57395-11-23 08:53:01.269 D/CompatibilityChangeReporter(  544): Compat change id reported: 135772972; UID 10184; state: DISABLED
+57396-11-23 08:53:01.269 D/CompatibilityChangeReporter(  544): Compat change id reported: 135754954; UID 10184; state: ENABLED
+57397-11-23 08:53:01.270 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@87bd994
+57398-11-23 08:53:01.272 W/RemoteCallableBase( 5324): Null cursor. Cannot add index data for Uri: content://com.google.android.apps.gsa.opa.AssistantSettingsProvider/settings/dynamic_indexables_raw
+57399-11-23 08:53:01.272 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@7335c32
+57400-11-23 08:53:01.272 W/ActivityManager(  544): ProcessRecord{4e0afe2 0:com.google.android.gms.ui/u0a128} is attached to a previous process 6516
+57401-11-23 08:53:01.272 E/IPCThreadState(  544): Binder transaction failure: 690019/29202/0
+57402-11-23 08:53:01.272 I/ActivityManager(  544): Process com.google.android.cellbroadcastreceiver (pid 6469) early provider death
+57403:11-23 08:53:01.272 I/ActivityManager(  544): Process com.google.android.cellbroadcastreceiver (pid 6469) has died: cch+55 CEM 
+57404-11-23 08:53:01.274 D/DisplayManagerService(  544): Drop pending events for gone uid 10175
+57405-11-23 08:53:01.275 I/A       ( 1935): Using proto config with mendel
+57406-11-23 08:53:01.275 I/A       ( 1935): Using proto config with mendel
+57407-11-23 08:53:01.275 I/A       ( 1935): Using proto config with mendel
+57408-11-23 08:53:01.275 I/A       ( 1935): Merging legacy hotword config map with new proto.
+57409-11-23 08:53:01.275 I/A       ( 1935): Adding from config to map. Locale: cmn-Hant-TW modelPrefix: x_google Location:4e7cae00daee30ec565c34e3aa67a51f isSpeakerIdSupported: true
+57410-11-23 08:53:01.275 I/A       ( 1935): Adding from config to map. Locale: id-ID modelPrefix: x_google Location:cfffcc1a4c1c084c003c8eb27f73d770 isSpeakerIdSupported: true
+57411-11-23 08:53:01.275 I/A       ( 1935): Adding from config to map. Locale: ko-KR modelPrefix: x_google Location:0b132163a2eb2c1194b202067475724b isSpeakerIdSupported: true
+57412-11-23 08:53:01.276 I/A       ( 1935): Skipping. Expected model: 2 Found: 1
+57413-11-23 08:53:01.276 I/A       ( 1935): Adding from config to map. Locale: zh-TW modelPrefix: x_google Location:4e7cae00daee30ec565c34e3aa67a51f isSpeakerIdSupported: true
+57414-11-23 08:53:01.276 I/A       ( 1935): hasHotwordEverywhere-true
+57415-11-23 08:53:01.276 I/A       ( 1935): Using proto config with mendel
+57416-11-23 08:53:01.276 I/A       ( 1935): Using proto config with mendel
+57417-11-23 08:53:01.276 I/A       ( 1935): Using proto config with mendel
+57418-11-23 08:53:01.276 I/A       ( 1935): Merging legacy hotword config map with new proto.
+57419-11-23 08:53:01.276 I/A       ( 1935): Adding from config to map. Locale: cmn-Hant-TW modelPrefix: x_google Location:4e7cae00daee30ec565c34e3aa67a51f isSpeakerIdSupported: true
+57420-11-23 08:53:01.276 I/A       ( 1935): Adding from config to map. Locale: id-ID modelPrefix: x_google Location:cfffcc1a4c1c084c003c8eb27f73d770 isSpeakerIdSupported: true
+57421-11-23 08:53:01.276 I/A       ( 1935): Adding from config to map. Locale: ko-KR modelPrefix: x_google Location:0b132163a2eb2c1194b202067475724b isSpeakerIdSupported: true
+57422-11-23 08:53:01.276 I/A       ( 1935): Skipping. Expected model: 2 Found: 1
+57423-11-23 08:53:01.276 I/A       ( 1935): Adding from config to map. Locale: zh-TW modelPrefix: x_google Location:4e7cae00daee30ec565c34e3aa67a51f isSpeakerIdSupported: true
+57424-11-23 08:53:01.277 W/ActivityManager(  544): ProcessRecord{c976e71 0:com.google.android.cellbroadcastreceiver/u0a175} is attached to a previous process 6469
+57425-11-23 08:53:01.277 D/CompatibilityChangeReporter(  544): Compat change id reported: 135634846; UID 10175; state: DISABLED
+57426-11-23 08:53:01.277 D/CompatibilityChangeReporter(  544): Compat change id reported: 177438394; UID 10175; state: DISABLED
+57427-11-23 08:53:01.278 D/CompatibilityChangeReporter(  544): Compat change id reported: 135772972; UID 10175; state: DISABLED
+57428-11-23 08:53:01.278 D/CompatibilityChangeReporter(  544): Compat change id reported: 135754954; UID 10175; state: ENABLED
+--
+57449:11-23 08:53:01.288 I/ActivityManager(  544): Process com.google.android.marvin.talkback (pid 4451) has died: cch+65 CEM 
+57450-11-23 08:53:01.294 W/ActivityManager(  544): ProcessRecord{9032fee 0:com.google.android.marvin.talkback/u0a138} is attached to a previous process 4451
+57451-11-23 08:53:01.294 D/CompatibilityChangeReporter(  544): Compat change id reported: 135634846; UID 10138; state: DISABLED
+57452-11-23 08:53:01.295 E/IPCThreadState( 5324): Binder transaction failure: 690089/29202/0
+57453-11-23 08:53:01.295 E/JavaBinder( 5324): !!! FAILED BINDER TRANSACTION !!!  (parcel size = 780)
+57454-11-23 08:53:01.296 I/ActivityThread( 5324): Removing dead content provider:android.content.ContentProviderProxy@aa92a18
+57455-11-23 08:53:01.296 E/IPCThreadState(  544): Binder transaction failure: 690094/29202/0
+57456-11-23 08:53:01.296 I/ActivityManager(  544): Process com.google.android.permissioncontroller (pid 908) early provider death
+57457:11-23 08:53:01.296 I/ActivityManager(  544): Process com.google.android.permissioncontroller (pid 908) has died: cch+45 CEM 
+57458-11-23 08:53:01.301 D/DisplayManagerService(  544): Drop pending events for gone uid 10138
+57459-11-23 08:53:01.301 D/CompatibilityChangeReporter(  544): Compat change id reported: 265195908; UID 10175; state: ENABLED
+57460-11-23 08:53:01.302 W/RemoteCallableBase( 5324): Null cursor. Cannot add index data for Uri: content://com.google.android.settings.intelligence.routines.impl/settings/dynamic_indexables_raw
+57461-11-23 08:53:01.304 W/RemoteCallableBase( 5324): Null cursor. Cannot add index data for Uri: content://com.google.android.settings.intelligence.provider.search/settings/dynamic_indexables_raw
+57462-11-23 08:53:01.305 W/ActivityManager(  544): ProcessRecord{a8b7174 0:com.google.android.permissioncontroller/u0a189} is attached to a previous process 908
+57463-11-23 08:53:01.311 D/CompatibilityChangeReporter(  544): Compat change id reported: 135634846; UID 10189; state: DISABLED
+57464-11-23 08:53:01.311 D/CompatibilityChangeReporter(  544): Compat change id reported: 177438394; UID 10189; state: DISABLED
+57465-11-23 08:53:01.311 D/CompatibilityChangeReporter(  544): Compat change id reported: 135772972; UID 10189; state: DISABLED
+57466-11-23 08:53:01.311 D/CompatibilityChangeReporter(  544): Compat change id reported: 135754954; UID 10189; state: ENABLED
+57467-11-23 08:53:01.311 W/ActivityManager(  544): ProcessRecord{a8b7174 0:com.google.android.permissioncontroller/u0a189} is attached to a previous process 908
+57468-11-23 08:53:01.312 V/ActivityManager(  544): Got obituary of 6539:com.google.android.healthconnect.controller
+57469-11-23 08:53:01.312 W/ActivityManager(  544): ProcessRecord{a8b7174 0:com.google.android.permissioncontroller/u0a189} is attached to a previous process 908
+57470-11-23 08:53:01.315 D/DisplayManagerService(  544): Drop pending events for gone uid 10189
+57471-11-23 08:53:01.322 W/RemoteCallableBase( 5324): Null cursor. Cannot add index data for Uri: content://com.google.android.settings.intelligence.smartringer.impl/settings/dynamic_indexables_raw
+57472-11-23 08:53:01.327 I/android.traceur( 7740): Using CollectorTypeCC GC.
+57473-11-23 08:53:01.328 W/android.traceur( 7740): Unexpected CPU variant for x86: x86_64.
+57474-11-23 08:53:01.328 W/android.traceur( 7740): Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, tremont, kabylake, default
+57475-11-23 08:53:01.330 I/droid.emergency( 7744): Using CollectorTypeCC GC.
+57476-11-23 08:53:01.331 W/droid.emergency( 7744): Unexpected CPU variant for x86: x86_64.
+57477-11-23 08:53:01.331 W/droid.emergency( 7744): Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, tremont, kabylake, default
+57478-11-23 08:53:01.333 E/droid.emergency( 7744): Not starting debugger since process cannot load the jdwp agent.
+57479-11-23 08:53:01.337 E/android.traceur( 7740): Not starting debugger since process cannot load the jdwp agent.
+57480-11-23 08:53:01.340 V/ActivityManager(  544): Got obituary of 908:com.google.android.permissioncontroller
+57481-11-23 08:53:01.341 V/ActivityManager(  544): Got obituary of 4451:com.google.android.marvin.talkback
+57482-11-23 08:53:01.344 D/CompatibilityChangeReporter(  544): Compat change id reported: 168419799; UID 10116; state: DISABLED
+--
+72822:11-23 08:58:39.527 I/ActivityManager(  544): Process com.google.android.gms.unstable (pid 3179) has died: cch+5 CEM 
+72823-11-23 08:58:39.527 D/ConnectivityService(  544): releasing NetworkRequest [ REQUEST id=77, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10128 RequestorUid: 10128 RequestorPkg: com.google.android.gms UnderlyingNetworks: Null] ] (release request)
+72824-11-23 08:58:39.528 I/libprocessgroup(  544): Successfully killed process cgroup uid 10128 pid 3179 in 0ms
+72825-11-23 08:58:39.532 I/NearbySharing( 5770): Stopping scanning because Bluetooth is disabled. [CONTEXT service_id=194 ]
+72826-11-23 08:58:39.532 I/NearbySharing( 5770): Failed to stop scanning because we're not scanning. [CONTEXT service_id=194 ]
+72827-11-23 08:58:39.533 I/NearbySharing( 5770): Can't stop advertising FastInitiation. Not advertising. [CONTEXT service_id=194 ]
+72828-11-23 08:58:39.533 I/NearbySharing( 5770): Stopping Fast Init advertisement because Bluetooth is off. [CONTEXT service_id=194 ]
+72829-11-23 08:58:39.533 I/NearbySharing( 5770): Stopping advertising because Bluetooth is disabled. [CONTEXT service_id=194 ]
+72830-11-23 08:58:39.533 I/NearbySharing( 5770): Can't stop scanning for FastInitiation. Not scanning. [CONTEXT service_id=194 ]
+72831-11-23 08:58:39.533 I/NearbySharing( 5770): Cancelling in use notification [CONTEXT service_id=194 ]
+72832-11-23 08:58:39.541 I/ProximityAuth( 5770): [PhoneHubService] Bluetooth state has changed. Calling startService.
+72833-11-23 08:58:39.541 I/Nearby  ( 5770): is blocked device type false, isAuto=false, isIot=false, isLatchsky=false, isChinaWearable=false, isTv=false, isWearable=false (supportWearOs=false), isChromeOsDevice=false (supportChromeOs=false) [CONTEXT service_id=49 ]
+72834-11-23 08:58:39.543 I/Monkey  ( 8731): :Sending Touch (ACTION_DOWN): 0:(716.0,546.0)
+72835-11-23 08:58:39.545 D/TaplEvents( 1186): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_DOWN, actionButton=0, id[0]=0, x[0]=716.0, y[0]=546.0, toolType[0]=TOOL_TYPE_UNKNOWN, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=729833, downTime=729833, deviceId=-1, source=0x1002, displayId=0, eventId=-960156477 }
+72836-11-23 08:58:39.547 I/Monkey  ( 8731): :Sending Touch (ACTION_UP): 0:(725.8418,598.41016)
+72837-11-23 08:58:39.548 D/TaplEvents( 1186): TIS / TouchInteractionService.onInputEvent: MotionEvent { action=ACTION_UP, actionButton=0, id[0]=0, x[0]=725.8418, y[0]=598.41016, toolType[0]=TOOL_TYPE_UNKNOWN, buttonState=0, classification=NONE, metaState=0, flags=0x0, edgeFlags=0x0, pointerCount=1, historySize=0, eventTime=729837, downTime=729833, deviceId=-1, source=0x1002, displayId=0, eventId=-89066364 }
+72838-11-23 08:58:39.550 I/ProximityAuth( 5770): [PhoneHubService] Handling intent for PhoneHubChimeraService.
+72839-11-23 08:58:39.551 I/NearbyDiscovery( 5770): FastPair: onAdapterStateChange: state=13 [CONTEXT service_id=265 ]
+72840-11-23 08:58:39.551 I/NearbyFastPair( 5770): DynamicSupportModule: onSupportStateUpdate start [CONTEXT service_id=265 ]
+72841-11-23 08:58:39.551 I/ProximityAuth( 5770): [AccountEligibilityMediator] Cannot check accounts eligibility in cross profile, checking accounts in current profiles
+72842-11-23 08:58:39.551 I/NearbyFastPair( 5770): DynamicSupportModule: onSupportStateUpdate end [CONTEXT service_id=265 ]
+72843-11-23 08:58:39.552 I/ProximityAuth( 5770): [PhoneHubService] No enabled account, stopping service
+72844-11-23 08:58:39.553 W/bt_osi_thread( 1114): packages/modules/Bluetooth/system/osi/src/thread.cc:240 run_thread: run_thread: thread id 1334, thread name alarm_default_ca exited
+72845-11-23 08:58:39.553 I/NearbyDiscovery( 5770): FastPairHandler: Received action android.bluetooth.adapter.action.STATE_CHANGED [CONTEXT service_id=265 ]
+72846-11-23 08:58:39.553 I/NearbyDiscovery( 5770): EventStreamManager: Disconnect all event streams (0) [CONTEXT service_id=265 ]
+72847-11-23 08:58:39.553 I/NearbyDiscovery( 5770): SdpManager: Remove all pending sdp actions (0) [CONTEXT service_id=265 ]
+--
+72958:11-23 08:58:39.677 I/ActivityManager(  544): Process com.google.android.bluetooth (pid 1114) has died: fg  SVC 
+72959:11-23 08:58:39.677 E/android.hardware.bluetooth.service.default(  382): Bluetooth remote service has died
+72960-11-23 08:58:39.677 I/android.hardware.bluetooth.service.default(  382): close
+72961-11-23 08:58:39.677 I/android.hardware.bluetooth.service.default(  382): Already closed
+72962-11-23 08:58:39.677 E/android.hardware.bluetooth-service.default(  382): unlinkToDeath: removed reference to death recipient but unlink failed: DEAD_OBJECT
+72963-11-23 08:58:39.677 I/MediaSessionStack(  544): removeSession | record: com.google.android.bluetooth/BluetoothMediaBrowserService (userId=0)
+72964-11-23 08:58:39.678 I/MediaSessionStack(  544): removeSession | record: com.google.android.bluetooth/BluetoothMediaBrowserService (userId=0)
+72965-11-23 08:58:39.678 I/MediaSessionStack(  544): removeSession | record: com.google.android.bluetooth/BluetoothMediaBrowserService (userId=0)
+72966-11-23 08:58:39.678 I/libprocessgroup(  544): Successfully killed process cgroup uid 1002 pid 1114 in 0ms
+72967-11-23 08:58:39.678 I/MediaSessionStack(  544): removeSession | record: com.google.android.bluetooth/BluetoothMediaBrowserService (userId=0)
+72968-11-23 08:58:39.679 W/BluetoothManagerService(  544): Profile service for profile: ComponentInfo{com.google.android.bluetooth/com.android.bluetooth.pbap.BluetoothPbapService} died.
+72969-11-23 08:58:39.684 I/Zygote  (  359): Process 1114 exited cleanly (0)
+72970-11-23 08:58:39.685 D/DisplayManagerService(  544): Drop pending events for gone uid 1002
+72971-11-23 08:58:39.792 D/PowerNotificationWarningsGoogleImpl(  907): onReceive: android.bluetooth.adapter.action.STATE_CHANGED
+72972-11-23 08:58:39.792 D/IncompatibleChargerNotification(  907): dispatchIntent: android.bluetooth.adapter.action.STATE_CHANGED
+72973-11-23 08:58:39.797 D/audioserver(  419): FGS Logger Transaction failed
+72974-11-23 08:58:39.797 D/audioserver(  419): -129
+72975-11-23 08:58:39.813 D/AudioFlinger(  419): mixer(0x77630c64b930) throttle end: throttle time(44)
+72976-11-23 08:58:39.918 D/EGL_emulation(  907): app_time_stats: avg=267.22ms min=168.34ms max=424.84ms count=5
+72977-11-23 08:58:39.918 I/OpenGLRenderer( 2584): Davey! duration=1533ms; Flags=0, FrameTimelineVsyncId=84306, IntendedVsync=727694300224, Vsync=728227633536, InputEventId=0, HandleInputStart=728239752590, AnimationStart=728239755934, PerformTraversalsStart=728245617580, DrawStart=728245784488, FrameDeadline=728677633518, FrameInterval=728235113427, FrameStartTime=16666666, SyncQueued=728246178182, SyncStart=728562872086, IssueDrawCommandsStart=728562927838, SwapBuffers=729468637603, FrameCompleted=729544229541, DequeueBufferDuration=2164, QueueBufferDuration=149041, GpuCompleted=729544229541, SwapBuffersCompleted=729469346434, DisplayPresentTime=0, CommandSubmissionCompleted=729468637603, 
+72978-11-23 08:58:39.946 D/EGL_emulation(  907): app_time_stats: avg=212.44ms min=76.07ms max=326.91ms count=5
+72979-11-23 08:58:39.947 I/Choreographer( 2584): Skipped 45 frames!  The application may be doing too much work on its main thread.
+72980-11-23 08:58:39.990 I/Nearby  ( 5770): Failed to shutdown executor MBleClient.onLostExecutorService. [CONTEXT service_id=49 ]
+72981-11-23 08:58:40.004 D/BluetoothAdapter( 5770): isLeEnabled(): OFF
+72982-11-23 08:58:40.014 D/BluetoothAdapter( 5770): isLeEnabled(): OFF
+72983-11-23 08:58:40.016 D/BluetoothAdapter( 5770): isLeEnabled(): OFF
+72984-11-23 08:58:40.017 D/BluetoothAdapter( 5770): isLeEnabled(): OFF
