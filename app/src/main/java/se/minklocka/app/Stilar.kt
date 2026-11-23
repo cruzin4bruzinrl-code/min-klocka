@@ -49,12 +49,12 @@ import kotlin.math.sin
  * inte bara egna färger. Inget snurrar runt i cirklar.
  */
 enum class Stil(val title: String, val blurb: String) {
-    MATERIAL("Material", "Googles egen stil. Mjuka kort, menyn längst ner, färger från telefonen."),
+    MATERIAL("Material", "Googles egna komponenter: cirkel- och linjeförlopp, listrader, segmentknappar och staplar du kan trycka på."),
     COCKPIT("Cockpit", "Instrumentpanel. Mätare vars visare slår ut, LED-staplar och en svepande avläsning."),
-    TIDNING("Tidning", "Som en morgontidning. Stora rubriker, siffror som rullar fram, tunna linjer, menyn som text överst."),
-    BENTO("Bento", "Rutor i olika storlek. Tryck på en ruta så växer den och visar mer. Svävande meny."),
-    BRUTAL("Brutal", "Tjocka kanter, hårda skuggor och klara färger. Menyn på sidan, rutorna trycks ner när du rör dem."),
-    NORRSKEN("Norrsken", "Glas som svävar över ett norrsken i rörelse. Urtavlan står i mitten, siffrorna guppar."),
+    TIDNING("Tidning", "Som en morgontidning. Siffrorna berättas i meningar och tabeller, timmarna rangordnas."),
+    BENTO("Bento", "Rutor som fylls som ett glas, värmekarta för dygnet och veckan, EKG-linje som löper."),
+    BRUTAL("Brutal", "Ett block per tusen steg som slås in ett i taget, kvitto över timmarna, tjocka staplar."),
+    NORRSKEN("Norrsken", "Ett klot som växer med stegen, ringar som sprids i pulsens takt, veckan som stjärnbild."),
     PRICK("Prickmatris", "Allt ritat med lysande prickar som tänds en i taget. Svep mellan sidorna i Hälsa.");
 
     fun web(dark: Boolean) = when (this) {
@@ -139,23 +139,23 @@ fun StilBackdrop(stil: Stil) {
 
 @Composable
 fun StilHome(stil: Stil, a: Acts) = when (stil) {
-    Stil.MATERIAL -> HomeScreen(a)
+    Stil.MATERIAL -> M3Home(a)
     Stil.COCKPIT -> CockpitHome(a)
-    Stil.TIDNING -> TidningHome(a)
-    Stil.BENTO -> BentoHome(a)
-    Stil.BRUTAL -> BrutalHome(a)
-    Stil.NORRSKEN -> NorrskenHome(a)
+    Stil.TIDNING -> TidningHome2(a)
+    Stil.BENTO -> BentoHome2(a)
+    Stil.BRUTAL -> BrutalHome2(a)
+    Stil.NORRSKEN -> NorrskenHome2(a)
     Stil.PRICK -> PrickHome(a)
 }
 
 @Composable
 fun StilHealth(stil: Stil, a: Acts) = when (stil) {
-    Stil.MATERIAL -> HealthScreen(a)
+    Stil.MATERIAL -> M3Health(a)
     Stil.COCKPIT -> CockpitHealth(a)
-    Stil.TIDNING -> TidningHealth(a)
-    Stil.BENTO -> BentoHealth(a)
-    Stil.BRUTAL -> BrutalHealth(a)
-    Stil.NORRSKEN -> NorrskenHealth(a)
+    Stil.TIDNING -> TidningHealth2(a)
+    Stil.BENTO -> BentoHealth2(a)
+    Stil.BRUTAL -> BrutalHealth2(a)
+    Stil.NORRSKEN -> NorrskenHealth2(a)
     Stil.PRICK -> PrickHealth(a)
 }
 

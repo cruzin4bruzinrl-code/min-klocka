@@ -250,7 +250,7 @@ private fun Dock(tab: Int, onTab: (Int) -> Unit) {
                     Modifier.weight(1f).fillMaxHeight().clickable(src, null) { onTab(i) },
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
                 ) {
-                    DockIcon(i, col, Modifier.offset(y = lift).graphicsLayer { scaleX = sc; scaleY = sc })
+                    DockIconPub(i, col, Modifier.offset(y = lift).graphicsLayer { scaleX = sc; scaleY = sc })
                     Spacer(Modifier.height(3.dp))
                     Text(t, color = col, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, maxLines = 1)
                 }
@@ -261,7 +261,7 @@ private fun Dock(tab: Int, onTab: (Int) -> Unit) {
 
 /** Ikonerna från den tidigare dockan, ritade som linjer. */
 @Composable
-private fun DockIcon(i: Int, c: Color, m: Modifier) {
+internal fun DockIconPub(i: Int, c: Color, m: Modifier) {
     Canvas(m.size(22.dp)) {
         val u = size.width / 24f
         val st = Stroke(2f * u, cap = StrokeCap.Round, join = StrokeJoin.Round)
