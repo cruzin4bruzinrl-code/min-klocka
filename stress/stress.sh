@@ -18,7 +18,7 @@ T0=$(date +%s)
 echo "== start" >> $OUT/steg.txt
 start; sleep 30; shot 00_start
 start --ez demo true; sleep 3
-STILAR="MATERIAL COCKPIT TIDNING BENTO BRUTAL NORRSKEN PRICK"
+STILAR="MATERIAL COCKPIT TIDNING BENTO BRUTAL NORRSKEN PRICK TERMINAL LCD KLADD RADAR KORT TIDSLINJE"
 for s in $STILAR; do
   start --es stil $s --ei tab 0; sleep 4
   adb shell dumpsys gfxinfo $P reset >/dev/null 2>&1
@@ -39,7 +39,7 @@ echo "== snabba flikbyten" >> $OUT/steg.txt
 for i in $(seq 1 80); do start --ei tab $((i % 5)); sleep 0.12; done; sleep 4; shot zz_snabba_flikar
 echo "lever: $(alive)" >> $OUT/steg.txt
 echo "== snabba stilbyten" >> $OUT/steg.txt
-for i in $(seq 1 40); do s=$(echo $STILAR | cut -d' ' -f$((i % 7 + 1))); start --es stil $s --ei tab $((i % 2)); sleep 0.25; done; sleep 4; shot zz_snabba_stilar
+for i in $(seq 1 40); do s=$(echo $STILAR | cut -d" " -f$((i % 13 + 1))); start --es stil $s --ei tab $((i % 2)); sleep 0.25; done; sleep 4; shot zz_snabba_stilar
 echo "lever: $(alive)" >> $OUT/steg.txt
 echo "== mörkt och ljust" >> $OUT/steg.txt
 start --es stil MATERIAL --ei tab 0

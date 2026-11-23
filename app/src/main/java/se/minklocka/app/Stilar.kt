@@ -55,11 +55,18 @@ enum class Stil(val title: String, val blurb: String) {
     BENTO("Bento", "Rutor som fylls som ett glas, värmekarta för dygnet och veckan, EKG-linje som löper."),
     BRUTAL("Brutal", "Ett block per tusen steg som slås in ett i taget, kvitto över timmarna, tjocka staplar."),
     NORRSKEN("Norrsken", "Ett klot som växer med stegen, ringar som sprids i pulsens takt, veckan som stjärnbild."),
-    PRICK("Prickmatris", "Allt ritat med lysande prickar som tänds en i taget. Svep mellan sidorna i Hälsa.");
+    PRICK("Prickmatris", "Allt ritat med lysande prickar som tänds en i taget. Svep mellan sidorna i Hälsa."),
+    TERMINAL("Terminal", "Som en kommandorad. Text som skrivs fram, staplar av tecken, kommandon du trycker på."),
+    LCD("LCD", "Som en klassisk digitalklocka. Sjusegmentssiffror, segmentstaplar och fysiska knappar med lampa."),
+    KLADD("Kladdblock", "Handritat på linjerat papper. Streck för stegen, ett hjärta som ritas, lappar som meny."),
+    RADAR("Dygnsur", "Allt i cirklar: dygnets timmar som strålar, pulsen som en krans, veckan som tårtbitar, meny i en båge."),
+    KORT("Kortlek", "En kortlek du bläddrar i. Ett stort kort per sak, korten bredvid lutar och skjuts fram."),
+    TIDSLINJE("Tidslinje", "Dagen som en tidslinje med händelser som mest aktiv och målet nått. Menyn till höger.");
 
     fun web(dark: Boolean) = when (this) {
         MATERIAL -> if (dark) "m3pixel" else "m3ljus"
         COCKPIT -> "cockpit"; TIDNING -> "tidning"; BENTO -> "bento"; BRUTAL -> "brutal"; NORRSKEN -> "norrsken"; PRICK -> "prick"
+        else -> web3(this)
     }
 
     /** Färgen på statusraden och om ikonerna där ska vara mörka. */
@@ -71,6 +78,7 @@ enum class Stil(val title: String, val blurb: String) {
         BRUTAL -> BR_YEL to true
         NORRSKEN -> NS_BG to false
         PRICK -> Color.Black to false
+        else -> bars3(this)
     }
 }
 
@@ -122,6 +130,7 @@ fun StilShell(stil: Stil, tab: Int, onTab: (Int) -> Unit, body: @Composable () -
     Stil.BRUTAL -> BrutalShell(tab, onTab, body)
     Stil.NORRSKEN -> NorrskenShell(tab, onTab, body)
     Stil.PRICK -> PrickShell(tab, onTab, body)
+    else -> Shell3(stil, tab, onTab, body)
 }
 
 /** Täckande bakgrund under Klocka och Hälsa, så att webbsidan under aldrig syns igenom. */
@@ -129,6 +138,7 @@ fun StilShell(stil: Stil, tab: Int, onTab: (Int) -> Unit, body: @Composable () -
 fun StilBackdrop(stil: Stil) {
     when (stil) {
         Stil.NORRSKEN -> Aurora()
+        Stil.TERMINAL, Stil.LCD, Stil.KLADD, Stil.RADAR, Stil.KORT, Stil.TIDSLINJE -> Backdrop3(stil)
         else -> Box(Modifier.fillMaxSize().background(when (stil) {
             Stil.MATERIAL -> androidx.compose.material3.MaterialTheme.colorScheme.surface
             Stil.COCKPIT -> CK_BG; Stil.TIDNING -> TD_PAPER; Stil.BENTO -> BT_BG; Stil.BRUTAL -> BR_YEL
@@ -146,6 +156,7 @@ fun StilHome(stil: Stil, a: Acts) = when (stil) {
     Stil.BRUTAL -> BrutalHome2(a)
     Stil.NORRSKEN -> NorrskenHome2(a)
     Stil.PRICK -> PrickHome(a)
+    else -> Home3(stil, a)
 }
 
 @Composable
@@ -157,6 +168,7 @@ fun StilHealth(stil: Stil, a: Acts) = when (stil) {
     Stil.BRUTAL -> BrutalHealth2(a)
     Stil.NORRSKEN -> NorrskenHealth2(a)
     Stil.PRICK -> PrickHealth(a)
+    else -> Health3(stil, a)
 }
 
 fun AnimatedContentTransitionScope<Int>.stilTransition(stil: Stil, from: Int, to: Int): ContentTransform {
@@ -170,6 +182,7 @@ fun AnimatedContentTransitionScope<Int>.stilTransition(stil: Stil, from: Int, to
         Stil.BRUTAL -> slideInVertically(tween(240, easing = LinearOutSlowInEasing)) { it * dir } togetherWith slideOutVertically(tween(240)) { -it * dir }
         Stil.NORRSKEN -> (fadeIn(tween(600)) + slideInVertically(tween(600, easing = FastOutSlowInEasing)) { it / 12 }) togetherWith fadeOut(tween(260))
         Stil.PRICK -> fadeIn(tween(160)) togetherWith fadeOut(tween(160))
+        else -> trans3(stil, dir)
     }
 }
 
@@ -273,6 +286,7 @@ private fun MiniPreview(s: Stil, m: Modifier) {
                 rr(Color.Black, .22f, .18f, .56f, .32f, 16f); rr(Color.White.copy(alpha = .14f), .1f, .58f, .8f, .12f, 14f); rr(Color.White.copy(alpha = .14f), .2f, .86f, .6f, .08f, 30f) }
             Stil.PRICK -> { drawRect(Color.Black); val d = w / 12f
                 for (r in 0 until 20) for (c in 0 until 11) { val on = ((r * 7 + c * 13) % 10) / 10f < k * .6f && r in 4..12; drawCircle(if (on) PR_RED else PR_OFF, d * .32f, Offset(d * (c + .5f), d * (r + 2f))) } }
+            else -> mini3(s, k)
         }
     }
 }
