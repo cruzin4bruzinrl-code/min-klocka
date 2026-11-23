@@ -161,7 +161,12 @@ private fun App(wv: WebView, js: (String) -> Unit) {
         Box(Modifier.fillMaxSize()) {
             // Webbvyn finns alltid kvar, så att anslutningen och sidans logik fortsätter
             AndroidView(
-                factory = { (wv.parent as? ViewGroup)?.removeView(wv); wv },
+                factory = {
+                    (wv.parent as? ViewGroup)?.removeView(wv)
+                    // Måste fylla ytan. Med standardläget (anpassa efter innehåll) blev sidans höjd 0 och flikarna tomma.
+                    wv.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                    wv
+                },
                 update = {
                     // Webbvyn döljs aldrig på riktigt (då slutar den rita och blir tom); den görs bara genomskinlig
                     val show = webVisible && tab >= 2
