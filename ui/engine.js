@@ -296,7 +296,7 @@ function renderDial(def,photo){
       const hubR=st==='thin'?3.4:Math.max(4,w*.62),hh=handCanvas(e.hs||st,hl,10,w+1,e.hc||'#ffffff',e.nomin?hubR:0,e.htc||e.tc),mh=e.nomin?null:handCanvas(e.ms||st,ml,10,w,e.mc||'#ffffff',hubR,e.mtc||e.tc);
       parts.push({ptr:1,typ:TY.ROTH,x:Math.round(PX-hh.width/2),y:PY-hl,img:hh,el:i});if(mh)parts.push({ptr:1,typ:TY.ROTM,x:Math.round(PX-mh.width/2),y:PY-ml,img:mh,el:i});   // nomin: bara en visare, som på en enhandsklocka
       if(e.sec&&e.small&&!els.some(z=>z.k==='orbit')){const sx=e.small.x,sy=e.small.y,sl=e.small.len||22,sh=handCanvas('thin',sl,6,4,e.sc||'#ff8a3c',2.6);parts.push({ptr:1,typ:TY.ROTS,x:Math.round(sx-sh.width/2),y:sy-sl,img:sh,el:i,px:sx,py:sy,exp:1});}
-      else if(e.sec&&!els.some(z=>z.k==='orbit')){const sl=Math.min(118,ml+8),sh=handCanvas('thin',sl,Math.max(6,Math.min(20,122-sl)),4.6,e.sc||'#ff8a3c',3);parts.push({ptr:1,typ:TY.ROTS,x:Math.round(PX-sh.width/2),y:PY-sl,img:sh,el:i});}
+      else if(e.sec&&!els.some(z=>z.k==='orbit')){const sl=Math.min(118,ml+8),sh=handCanvas('secneedle',sl,Math.max(16,Math.min(24,122-sl)),4.6,e.sc||'#ff8a3c',3);parts.push({ptr:1,typ:TY.ROTS,x:Math.round(PX-sh.width/2),y:PY-sl,img:sh,el:i});}
       box={x:PX-22,y:PY-22,w:44,h:44};
     }
     else if(e.k==='orbit'){const ty=els.some(z=>z.k==='hands')?TY.ROTS:({h:TY.ROTH,m:TY.ROTM}[e.on]||TY.ROTS);

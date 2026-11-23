@@ -167,3 +167,14 @@ Object.assign(P2BG,{
     c.strokeStyle='#ffffff';c.lineCap='round';[[20,112,220,112,3],[30,196,200,196,4],[10,208,150,208,2]].forEach(([a,b,x,y,w])=>{c.lineWidth=w;c.beginPath();c.moveTo(a,b);c.lineTo(x,y);c.stroke();});
     c.strokeStyle='#e8202a';c.lineWidth=2;c.beginPath();c.roundRect(26,232,140,34,17);c.stroke();}
 });
+
+// Sekundvisare: tunn avsmalnande nål med motvikt på svansen och ett litet nav. Ser lugn ut även när den stegar.
+HANDPIC.secneedle=function(len,tail,w,col,hub){
+  const W=15,cv=mk(W,Math.round(len+tail)),x=ctxOf(cv),m=W/2;
+  x.fillStyle=col;
+  x.beginPath();x.moveTo(m-.7,0);x.lineTo(m+.7,0);x.lineTo(m+1.4,len);x.lineTo(m-1.4,len);x.closePath();x.fill();   // nålen, smalast i spetsen
+  x.fillRect(m-1.3,len,2.6,tail-5);                                                                              // svansen
+  x.beginPath();x.arc(m,len+tail-5,4.2,0,7);x.fill();                                                            // motvikt
+  x.fillStyle='rgba(255,255,255,.85)';x.fillRect(m-.6,2,1.2,Math.max(6,len*.12));                                // ljus spets
+  return cv;
+};

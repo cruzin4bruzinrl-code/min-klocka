@@ -109,6 +109,6 @@ const DIGITAL=[
 ,{key:'g20',name:'Pion',desc:'Rosa pion, tid, datum och väder.',c1:'#ffffff',c2:'#000000',fresh:2,pr:1,def:{bg:{t:'photo',src:PH.g20},els:[tm(166,12,48,'pm','#ffffff'),{k:'week',x:154,y:72,c:'#ffffff'},vl('day',200,72,17,'pm','#ffffff',''),{k:'weather',x:162,y:252,s:24},vl('temp',204,256,17,'pm','#ffffff','')]}}
 
 ];
-DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');d.def.els.forEach(e=>{if(e.k==='hands'&&!d.secs)e.sec=0;});   // inget som snurrar runt, inte heller sekundvisare   // inga små snurrande saker: klockan stegar dem, så de rycker
+DIGITAL.forEach((d,i)=>{d.def.els=d.def.els.filter(e=>e.k!=='orbit');d.def.els.forEach(e=>{if(e.k==='hands'&&e.sec!==false)e.sec=1;});   // alla visartavlor får sekundvisare (önskat); den stegar en gång per sekund, mjukare än så kan klockan inte   // inga små snurrande saker: klockan stegar dem, så de rycker
   d.kind='d';d.id=0x86B10100+i;if(d.tested===undefined)d.tested=false;d.live=d.def.els.some(e=>e.k==='orbit'||(e.k==='hands'&&e.sec));d.toon=!!d.toon;d.sport=!!d.sport;d.ren=!!d.ren||/^p_/.test(d.key);d.exp=!!d.exp||d.def.els.some(e=>e.k==='week');   // veckodagen är inte provad på klockan, så den räknas som experiment
   d.fresh=d.fresh===2?2:(d.fresh?1:0);});
