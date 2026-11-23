@@ -8,9 +8,10 @@ adb logcat -c; adb logcat -v time > $OUT/logcat.txt 2>&1 & LC=$!
 start(){ adb shell am start -n $A "$@" >/dev/null 2>&1; }
 shot(){ adb exec-out screencap -p > $OUT/shots/$1.png; }
 start; sleep 30; start --ez demo true; sleep 2
-for s in TERMINAL LCD KLADD RADAR KORT TIDSLINJE; do
+for s in MATERIAL COCKPIT TIDNING BENTO BRUTAL NORRSKEN PRICK TERMINAL LCD KLADD RADAR KORT TIDSLINJE; do
   start --es stil $s --ei tab 0; sleep 6; shot ${s}_0
   start --ei tab 1; sleep 6; shot ${s}_1
+  start --ei tab 2; sleep 5; shot ${s}_2
   adb shell input swipe 540 1700 540 700 400; sleep 2; shot ${s}_1b
   echo "$s: $(adb shell pidof $P)" >> $OUT/steg.txt
 done
