@@ -177,6 +177,7 @@ fun GuideCard(s: Stil, health: Boolean) {
     val rows = if (health) healthRows() else todayRows()
     var open by remember { mutableStateOf(true) }
     val shape = RoundedCornerShape(p.r)
+    val bf = if (p.font == FontFamily.Cursive) null else p.font   // handstil är svår att läsa i liten text
     Column(
         Modifier.padding(vertical = 8.dp).fillMaxWidth().clip(shape).background(p.card).border(p.border, p.borderCol, shape)
             .clickable { open = !open }.animateContentSize(spring(dampingRatio = .85f, stiffness = 320f)).padding(14.dp)
@@ -197,11 +198,11 @@ fun GuideCard(s: Stil, health: Boolean) {
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(r.label, color = p.dim, fontFamily = p.font, fontSize = 13.sp, modifier = Modifier.weight(1f))
-                        Text(r.value, color = p.ink, fontFamily = p.font, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                        Text(r.label, color = p.dim, fontFamily = bf, fontSize = 13.sp, modifier = Modifier.weight(1f))
+                        Text(r.value, color = p.ink, fontFamily = bf, fontSize = 15.sp, fontWeight = FontWeight.Bold)
                     }
                     Graphic(r, p, lc)
-                    Text(r.text, color = p.ink, fontFamily = p.font, fontSize = 13.sp, lineHeight = 18.sp, modifier = Modifier.padding(top = 4.dp))
+                    Text(r.text, color = p.ink, fontFamily = bf, fontSize = 13.sp, lineHeight = 18.sp, modifier = Modifier.padding(top = 4.dp))
                 }
             }
         }
