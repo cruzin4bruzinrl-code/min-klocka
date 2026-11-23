@@ -162,7 +162,14 @@ private fun App(wv: WebView, js: (String) -> Unit) {
             // Webbvyn finns alltid kvar, så att anslutningen och sidans logik fortsätter
             AndroidView(
                 factory = { (wv.parent as? ViewGroup)?.removeView(wv); wv },
-                update = { it.visibility = if (webVisible && tab >= 2) android.view.View.VISIBLE else android.view.View.INVISIBLE },
+                update = {
+                    // Webbvyn döljs aldrig på riktigt (då slutar den rita och blir tom); den görs bara genomskinlig
+                    val show = webVisible && tab >= 2
+                    if (it.visibility != android.view.View.VISIBLE) it.visibility = android.view.View.VISIBLE
+                    it.alpha = if (show) 1f else 0f
+                    it.isFocusable = show
+                    if (show) it.postInvalidate()
+                },
                 modifier = Modifier.fillMaxSize()
             )
             AnimatedContent(targetState = tab, transitionSpec = { stilTransition(stil, initialState, targetState) }, label = "flik") { t ->

@@ -62,6 +62,21 @@ echo "lever: $(alive)" >> $OUT/steg.txt
 adb shell dumpsys meminfo $P > $OUT/meminfo.txt 2>&1
 adb shell dumpsys gfxinfo $P > $OUT/gfx_slut.txt 2>&1
 echo "tid: $(( $(date +%s) - T0 )) s" >> $OUT/steg.txt
+# Tom sida? Räknar hur mycket av ytan under rubriken som är en enda färg
+python3 - "$OUT" <<'PY' >> $OUT/steg.txt
+import sys,glob,os
+from PIL import Image
+out=sys.argv[1]
+print("== tomma ytor (andel enfärgat under rubriken)")
+for f in sorted(glob.glob(out+'/shots/*.png')):
+    if os.path.getsize(f)==0: print(os.path.basename(f),'TOM FIL'); continue
+    im=Image.open(f).convert('L'); w,h=im.size
+    reg=im.crop((0,int(h*.3),w,int(h*.85))).resize((60,120))
+    px=list(reg.getdata()); from collections import Counter
+    top=Counter(p//6 for p in px).most_common(1)[0][1]/len(px)
+    flag=' <-- TOMT?' if top>0.9 else ''
+    print(os.path.basename(f), f'{top:.0%}'+flag)
+PY
 kill $LC 2>/dev/null
 grep -nE "FATAL EXCEPTION|ANR in|has died|Process: se.minklocka" -A 25 $OUT/logcat.txt > $OUT/krascher.txt || true
 grep -E "se.minklocka|chromium|Console" $OUT/logcat.txt | grep -iE " E/| W/|error|exception" | head -400 > $OUT/fel.txt || true

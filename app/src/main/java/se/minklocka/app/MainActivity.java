@@ -59,6 +59,8 @@ public class MainActivity extends androidx.activity.ComponentActivity implements
         wv.setBackgroundColor(ink);
         WebSettings st = wv.getSettings();
         st.setJavaScriptEnabled(true);
+        // Sidan ritas klart även när den ligger dold bakom de inbyggda skärmarna, annars blir den tom när den visas
+        st.setOffscreenPreRaster(true);
         st.setDomStorageEnabled(true);
         st.setMediaPlaybackRequiresUserGesture(false);
         st.setTextZoom(100);
