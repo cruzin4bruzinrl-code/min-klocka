@@ -113,6 +113,15 @@ public class MainActivity extends androidx.activity.ComponentActivity implements
         // Ramen, menyn och skärmarna Klocka och Hälsa är riktig Android-kod. Sidan visas i de andra flikarna.
         se.minklocka.app.NativeUi.attach(this, wv, this::js);
         restoreCache();
+        // Visar en gång vilket bygge som nu körs, så att det syns att uppdateringen gick in
+        try {
+            long v = getPackageManager().getPackageInfo(getPackageName(), 0).getLongVersionCode();
+            if (prefs().getLong("visat_bygge", -1) != v) {
+                prefs().edit().putLong("visat_bygge", v).apply();
+                android.widget.Toast.makeText(this, "Min klocka, bygge " + v, android.widget.Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception ignored) {
+        }
         debug(getIntent());
         WatchService.web = this;
         begin();

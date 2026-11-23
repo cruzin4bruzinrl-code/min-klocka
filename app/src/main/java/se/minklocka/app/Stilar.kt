@@ -206,7 +206,12 @@ fun StilPicker(open: Boolean, cur: Stil, onPick: (Stil) -> Unit, onClose: () -> 
             ) {
                 Box(Modifier.align(Alignment.CenterHorizontally).size(40.dp, 4.dp).background(Color(0xFF3A3E48), CircleShape))
                 Spacer(Modifier.height(14.dp))
-                Text("Välj stil", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+                val ctx = androidx.compose.ui.platform.LocalContext.current
+                val bygge = remember { try { ctx.packageManager.getPackageInfo(ctx.packageName, 0).longVersionCode } catch (e: Exception) { 0L } }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("Välj stil", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                    Text("Bygge $bygge", color = Color(0xFF9AA0B4), fontSize = 13.sp)
+                }
                 Text("Hela appen byter uppställning, meny och rörelser.", color = Color(0xFF9AA0B4), fontSize = 14.sp)
                 Spacer(Modifier.height(14.dp))
                 Stil.entries.forEachIndexed { i, s ->
