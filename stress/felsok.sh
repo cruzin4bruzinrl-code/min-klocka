@@ -1,5 +1,5 @@
 #!/bin/bash
-# Felsökning av webbdelen i appen: läser sidans tillstånd via WebView-felsökning (bara provbyggen)
+# Bilder av stilarna (Klocka och Hälsa) för att visa dem
 set -u
 P=se.minklocka.app; A=$P/.MainActivity; OUT=stress-out; mkdir -p $OUT/shots
 adb install -r -g app/build/outputs/apk/debug/app-debug.apk
@@ -8,15 +8,11 @@ adb logcat -c; adb logcat -v time > $OUT/logcat.txt 2>&1 & LC=$!
 start(){ adb shell am start -n $A "$@" >/dev/null 2>&1; }
 shot(){ adb exec-out screencap -p > $OUT/shots/$1.png; }
 start; sleep 30; start --ez demo true; sleep 2
-adb shell input tap 540 1700; sleep 1
-start --es stil PRICK --ei tab 1; sleep 5; shot a_prick1
-start --es stil MATERIAL --ei tab 0; sleep 4; shot b_mat0
-start --ei tab 2; sleep 6; shot dials
-adb shell dumpsys activity top > $OUT/top.txt 2>&1
-PID=$(adb shell pidof $P | tr -d '\r')
-adb forward tcp:9222 localabstract:webview_devtools_remote_$PID
-curl -s http://127.0.0.1:9222/json > $OUT/cdp_list.json
-python3 stress/cdp.py > $OUT/dom.txt 2>&1
-start --ei tab 3; sleep 6; shot tools
-python3 stress/cdp.py tools > $OUT/dom_tools.txt 2>&1
-kill $LC 2>/dev/null; true
+for s in TERMINAL LCD KLADD RADAR KORT TIDSLINJE; do
+  start --es stil $s --ei tab 0; sleep 6; shot ${s}_0
+  start --ei tab 1; sleep 6; shot ${s}_1
+  adb shell input swipe 540 1700 540 700 400; sleep 2; shot ${s}_1b
+  echo "$s: $(adb shell pidof $P)" >> $OUT/steg.txt
+done
+start --ei tab 0 --ez picker true; sleep 4; adb shell input swipe 540 1900 540 400 400; sleep 2; shot valjare
+kill $LC 2>/dev/null; grep -A12 "FATAL EXCEPTION" $OUT/logcat.txt > $OUT/krascher.txt; true
