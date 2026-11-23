@@ -64,6 +64,26 @@ private fun MIcon(i: Int, bg: Color, fg: Color) {
     Box(Modifier.size(40.dp).clip(CircleShape).background(bg), contentAlignment = Alignment.Center) { DockIconPub(i, fg, Modifier) }
 }
 
+/**
+ * Egen listrad i Material-stil. (Material-bibliotekets ListItem kraschar när raden innehåller en förloppsstapel.)
+ */
+@Composable
+private fun MRow(
+    headlineContent: @Composable () -> Unit,
+    supportingContent: (@Composable () -> Unit)? = null,
+    leadingContent: (@Composable () -> Unit)? = null,
+    trailingContent: (@Composable () -> Unit)? = null
+) {
+    Row(Modifier.fillMaxWidth().heightIn(min = 64.dp).padding(horizontal = 16.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+        if (leadingContent != null) { leadingContent(); Spacer(Modifier.width(16.dp)) }
+        Column(Modifier.weight(1f)) {
+            ProvideTextStyle(MaterialTheme.typography.bodyLarge) { headlineContent() }
+            if (supportingContent != null) ProvideTextStyle(MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)) { supportingContent() }
+        }
+        if (trailingContent != null) { Spacer(Modifier.width(12.dp)); trailingContent() }
+    }
+}
+
 @Composable
 fun M3Home(a: Acts) {
     val cs = MaterialTheme.colorScheme
@@ -111,20 +131,20 @@ fun M3Home(a: Acts) {
         Spacer(Modifier.height(12.dp))
         // Listrader
         OutlinedCard(Modifier.fillMaxWidth(), shape = RoundedCornerShape(28.dp)) {
-            ListItem(
+            MRow(
                 headlineContent = { Text("Puls") }, supportingContent = { Text(if (pulseLo() > 0) "Idag ${pulseLo()}–${pulseHi()} slag/min" else "Mät på klockan") },
                 leadingContent = { MIcon(1, cs.errorContainer, cs.onErrorContainer) },
                 trailingContent = { Text(n2(W.pulse), style = ty.titleLarge) }
             )
             HorizontalDivider(Modifier.padding(horizontal = 16.dp))
-            ListItem(
+            MRow(
                 headlineContent = { Text("Batteri") },
                 supportingContent = { val b = grow(if (W.battery >= 0) W.battery / 100f else 0f); LinearProgressIndicator(progress = { b }, modifier = Modifier.padding(top = 6.dp).fillMaxWidth().height(6.dp), strokeCap = StrokeCap.Round) },
                 leadingContent = { MIcon(0, cs.tertiaryContainer, cs.onTertiaryContainer) },
                 trailingContent = { Text(if (W.battery >= 0) "${W.battery} %" else "–", style = ty.titleLarge) }
             )
             HorizontalDivider(Modifier.padding(horizontal = 16.dp))
-            ListItem(
+            MRow(
                 headlineContent = { Text("Mest aktiv") },
                 supportingContent = { Text(topHours(1).firstOrNull()?.let { "Kl ${"%02d".format(it.first)} med ${fmt(it.second)} steg" } ?: "Inga steg ännu idag") },
                 leadingContent = { MIcon(3, cs.secondaryContainer, cs.onSecondaryContainer) }
@@ -223,11 +243,10 @@ fun M3Health(a: Acts) {
                         }
                     }
                     W.week.forEachIndexed { i, v ->
-                        if (v >= 0) ListItem(
+                        if (v >= 0) MRow(
                             headlineContent = { Text(W.weekDays.getOrElse(i) { "" }) },
                             trailingContent = { Text(fmt(v), style = ty.titleMedium) },
                             supportingContent = { LinearProgressIndicator(progress = { (v / W.stepGoal.toFloat()).coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth().padding(top = 4.dp), strokeCap = StrokeCap.Round) },
-                            colors = ListItemDefaults.colors(containerColor = Color.Transparent)
                         )
                     }
                 }
