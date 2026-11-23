@@ -521,6 +521,7 @@ public class WatchService extends Service {
         public void onServicesDiscovered(final BluetoothGatt g, final int st) {
             h.post(() -> {
                 if (g != gatt) return;
+                chipScan(g);
                 BluetoothGattService s = g.getService(SVC);
                 if (s == null) {
                     log("Hittar inte klockans tjänst (" + st + ")");
@@ -563,6 +564,18 @@ public class WatchService extends Service {
             });
         }
 
+        // Chip-koll: svar på läsning av enhetsinformation (äldre och nyare Android)
+        @Override
+        public void onCharacteristicRead(BluetoothGatt g, BluetoothGattCharacteristic c, int st) {
+            final byte[] v = c.getValue();
+            h.post(() -> chipRead(g, c, v, st));
+        }
+
+        @Override
+        public void onCharacteristicRead(BluetoothGatt g, BluetoothGattCharacteristic c, byte[] v, int st) {
+            h.post(() -> chipRead(g, c, v, st));
+        }
+
         // Äldre Android anropar den här
         @Override
         public void onCharacteristicChanged(BluetoothGatt g, BluetoothGattCharacteristic c) {
@@ -584,6 +597,71 @@ public class WatchService extends Service {
         if (discoverStarted) return;
         discoverStarted = true;
         if (!g.discoverServices()) log("Kunde inte läsa klockans tjänster");
+    }
+
+    // ---------- Chip-koll: bara läsning, ändrar inget i klockan ----------
+    private final java.util.ArrayDeque<BluetoothGattCharacteristic> chipQ = new java.util.ArrayDeque<>();
+    private boolean chipDone = false;
+
+    private static String shortU(java.util.UUID u) {
+        String t = u.toString();
+        return t.endsWith("-0000-1000-8000-00805f9b34fb") && t.startsWith("0000") ? t.substring(4, 8) : t;
+    }
+
+    /** Listar klockans tjänster och letar efter kända kännetecken för olika chiptillverkare. */
+    private void chipScan(BluetoothGatt g) {
+        if (chipDone) return;
+        StringBuilder b = new StringBuilder();
+        java.util.List<String> hints = new java.util.ArrayList<>();
+        for (BluetoothGattService sv : g.getServices()) {
+            String id = shortU(sv.getUuid());
+            b.append(id).append(" [");
+            for (BluetoothGattCharacteristic c : sv.getCharacteristics()) b.append(shortU(c.getUuid())).append(' ');
+            b.append("] ");
+            String l = id.toLowerCase(java.util.Locale.ROOT);
+            if (l.equals("ae00") || l.equals("ae30")) hints.add("JieLi (tjänst " + id + ")");
+            if (l.equals("fe59")) hints.add("Nordic (uppdateringstjänst FE59)");
+            if (l.equals("d0ff") || l.equals("ffd0")) hints.add("Realtek (uppdateringstjänst " + id + ")");
+            if (l.equals("fee7")) hints.add("kinesisk standardtjänst FEE7");
+            if (l.startsWith("e49a")) hints.add("Actions (tjänst " + id + ")");
+            if (l.equals("180a")) for (BluetoothGattCharacteristic c : sv.getCharacteristics()) chipQ.add(c);
+        }
+        String all = b.toString().trim();
+        log("Chip-koll, tjänster: " + all);
+        log("Chip-koll, ledtrådar: " + (hints.isEmpty() ? "inga kända kännetecken" : android.text.TextUtils.join(", ", hints)));
+        getSharedPreferences(PREFS, MODE_PRIVATE).edit().putString("chip_tjanster", all).putString("chip_ledtradar", android.text.TextUtils.join(", ", hints)).apply();
+        if (chipQ.isEmpty()) log("Chip-koll: klockan har ingen enhetsinformation (180A)");
+        h.postDelayed(() -> chipNext(g), 6000);   // efter att klockan blivit klar
+    }
+
+    private void chipNext(BluetoothGatt g) {
+        if (g != gatt) return;
+        BluetoothGattCharacteristic c = chipQ.poll();
+        if (c == null) { chipDone = true; return; }
+        if ((c.getProperties() & BluetoothGattCharacteristic.PROPERTY_READ) == 0 || !g.readCharacteristic(c)) h.postDelayed(() -> chipNext(g), 300);
+    }
+
+    private void chipRead(BluetoothGatt g, BluetoothGattCharacteristic c, byte[] v, int st) {
+        String name;
+        switch (shortU(c.getUuid())) {
+            case "2a29": name = "Tillverkare"; break;
+            case "2a24": name = "Modell"; break;
+            case "2a25": name = "Serienummer"; v = null; break;   // visas inte
+            case "2a26": name = "Firmware"; break;
+            case "2a27": name = "Hårdvara"; break;
+            case "2a28": name = "Mjukvara"; break;
+            case "2a23": name = "System-id"; break;
+            case "2a50": name = "PnP-id"; break;
+            default: name = shortU(c.getUuid());
+        }
+        if (v != null && st == BluetoothGatt.GATT_SUCCESS) {
+            boolean text = true; for (byte x : v) if (x != 0 && (x < 32 || x > 126)) { text = false; break; }
+            StringBuilder hx = new StringBuilder(); for (byte x : v) hx.append(String.format("%02x", x));
+            String val = text ? new String(v, java.nio.charset.StandardCharsets.UTF_8).trim() : hx.toString();
+            log("Chip-koll, " + name + ": " + val);
+            getSharedPreferences(PREFS, MODE_PRIVATE).edit().putString("chip_" + name, val).apply();
+        }
+        h.postDelayed(() -> chipNext(g), 250);
     }
 
     private void onReady() {
