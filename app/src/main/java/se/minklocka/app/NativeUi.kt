@@ -31,6 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.draw.shadow
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.platform.LocalDensity
@@ -207,16 +211,73 @@ class Acts(val dials: () -> Unit, val health: () -> Unit, val find: () -> Unit, 
 
 @Composable
 internal fun MaterialShell(tab: Int, onTab: (Int) -> Unit, body: @Composable () -> Unit) {
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.surface,
-        bottomBar = {
-            NavigationBar {
-                TABS.forEachIndexed { i, t ->
-                    NavigationBarItem(selected = tab == i, onClick = { onTab(i) }, icon = { TabIcon(i, tab == i) }, label = { Text(t) })
+    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
+        Box(Modifier.weight(1f).fillMaxWidth()) { body() }
+        Box(Modifier.fillMaxWidth().padding(bottom = 14.dp, top = 6.dp), contentAlignment = Alignment.Center) { Dock(tab, onTab) }
+    }
+}
+
+/**
+ * Samma svävande docka som appen hade innan: rundad platta, en markering som glider dit med en liten studs,
+ * vald ikon lyfts och växer, ikonen krymper när man trycker.
+ */
+@Composable
+private fun Dock(tab: Int, onTab: (Int) -> Unit) {
+    val cs = MaterialTheme.colorScheme
+    val shape = RoundedCornerShape(26.dp)
+    BoxWithConstraints(
+        Modifier.fillMaxWidth(.94f).widthIn(max = 440.dp)
+            .shadow(14.dp, shape, ambientColor = Color.Black.copy(alpha = .25f), spotColor = Color.Black.copy(alpha = .35f))
+            .clip(shape).background(cs.surfaceContainerHigh).padding(6.dp)
+    ) {
+        val w = maxWidth / 5
+        val x by animateDpAsState(w * tab, spring(dampingRatio = .55f, stiffness = 320f), label = "markering")
+        // glasskimmer överst
+        Box(Modifier.matchParentSize().background(Brush.verticalGradient(listOf(Color.White.copy(alpha = .10f), Color.Transparent))))
+        Box(Modifier.offset(x = x).width(w).height(56.dp).clip(RoundedCornerShape(20.dp)).background(cs.primaryContainer)) {
+            Box(Modifier.align(Alignment.TopCenter).padding(top = 2.dp).fillMaxWidth(.64f).height(18.dp).clip(CircleShape)
+                .background(Brush.verticalGradient(listOf(Color.White.copy(alpha = .35f), Color.Transparent))))
+        }
+        Row(Modifier.fillMaxWidth().height(56.dp)) {
+            TABS.forEachIndexed { i, t ->
+                val on = i == tab
+                val src = remember { MutableInteractionSource() }
+                val pressed by src.collectIsPressedAsState()
+                val sc by animateFloatAsState(if (pressed) .86f else if (on) 1.12f else 1f, spring(dampingRatio = .45f, stiffness = 420f), label = "ikon")
+                val lift by animateDpAsState(if (on) (-1).dp else 0.dp, label = "lyft")
+                val col by animateColorAsState(if (on) cs.onPrimaryContainer else cs.onSurfaceVariant, tween(250), label = "färg")
+                Column(
+                    Modifier.weight(1f).fillMaxHeight().clickable(src, null) { onTab(i) },
+                    horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
+                ) {
+                    DockIcon(i, col, Modifier.offset(y = lift).graphicsLayer { scaleX = sc; scaleY = sc })
+                    Spacer(Modifier.height(3.dp))
+                    Text(t, color = col, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, maxLines = 1)
                 }
             }
         }
-    ) { pad -> Box(Modifier.fillMaxSize().padding(pad)) { body() } }
+    }
+}
+
+/** Ikonerna från den tidigare dockan, ritade som linjer. */
+@Composable
+private fun DockIcon(i: Int, c: Color, m: Modifier) {
+    Canvas(m.size(22.dp)) {
+        val u = size.width / 24f
+        val st = Stroke(2f * u, cap = StrokeCap.Round, join = StrokeJoin.Round)
+        fun rr(x: Float, y: Float, w: Float, h: Float, r: Float) = drawRoundRect(c, Offset(x * u, y * u), Size(w * u, h * u), CornerRadius(r * u), style = st)
+        fun ln(x1: Float, y1: Float, x2: Float, y2: Float) = drawLine(c, Offset(x1 * u, y1 * u), Offset(x2 * u, y2 * u), 2f * u, StrokeCap.Round)
+        when (i) {
+            0 -> { rr(7f, 5.5f, 10f, 13f, 3.2f)
+                drawPath(Path().apply { moveTo(9.5f * u, 5.5f * u); lineTo(9.5f * u, 3f * u); lineTo(14.5f * u, 3f * u); lineTo(14.5f * u, 5.5f * u); moveTo(9.5f * u, 18.5f * u); lineTo(9.5f * u, 21f * u); lineTo(14.5f * u, 21f * u); lineTo(14.5f * u, 18.5f * u) }, c, style = st) }
+            1 -> { drawPath(Path().apply { moveTo(12f * u, 20f * u); cubicTo(12f * u, 20f * u, 5f * u, 15.6f * u, 5f * u, 10.4f * u); cubicTo(5f * u, 6.5f * u, 10f * u, 5.5f * u, 12f * u, 8f * u); cubicTo(14f * u, 5.5f * u, 19f * u, 6.5f * u, 19f * u, 10.4f * u); cubicTo(19f * u, 15.6f * u, 12f * u, 20f * u, 12f * u, 20f * u) }, c, style = st)
+                drawPath(Path().apply { moveTo(3f * u, 12f * u); lineTo(7f * u, 12f * u); lineTo(8.5f * u, 9.5f * u); lineTo(11f * u, 15f * u); lineTo(12.5f * u, 12f * u); lineTo(16f * u, 12f * u) }, c, style = st) }
+            2 -> { rr(3.5f, 4f, 7f, 8.5f, 2.2f); rr(13.5f, 4f, 7f, 8.5f, 2.2f); rr(3.5f, 15.5f, 7f, 4.5f, 1.8f); rr(13.5f, 15.5f, 7f, 4.5f, 1.8f) }
+            3 -> { ln(4f, 7f, 14f, 7f); ln(18f, 7f, 20f, 7f); ln(4f, 17f, 6f, 17f); ln(10f, 17f, 20f, 17f)
+                drawCircle(c, 2f * u, Offset(16f * u, 7f * u), style = st); drawCircle(c, 2f * u, Offset(8f * u, 17f * u), style = st) }
+            else -> { ln(5f, 7f, 19f, 7f); ln(5f, 12f, 19f, 12f); ln(5f, 17f, 14f, 17f) }
+        }
+    }
 }
 
 @Composable
