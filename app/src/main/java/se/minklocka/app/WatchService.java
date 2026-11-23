@@ -613,11 +613,13 @@ public class WatchService extends Service {
     static void chipNow() {
         WatchService w = instance;
         if (w == null) return;
-        w.h.post(() -> {
-            if (w.gatt == null || !w.ready) { log("Chip-koll: väntar på att klockan ansluter"); return; }
+        // Väntar tills sidan har laddat, annars hamnar raderna aldrig i loggen du ser
+        w.h.removeCallbacksAndMessages("chip");
+        w.h.postAtTime(() -> {
+            if (w.gatt == null || !w.ready) { log("Chip-koll: klockan är inte ansluten än, prova igen om en stund"); return; }
             w.chipDone = false;
             w.chipScan(w.gatt);
-        });
+        }, "chip", SystemClock.uptimeMillis() + 10000);
     }
 
     private void chipScan(BluetoothGatt g) {
