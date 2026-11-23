@@ -280,6 +280,14 @@ function renderDial(def,photo){
         parts.push({typ:TY.UNIT,x:x,y:y,style:1,slots:2,frames:uf,sample:null,el:i});}
       if(e.lab){const ls=e.ls||Math.max(11,Math.min(13,s*.45));statics.push(()=>text(b,e.lab,x,y+h+(e.lg===undefined?2:e.lg),ls,'pb',e.lc||rgba(Array.isArray(c)?c[0]:c,.82),'c',1));box.h+=ls+4;}   // små etiketter gick inte att läsa på klockans skärm
     }else if(e.k==='batt'){const fr=battFrames(e),w=fr[0].width,h=fr[0].height;box={x:Math.round(e.x-w/2),y:Math.round(e.y),w:w,h:h};parts.push({typ:TY.BAR,x:box.x,y:box.y,style:1,slots:7,frames:fr,sample:5,el:i,key:'batt'});}
+    // Experiment: en bildserie med en elementtyp som vi inte vet vad klockan gör med. Varje bild visar sitt nummer,
+    // så att det syns på klockan vilken bild den väljer (t.ex. efter steg). Hypotes: jämna typer före sifferfälten är förloppsbilder.
+    else if(e.k==='probe'){const sz=Math.round(e.s||56),n=e.n||10,col=e.c||'#39ff88',fr=[];
+      for(let k=0;k<n;k++){const cv=mk(sz,sz),g=ctxOf(cv),lw=Math.max(4,sz*.12),r=sz/2-lw/2-1;g.lineWidth=lw;g.lineCap='round';
+        g.strokeStyle=rgba(col,.22);g.beginPath();g.arc(sz/2,sz/2,r,0,7);g.stroke();
+        if(k){g.strokeStyle=col;g.beginPath();g.arc(sz/2,sz/2,r,-Math.PI/2,-Math.PI/2+Math.PI*2*k/(n-1));g.stroke();}
+        g.fillStyle='#ffffff';g.font=FONTS.pb.css(sz*.34);g.textAlign='center';g.textBaseline='middle';g.fillText(String(k),sz/2,sz/2+1);fr.push(cv);}
+      box={x:Math.round(e.x-sz/2),y:Math.round(e.y),w:sz,h:sz};parts.push({typ:e.t,x:box.x,y:box.y,style:1,slots:n,frames:fr,sample:Math.min(n-1,6),el:i,exp:1});}
     else if(e.k==='weather'){const sz=Math.round(e.s||32),fr=weatherFrames(sz,e.style);box={x:Math.round(e.x-sz/2),y:Math.round(e.y),w:sz,h:sz};parts.push({typ:TY.WICON,x:box.x,y:box.y,style:1,slots:4,frames:fr,sample:1,el:i});}
     else if(e.k==='week'){const x=Math.round(e.x),y=Math.round(e.y);box={x:x-24,y:y,w:48,h:19};parts.push({t5:1,typ:3,x:x,y:y,color:Array.isArray(c)?c[0]:c,el:i});}
     else if(e.k==='ticks'){box={x:PX-20,y:PY-(e.r||112)-4,w:40,h:(e.len||9)+10};statics.unshift(()=>drawTicks(b,e));}

@@ -23,7 +23,12 @@ const DATE=(x,y,c)=>({deco:[IC('cal',x,y,17,c||'#ffffff')],els:[vl('day',x+25,y-
 const SC=(bg,scene,els,parts,more)=>({bg:bg,deco:[{k:'toon',n:scene},...(more||[]),...parts.flatMap(p=>p.deco)],els:[...els,...parts.flatMap(p=>p.els)]});
 const DIGITAL=[
 // ---- Premium: sex urtavlor med material, djup och data som grafik. Inga sekundvisare, inget som snurrar. ----
-{key:'atelier_noir',name:'Atelier Noir',desc:'Svart solstråle, pålagda guldindex, fasetterade guldvisare och datumfönster.',c1:'#d9b870',c2:'#020203',fresh:2,pr:1,def:{bg:{t:'p2',id:'noir'},
+{key:'prov_ring',exp:1,name:'Prov: stegringar',desc:'Experiment. Tre ringar med varsin okänd typ (16, 12 och 6). Varje bild har ett nummer. Ändras numret i en ring när du går, eller när pulsen ändras, så kan klockan rita riktiga ringar.',c1:'#39ff88',c2:'#000000',fresh:2,def:{bg:{t:'solid',c:'#000000'},
+  els:[{k:'time',x:120,y:18,s:44,f:'pb',c:'#ffffff'},{k:'steps',x:120,y:82,s:22,f:'pb',c:'#39ff88',lab:'STEG'},
+  {k:'probe',t:16,x:44,y:156,s:46,n:8,c:'#39ff88'},{k:'probe',t:12,x:120,y:156,s:46,n:8,c:'#ff5a6e'},{k:'probe',t:6,x:196,y:156,s:46,n:8,c:'#ffb020'},
+  {k:'text',txt:'16',x:44,y:208,s:13,c:'#39ff88'},{k:'text',txt:'12',x:120,y:208,s:13,c:'#ff5a6e'},{k:'text',txt:'6',x:196,y:208,s:13,c:'#ffb020'},
+  {k:'pulse',x:120,y:240,s:18,f:'pb',c:'#ff5a6e'}]}}
+,{key:'atelier_noir',name:'Atelier Noir',desc:'Svart solstråle, pålagda guldindex, fasetterade guldvisare och datumfönster.',c1:'#d9b870',c2:'#020203',fresh:2,pr:1,def:{bg:{t:'p2',id:'noir'},
   els:[vl('day',201,134,13,'pb','#1a1a1a',''),HN({style:'facet',hs:'facet',ms:'facet',hc:'#d9b870',mc:'#d9b870',sec:0,ml:94,hk:.66,w:7})]}}
 ,{key:'chrono_bla',exp:1,name:'Chronometer Blå',desc:'Blå gravyr. Batteriet som nål i övre urtavlan och pulsen i den nedre.',c1:'#dfe8f6',c2:'#061430',fresh:2,pr:1,def:{bg:{t:'p2',id:'bla'},
   els:[{k:'batt',style:'needle',x:120,y:62,r:30,c:'#ff6a3c'},vl('pulse',120,188,15,'pm','#ffffff',''),HN({style:'sword2',hs:'sword2',ms:'sword2',hc:'#e6ecf6',mc:'#e6ecf6',sec:0,ml:92,hk:.65,w:7})]}}
