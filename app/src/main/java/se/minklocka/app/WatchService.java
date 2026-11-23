@@ -609,8 +609,20 @@ public class WatchService extends Service {
     }
 
     /** Listar klockans tjänster och letar efter kända kännetecken för olika chiptillverkare. */
+    /** Kör chip-kollen nu, på den anslutning som redan finns (när appen öppnas). */
+    static void chipNow() {
+        WatchService w = instance;
+        if (w == null) return;
+        w.h.post(() -> {
+            if (w.gatt == null || !w.ready) { log("Chip-koll: väntar på att klockan ansluter"); return; }
+            w.chipDone = false;
+            w.chipScan(w.gatt);
+        });
+    }
+
     private void chipScan(BluetoothGatt g) {
-        if (chipDone) return;
+        if (chipDone || g == null) return;
+        chipQ.clear();
         StringBuilder b = new StringBuilder();
         java.util.List<String> hints = new java.util.ArrayList<>();
         for (BluetoothGattService sv : g.getServices()) {
@@ -631,13 +643,14 @@ public class WatchService extends Service {
         log("Chip-koll, ledtrådar: " + (hints.isEmpty() ? "inga kända kännetecken" : android.text.TextUtils.join(", ", hints)));
         getSharedPreferences(PREFS, MODE_PRIVATE).edit().putString("chip_tjanster", all).putString("chip_ledtradar", android.text.TextUtils.join(", ", hints)).apply();
         if (chipQ.isEmpty()) log("Chip-koll: klockan har ingen enhetsinformation (180A)");
-        h.postDelayed(() -> chipNext(g), 6000);   // efter att klockan blivit klar
+        chipDone = true;
+        h.postDelayed(() -> chipNext(g), ready ? 500 : 6000);   // efter att klockan blivit klar
     }
 
     private void chipNext(BluetoothGatt g) {
         if (g != gatt) return;
         BluetoothGattCharacteristic c = chipQ.poll();
-        if (c == null) { chipDone = true; return; }
+        if (c == null) return;
         if ((c.getProperties() & BluetoothGattCharacteristic.PROPERTY_READ) == 0 || !g.readCharacteristic(c)) h.postDelayed(() -> chipNext(g), 300);
     }
 

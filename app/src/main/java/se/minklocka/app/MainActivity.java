@@ -209,6 +209,7 @@ public class MainActivity extends androidx.activity.ComponentActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        WatchService.chipNow();
         FindPhone.stop(this);   // öppnar du appen har du hittat telefonen
         WatchService.web = this;
         js("window.__mkPerms&&__mkPerms()");
