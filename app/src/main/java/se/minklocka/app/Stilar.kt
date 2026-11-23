@@ -124,6 +124,19 @@ fun StilShell(stil: Stil, tab: Int, onTab: (Int) -> Unit, body: @Composable () -
     Stil.PRICK -> PrickShell(tab, onTab, body)
 }
 
+/** Täckande bakgrund under Klocka och Hälsa, så att webbsidan under aldrig syns igenom. */
+@Composable
+fun StilBackdrop(stil: Stil) {
+    when (stil) {
+        Stil.NORRSKEN -> Aurora()
+        else -> Box(Modifier.fillMaxSize().background(when (stil) {
+            Stil.MATERIAL -> androidx.compose.material3.MaterialTheme.colorScheme.surface
+            Stil.COCKPIT -> CK_BG; Stil.TIDNING -> TD_PAPER; Stil.BENTO -> BT_BG; Stil.BRUTAL -> BR_YEL
+            else -> Color.Black
+        }))
+    }
+}
+
 @Composable
 fun StilHome(stil: Stil, a: Acts) = when (stil) {
     Stil.MATERIAL -> HomeScreen(a)

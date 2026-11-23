@@ -129,14 +129,10 @@ private fun App(wv: WebView, js: (String) -> Unit) {
     LaunchedEffect(WatchState.reqTab) { val r = WatchState.reqTab; if (r in 0..4) { tab = r; WatchState.reqTab = -1 } }
     LaunchedEffect(WatchState.reqStil) { val r = WatchState.reqStil ?: return@LaunchedEffect; Stil.entries.firstOrNull { it.name == r }?.let { stil = it }; WatchState.reqStil = null }
     SideEffect { WatchState.tab = tab }
-    var webVisible by remember { mutableStateOf(false) }
     LaunchedEffect(tab) {
-        // Sidan byter flik medan den är dold och visas först när bytet är klart, så att den gamla fliken aldrig blinkar fram
         if (tab >= 2) {
             js("document.documentElement.classList.add('native');window.showTab&&showTab('" + WEB[tab] + "')")
-            if (!webVisible) { delay(160); webVisible = true }
         } else {
-            webVisible = false
             js("document.documentElement.classList.add('native')")
             if (tab == 1) js("window.nativeHealthOpen&&nativeHealthOpen()")
         }
@@ -187,21 +183,16 @@ private fun App(wv: WebView, js: (String) -> Unit) {
                     wv.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                     wv
                 },
-                update = {
-                    // Webbvyn döljs aldrig på riktigt (då slutar den rita och blir tom); den görs bara genomskinlig
-                    val show = webVisible && tab >= 2
-                    if (it.visibility != android.view.View.VISIBLE) it.visibility = android.view.View.VISIBLE
-                    it.alpha = if (show) 1f else 0f
-                    it.isFocusable = show
-                    if (show) it.postInvalidate()
-                },
+                // Webbvyn döljs aldrig (dold eller genomskinlig slutar den rita och blir tom).
+                // Klocka och Hälsa ritas i stället ovanpå med egen, täckande bakgrund.
+                update = { },
                 modifier = slotMod
             )
             Box(slotMod) {
                 AnimatedContent(targetState = tab, transitionSpec = { stilTransition(stil, initialState, targetState) }, label = "flik") { t ->
                     when (t) {
-                        0 -> StilHome(stil, acts)
-                        1 -> StilHealth(stil, acts)
+                        0 -> Box(Modifier.fillMaxSize()) { StilBackdrop(stil); StilHome(stil, acts) }
+                        1 -> Box(Modifier.fillMaxSize()) { StilBackdrop(stil); StilHealth(stil, acts) }
                         else -> Spacer(Modifier.fillMaxSize())
                     }
                 }
