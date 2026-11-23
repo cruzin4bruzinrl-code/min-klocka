@@ -44,7 +44,7 @@ public class Updater extends BroadcastReceiver {
         }
     }
 
-    /** manual=true när du trycker Sök ny version. Annars högst var tredje timme. */
+    /** manual=true när du trycker Sök ny version. Annars högst var 20:e minut. */
     static void check(final Context ctx, final boolean manual) {
         final Context c = ctx.getApplicationContext();
         // Provbyggen (stresstest) ska aldrig ersättas av den riktiga appen
@@ -52,7 +52,7 @@ public class Updater extends BroadcastReceiver {
         SharedPreferences p = c.getSharedPreferences(WatchService.PREFS, Context.MODE_PRIVATE);
         long now = System.currentTimeMillis();
         if (busy) return;
-        if (!manual && now - p.getLong(LAST, 0) < 3 * 3600 * 1000L) return;
+        if (!manual && now - p.getLong(LAST, 0) < 20 * 60 * 1000L) return;
         p.edit().putLong(LAST, now).apply();
         busy = true;
         new Thread(() -> {
