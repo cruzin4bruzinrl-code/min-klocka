@@ -149,8 +149,8 @@ fun StilHealth(stil: Stil, a: Acts) = when (stil) {
 fun AnimatedContentTransitionScope<Int>.stilTransition(stil: Stil, from: Int, to: Int): ContentTransform {
     val dir = if (to > from) 1 else -1
     return when (stil) {
-        Stil.MATERIAL -> (slideInHorizontally(tween(320, easing = FastOutSlowInEasing)) { it / 6 * dir } + fadeIn(tween(220))) togetherWith
-            (slideOutHorizontally(tween(260)) { -it / 8 * dir } + fadeOut(tween(160)))
+        // Den nya skärmen glider in ovanpå; den gamla försvinner direkt så att två skärmar aldrig syns genom varandra
+        Stil.MATERIAL -> (slideInHorizontally(tween(300, easing = FastOutSlowInEasing)) { it / 5 * dir } + fadeIn(tween(90))) togetherWith fadeOut(tween(60))
         Stil.COCKPIT -> (fadeIn(tween(90)) + scaleIn(tween(260), initialScale = .97f)) togetherWith fadeOut(tween(90))
         Stil.TIDNING -> fadeIn(tween(420, 120)) togetherWith fadeOut(tween(200))
         Stil.BENTO -> (scaleIn(spring(dampingRatio = .7f, stiffness = 300f), initialScale = .9f) + fadeIn(tween(200))) togetherWith fadeOut(tween(150))

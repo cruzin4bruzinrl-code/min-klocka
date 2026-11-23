@@ -71,6 +71,8 @@ object WatchState {
     @JvmStatic fun putBattery(p: Int) { battery = p }
 
     var picking by mutableStateOf(false)
+    @JvmStatic var webTheme: String = ""
+    @JvmStatic fun openPicker() { picking = true }
     var tab by mutableIntStateOf(0)
     var reqStil by mutableStateOf<String?>(null)
     var reqTab by mutableIntStateOf(-1)
@@ -131,12 +133,14 @@ private fun App(wv: WebView, js: (String) -> Unit) {
         } else {
             webVisible = false
             js("document.documentElement.classList.add('native')")
+            if (tab == 1) js("window.nativeHealthOpen&&nativeHealthOpen()")
         }
     }
     LaunchedEffect(stil, dark) {
         prefs.edit().putString("ui_stil", stil.name).apply()
         // Flikarna som ännu är webb får samma stil
-        js("window.setTheme&&setTheme('" + stil.web(dark) + "')")
+        WatchState.webTheme = stil.web(dark)
+        js("window.nativeTheme&&nativeTheme('" + stil.web(dark) + "')")
     }
     val act = ctx as? android.app.Activity
     val bars = stil.bars(scheme, dark)

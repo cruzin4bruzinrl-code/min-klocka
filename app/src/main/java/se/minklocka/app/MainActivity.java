@@ -326,6 +326,17 @@ public class MainActivity extends androidx.activity.ComponentActivity implements
     // ---------- från sidan till tjänsten ----------
     private final class Bridge {
         @JavascriptInterface
+        public void openStil() {
+            if (!trusted) return;
+            ui.post(se.minklocka.app.WatchState::openPicker);
+        }
+
+        @JavascriptInterface
+        public String webTheme() {
+            return se.minklocka.app.WatchState.getWebTheme();
+        }
+
+        @JavascriptInterface
         public void putHealth(String json) {
             if (!trusted || json == null || json.length() > 20000) return;
             ui.post(() -> se.minklocka.app.WatchState.putHealth(json));
