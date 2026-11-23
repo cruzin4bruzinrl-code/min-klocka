@@ -3060,7 +3060,9 @@ $('fileImport').addEventListener('change',async e=>{const f=e.target.files[0];if
 async function initGallery(){
   loadMine();cur=null;renderGrid();
   try{await Promise.all(FONTLOAD.map(f=>document.fonts.load(f,'0123456789ÅÄÖ')));}catch(e){}
-  await Promise.all(MINE.map(m=>ensurePhoto(m.def)).concat(ANALOG.map(loadLive)));
+  // färdiga urtavlor med fotobakgrund måste också få sin bild laddad, annars ritas rutan svart
+  await Promise.all(MINE.map(m=>ensurePhoto(m.def)).concat(DIGITAL.map(d=>ensurePhoto(d.def)),ANALOG.map(loadLive)));
+  DIGITAL.forEach(d=>RC.delete('d:'+d.key));
   renderGrid();pickDial('d:atelier_noir',true);window.__galleryReady=true;
   setInterval(tick,200);document.addEventListener('visibilitychange',()=>{lastTick='';tick();});
   let sc=0;const onScroll=()=>{if(sc)return;sc=requestAnimationFrame(()=>{sc=0;if(!document.body.classList.contains('editing'))paintGrid(nowT(),false);});};
@@ -3492,7 +3494,7 @@ $('edSend').addEventListener('click',async()=>{if(!ed||busy)return;const rec=edS
   cat='m';closeEditor();renderGrid();pickDial('m:'+rec.id,true);$('btnSend').click();});
 
 // ================= favoriter, provresultat, delning, verktyg och annat runt omkring =================
-const APPV=58;
+const APPV=59;
 const FAVLS='minklocka.fav.v1', RESLS='minklocka.resultat.v1', PLLS='minklocka.plats.v1', CNTLS='minklocka.nedrakning.v1', SELLS='minklocka.vald.v1';
 function lsGet(k,def){try{const v=JSON.parse(localStorage.getItem(k));return v==null?def:v;}catch(e){return def;}}
 function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
