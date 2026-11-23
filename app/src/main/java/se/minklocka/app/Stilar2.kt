@@ -89,6 +89,7 @@ fun M3Home(a: Acts) {
     val cs = MaterialTheme.colorScheme
     val ty = MaterialTheme.typography
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp)) {
+        GuideCard(Stil.MATERIAL, false)
         Row(Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text("Min klocka", style = ty.headlineLarge)
@@ -191,6 +192,7 @@ fun M3Health(a: Acts) {
     val ty = MaterialTheme.typography
     var week by remember { mutableIntStateOf(0) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp)) {
+        GuideCard(Stil.MATERIAL, true)
         Row(Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
             Text("Hälsa", style = ty.headlineLarge, modifier = Modifier.weight(1f))
             Button(onClick = a.sync) { Text("Hämta nu") }
@@ -279,6 +281,7 @@ private fun Leader(k: String, v: String, bold: Boolean = false, col: Color = INK
 fun TidningHome2(a: Acts) {
     val fade = grow(1f, 700)
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp).graphicsLayer { alpha = fade }) {
+        GuideCard(Stil.TIDNING, false)
         Spacer(Modifier.height(14.dp))
         Text("LEDARE", color = RED, fontFamily = SER, fontSize = 11.sp, letterSpacing = 2.sp, fontWeight = FontWeight.Bold)
         Text(
@@ -332,6 +335,7 @@ fun TidningHome2(a: Acts) {
 @Composable
 fun TidningHealth2(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp)) {
+        GuideCard(Stil.TIDNING, true)
         Spacer(Modifier.height(14.dp))
         Text("HÄLSA · RAPPORT", color = RED, fontFamily = SER, fontSize = 11.sp, letterSpacing = 2.sp, fontWeight = FontWeight.Bold)
         Text("Så rörde du dig", color = INK, fontFamily = SER, fontSize = 34.sp, fontWeight = FontWeight.Black)
@@ -448,6 +452,7 @@ private fun pop(i: Int): Modifier {
 @Composable
 fun BentoHome2(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        GuideCard(Stil.BENTO, false)
         Text("Idag", color = TXT, fontSize = 30.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 4.dp, top = 4.dp))
         Row(Modifier.height(230.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             // stegen fyller rutan
@@ -500,6 +505,7 @@ fun BentoHome2(a: Acts) {
 @Composable
 fun BentoHealth2(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        GuideCard(Stil.BENTO, true)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Hälsa", color = TXT, fontSize = 30.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f).padding(start = 4.dp))
             Box(Modifier.clip(CircleShape).background(ORANGE).clickable(onClick = a.sync).padding(horizontal = 16.dp, vertical = 10.dp)) { Text("Hämta", color = Color(0xFF2A1406), fontWeight = FontWeight.Bold) }
@@ -583,6 +589,7 @@ private fun BrBox(col: Color, m: Modifier = Modifier, onClick: (() -> Unit)? = n
 @Composable
 fun BrutalHome2(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        GuideCard(Stil.BRUTAL, false)
         Text(n2(W.steps), color = Color.Black, fontSize = 64.sp, fontWeight = FontWeight.Black, letterSpacing = (-3).sp, lineHeight = 64.sp)
         BL("STEG · ETT BLOCK = 1 000")
         StepBlocks(Modifier.fillMaxWidth())
@@ -619,6 +626,7 @@ fun BrutalHome2(a: Acts) {
 @Composable
 fun BrutalHealth2(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        GuideCard(Stil.BRUTAL, true)
         Text("HÄLSA", color = Color.Black, fontSize = 48.sp, fontWeight = FontWeight.Black, letterSpacing = (-2).sp)
         BrBox(PINK, Modifier.fillMaxWidth(), a.sync) { BL("TRYCK = HÄMTA FRÅN KLOCKAN") }
         BrBox(Color.White, Modifier.fillMaxWidth()) { BL("STEG · ${n2(W.steps)} AV ${fmt(W.stepGoal)}"); Spacer(Modifier.height(6.dp)); StepBlocks(Modifier.fillMaxWidth()) }
@@ -727,6 +735,7 @@ private fun NGlass(m: Modifier = Modifier, content: @Composable ColumnScope.() -
 @Composable
 fun NorrskenHome2(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        GuideCard(Stil.NORRSKEN, false)
         Box(Modifier.size(180.dp, 214.dp).clip(RoundedCornerShape(48.dp)).background(Color.Black).border(2.dp, Color.White.copy(alpha = .22f), RoundedCornerShape(48.dp)).clickable(onClick = a.dials)) {
             W.dial?.let { Image(it, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop) }
         }
@@ -767,6 +776,7 @@ fun NorrskenHome2(a: Acts) {
 @Composable
 fun NorrskenHealth2(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        GuideCard(Stil.NORRSKEN, true)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Hälsa", color = Color.White, fontSize = 34.sp, fontWeight = FontWeight.Light, modifier = Modifier.weight(1f))
             Box(Modifier.clip(CircleShape).background(Color.White.copy(alpha = .14f)).clickable(onClick = a.sync).padding(horizontal = 16.dp, vertical = 10.dp)) { Text("Hämta", color = Color.White) }

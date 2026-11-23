@@ -122,7 +122,32 @@ private fun noClick() = MutableInteractionSource()
 // =====================================================================
 
 @Composable
-fun StilShell(stil: Stil, tab: Int, onTab: (Int) -> Unit, body: @Composable () -> Unit) = when (stil) {
+fun StilShell(stil: Stil, tab: Int, onTab: (Int) -> Unit, body: @Composable () -> Unit) = UnifiedShell(stil, tab, onTab, body)
+
+/** Stilens egna rubrik ovanför innehållet (ingen meny; menyn är alltid längst ner). */
+@Composable
+fun StilHeader(stil: Stil) {
+    when (stil) {
+        Stil.COCKPIT -> Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.size(8.dp).background(if (WatchState.ready) CK_CY else CK_AMB, CircleShape)); Spacer(Modifier.width(8.dp))
+            Text(if (WatchState.ready) "LÄNK OK" else "SÖKER", color = CK_TXT, fontFamily = MONO, fontSize = 12.sp, letterSpacing = 2.sp)
+            Spacer(Modifier.weight(1f)); Text(clock("HH:mm:ss"), color = CK_CY, fontFamily = MONO, fontSize = 12.sp, letterSpacing = 2.sp)
+        }
+        Stil.TIDNING -> Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
+            Text("Min Klocka", Modifier.fillMaxWidth(), color = TD_INK, fontFamily = SERIF, fontSize = 30.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center)
+            Row { Text(clock("EEEE d MMMM").uppercase(), color = TD_GREY, fontFamily = SERIF, fontSize = 10.sp, letterSpacing = 1.5.sp, modifier = Modifier.weight(1f))
+                Text(if (WatchState.ready) "KLOCKAN ANSLUTEN" else "EJ ANSLUTEN", color = if (WatchState.ready) TD_INK else TD_RED, fontFamily = SERIF, fontSize = 10.sp, letterSpacing = 1.5.sp) }
+            Box(Modifier.padding(top = 4.dp).fillMaxWidth().height(3.dp).background(TD_INK))
+        }
+        Stil.BRUTAL -> { val s = WatchState; Marquee("${if (s.ready) "ANSLUTEN" else "SÖKER KLOCKAN"}  ★  ${num(s.steps)} STEG  ★  PULS ${num(s.pulse)}  ★  BATTERI ${num(s.battery)} %  ★  ") }
+        Stil.TERMINAL -> Text("rob@min-klocka:~$ status --kort", Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp), color = Color(0xFF39FF14), fontFamily = MONO, fontSize = 13.sp)
+        Stil.LCD -> Text("TRIACLE · LITE ONE", Modifier.fillMaxWidth().padding(top = 8.dp), color = Color(0xFF8A8D91), fontFamily = MONO, fontSize = 10.sp, letterSpacing = 3.sp, textAlign = TextAlign.Center)
+        else -> Spacer(Modifier.height(4.dp))
+    }
+}
+
+@Composable
+private fun OldShell(stil: Stil, tab: Int, onTab: (Int) -> Unit, body: @Composable () -> Unit) = when (stil) {
     Stil.MATERIAL -> MaterialShell(tab, onTab, body)
     Stil.COCKPIT -> CockpitShell(tab, onTab, body)
     Stil.TIDNING -> TidningShell(tab, onTab, body)
@@ -393,6 +418,7 @@ private fun CkButton(t: String, m: Modifier, onClick: () -> Unit) {
 private fun CockpitHome(a: Acts) {
     val s = WatchState
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        GuideCard(Stil.COCKPIT, false)
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             CkPanel("URTAVLA", Modifier.weight(.9f)) {
                 Box(Modifier.fillMaxWidth().aspectRatio(240f / 286f).border(1.dp, CK_DIM).padding(5.dp)) { DialImage(Modifier.fillMaxSize(), 14.dp) }
@@ -438,6 +464,7 @@ private fun Scope(v: List<Int>, m: Modifier, col: Color) {
 private fun CockpitHealth(a: Acts) {
     val s = WatchState
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        GuideCard(Stil.COCKPIT, true)
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             CkPanel("STEG", Modifier.weight(1f)) { Gauge(frac(), "MÅL ${fmt(s.stepGoal)}", num(s.steps), Modifier.fillMaxWidth().aspectRatio(1f)) }
             CkPanel("PULS", Modifier.weight(1f)) { Gauge(if (s.pulse > 0) (s.pulse - 40) / 140f else 0f, "BPM", num(s.pulse), Modifier.fillMaxWidth().aspectRatio(1f), CK_AMB) }
@@ -1059,6 +1086,7 @@ private fun PrLabel(t: String) = Text(t, color = Color(0xFF8A8A8A), fontFamily =
 private fun PrickHome(a: Acts) {
     val s = WatchState
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)) {
+        GuideCard(Stil.PRICK, false)
         DotText(clock("HH:mm").ifEmpty { "--:--" }, 9.dp, PR_TXT)
         Spacer(Modifier.height(18.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -1096,6 +1124,7 @@ private fun PrickHealth(a: Acts) {
     val s = WatchState
     val pages = rememberPagerState { 4 }
     Column(Modifier.fillMaxSize().padding(top = 16.dp)) {
+        Box(Modifier.padding(horizontal = 16.dp)) { GuideCard(Stil.PRICK, true) }
         Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
             PrLabel("HÄLSA  ${pages.currentPage + 1}/4")
             Spacer(Modifier.weight(1f))

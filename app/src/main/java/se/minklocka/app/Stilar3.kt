@@ -219,6 +219,7 @@ private fun spark(v: List<Int>): String { val b = "▁▂▃▄▅▆▇█"; va
 @Composable
 private fun TerminalHome(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp)) {
+        GuideCard(Stil.TERMINAL, false)
         Row(verticalAlignment = Alignment.Top) {
             Box(Modifier.size(84.dp, 100.dp).border(1.dp, T_GRN)) { Dial(Modifier.fillMaxSize().padding(3.dp)); Canvas(Modifier.matchParentSize()) { var y = 0f; while (y < size.height) { drawLine(T_GRN.copy(alpha = .12f), Offset(0f, y), Offset(size.width, y), 1f); y += 3f } } }
             Spacer(Modifier.width(12.dp))
@@ -253,6 +254,7 @@ private fun TerminalHome(a: Acts) {
 @Composable
 private fun TerminalHealth(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp)) {
+        GuideCard(Stil.TERMINAL, true)
         val mx = maxOf(1, S.week.maxOrNull() ?: 1)
         val lines = mutableListOf(
             "$ halsa --hamta" to T_AMB,
@@ -339,6 +341,7 @@ private fun LcdShell(tab: Int, onTab: (Int) -> Unit, body: @Composable () -> Uni
 @Composable
 private fun LcdHome(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        GuideCard(Stil.LCD, false)
         LcdPanel(Modifier.fillMaxWidth()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 LT(clk("EEE").uppercase().take(3), 13); Spacer(Modifier.weight(1f)); LT(if (S.ready) "◉ BT" else "○ BT", 13); Spacer(Modifier.width(10.dp)); LT(if (S.battery >= 0) "${S.battery}%" else "--%", 13)
@@ -382,6 +385,7 @@ private fun LcdHome(a: Acts) {
 @Composable
 private fun LcdHealth(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        GuideCard(Stil.LCD, true)
         LcdPanel(Modifier.fillMaxWidth().clickable(onClick = a.sync)) { Row { LT("HÄLSA", 14); Spacer(Modifier.weight(1f)); LT("[ HÄMTA ]", 12) } }
         LcdPanel(Modifier.fillMaxWidth()) {
             LT("STEG IDAG", 12); Seg7(if (S.steps >= 0) S.steps.toString().padStart(5) else "-----", 56.dp)
@@ -515,6 +519,7 @@ private fun HandBars(v: List<Int>, m: Modifier, col: Color = K_B) {
 @Composable
 private fun KladdHome(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(start = 48.dp, end = 16.dp, top = 6.dp)) {
+        GuideCard(Stil.KLADD, false)
         Text("Idag, ${clk("d MMMM")}", color = K_INK, fontFamily = HAND, fontSize = 30.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
         Row(verticalAlignment = Alignment.Top) {
@@ -553,6 +558,7 @@ private fun KladdHome(a: Acts) {
 @Composable
 private fun KladdHealth(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(start = 48.dp, end = 16.dp, top = 6.dp)) {
+        GuideCard(Stil.KLADD, true)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Hälsa", color = K_INK, fontFamily = HAND, fontSize = 34.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
             Box(Modifier.rotate(3f).shadow(3.dp).background(K_O).clickable(onClick = a.sync).padding(horizontal = 12.dp, vertical = 8.dp)) { Text("Hämta!", color = K_INK, fontFamily = HAND, fontSize = 16.sp) }
@@ -684,6 +690,7 @@ private fun WeekPie(m: Modifier) {
 @Composable
 private fun RadarHome(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        GuideCard(Stil.RADAR, false)
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.size(56.dp).clip(CircleShape).border(2.dp, R_OR, CircleShape).clickable(onClick = a.dials)) { Dial(Modifier.fillMaxSize()) }
             Spacer(Modifier.width(12.dp))
@@ -717,6 +724,7 @@ private fun RadarHome(a: Acts) {
 @Composable
 private fun RadarHealth(a: Acts) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        GuideCard(Stil.RADAR, true)
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             Text("Hälsa", color = R_TXT, fontSize = 30.sp, fontWeight = FontWeight.Light, modifier = Modifier.weight(1f))
             Box(Modifier.clip(CircleShape).background(Brush.linearGradient(listOf(R_OR, R_PK))).clickable(onClick = a.sync).padding(horizontal = 16.dp, vertical = 9.dp)) { Text("Hämta", color = Color.White) }
@@ -781,6 +789,7 @@ private fun Deck(cards: List<Card3>, m: Modifier) {
 @Composable
 private fun KortHome(a: Acts) {
     Column(Modifier.fillMaxSize()) {
+        Box(Modifier.padding(horizontal = 16.dp)) { GuideCard(Stil.KORT, false) }
         Deck(listOf(
             Card3("Urtavla", C_ACC) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
@@ -806,12 +815,13 @@ private fun KortHome(a: Acts) {
                     }
                 }
             }
-        ), Modifier.fillMaxSize())
+        ), Modifier.fillMaxWidth().weight(1f))
     }
 }
 
 @Composable
-private fun KortHealth(a: Acts) {
+private fun KortHealth(a: Acts) = Column(Modifier.fillMaxSize()) {
+    Box(Modifier.padding(horizontal = 16.dp)) { GuideCard(Stil.KORT, true) }
     Deck(listOf(
         Card3("Steg idag", Color(0xFF00A86B)) {
             Column { Big(nn(S.steps)); Sub("${pc()} % av målet"); Spacer(Modifier.height(18.dp))
@@ -827,7 +837,7 @@ private fun KortHealth(a: Acts) {
             Column { Sub("Målet nått ${S.week.count { it >= S.stepGoal }} av 7 dagar"); Bars(S.week.map { maxOf(0, it) }, C_ACC, Modifier.fillMaxWidth().height(150.dp).padding(top = 12.dp))
                 Row(Modifier.fillMaxWidth()) { S.weekDays.forEach { Text(it, Modifier.weight(1f), color = C_INK.copy(alpha = .6f), fontSize = 11.sp, textAlign = TextAlign.Center) } } }
         }
-    ), Modifier.fillMaxSize())
+    ), Modifier.fillMaxWidth().weight(1f))
 }
 
 // =====================================================================
@@ -889,6 +899,7 @@ private fun TidHome(a: Acts) {
     var acc = 0; var goalAt = -1
     S.hours.forEachIndexed { h, v -> acc += v; if (goalAt < 0 && acc >= S.stepGoal) goalAt = h }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(start = 14.dp, end = 10.dp, top = 16.dp)) {
+        GuideCard(Stil.TIDSLINJE, false)
         Text("Din dag", color = TL_INK, fontSize = 30.sp, fontWeight = FontWeight.Bold)
         Text("${nn(S.steps)} steg · puls ${nn(S.pulse)} · batteri ${if (S.battery >= 0) "${S.battery} %" else "–"}", color = TL_DIM, fontSize = 13.sp)
         Spacer(Modifier.height(14.dp))
@@ -917,6 +928,7 @@ private fun TidHome(a: Acts) {
 private fun TidHealth(a: Acts) {
     val mx = maxOf(1, S.week.maxOrNull() ?: 1)
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(start = 14.dp, end = 10.dp, top = 16.dp)) {
+        GuideCard(Stil.TIDSLINJE, true)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Veckan", color = TL_INK, fontSize = 30.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
             Text("Hämta", Modifier.clip(CircleShape).background(TL_ACC).clickable(onClick = a.sync).padding(horizontal = 16.dp, vertical = 8.dp), color = Color.White, fontWeight = FontWeight.SemiBold)
