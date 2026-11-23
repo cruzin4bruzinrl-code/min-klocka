@@ -28,7 +28,7 @@ for s in $STILAR; do
   start --ei tab 1; sleep 4; shot ${s}_1
   adb shell input swipe 540 1900 540 500 400; sleep 2; shot ${s}_1b
   if [ $s = PRICK ]; then adb shell input swipe 900 1200 150 1200 300; sleep 2; shot ${s}_1c; fi
-  start --ei tab 0 --ez picker true; sleep 3; shot ${s}_val
+  start --ei tab 0 --ez picker true; sleep 5; shot ${s}_val
   adb shell input keyevent KEYCODE_BACK; sleep 2; shot ${s}_val_stangd
   adb shell dumpsys gfxinfo $P > $OUT/gfx_$s.txt 2>&1
   echo "$s klar, appen lever: $(alive)" >> $OUT/steg.txt

@@ -31,6 +31,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntOffset
+import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import org.json.JSONObject
 
@@ -161,8 +166,19 @@ private fun App(wv: WebView, js: (String) -> Unit) {
         sync = { js("window.hlSync&&hlSync(true)") },
         stil = { WatchState.picking = true }
     )
+    // Ytan mellan stilens meny och kanter. Webbvyn och de inbyggda skärmarna läggs exakt där,
+    // men utanför stilen, så att webbvyn aldrig flyttas eller byggs om när stilen byts.
+    var slot by remember { mutableStateOf(androidx.compose.ui.geometry.Rect.Zero) }
     val body: @Composable () -> Unit = {
+        Box(Modifier.fillMaxSize().onGloballyPositioned { slot = it.boundsInRoot() })
+    }
+    val dens = LocalDensity.current
+    val slotMod = Modifier
+        .offset { IntOffset(slot.left.roundToInt(), slot.top.roundToInt()) }
+        .size(with(dens) { slot.width.toDp() }, with(dens) { slot.height.toDp() })
+    MaterialTheme(colorScheme = scheme) {
         Box(Modifier.fillMaxSize()) {
+            key(stil) { StilShell(stil, tab, onTab, body) }
             // Webbvyn finns alltid kvar, så att anslutningen och sidans logik fortsätter
             AndroidView(
                 factory = {
@@ -179,20 +195,17 @@ private fun App(wv: WebView, js: (String) -> Unit) {
                     it.isFocusable = show
                     if (show) it.postInvalidate()
                 },
-                modifier = Modifier.fillMaxSize()
+                modifier = slotMod
             )
-            AnimatedContent(targetState = tab, transitionSpec = { stilTransition(stil, initialState, targetState) }, label = "flik") { t ->
-                when (t) {
-                    0 -> StilHome(stil, acts)
-                    1 -> StilHealth(stil, acts)
-                    else -> Spacer(Modifier.fillMaxSize())
+            Box(slotMod) {
+                AnimatedContent(targetState = tab, transitionSpec = { stilTransition(stil, initialState, targetState) }, label = "flik") { t ->
+                    when (t) {
+                        0 -> StilHome(stil, acts)
+                        1 -> StilHealth(stil, acts)
+                        else -> Spacer(Modifier.fillMaxSize())
+                    }
                 }
             }
-        }
-    }
-    MaterialTheme(colorScheme = scheme) {
-        Box(Modifier.fillMaxSize()) {
-            key(stil) { StilShell(stil, tab, onTab, body) }
             StilPicker(WatchState.picking, stil, onPick = { stil = it; WatchState.picking = false }, onClose = { WatchState.picking = false })
         }
     }
