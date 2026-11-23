@@ -2,6 +2,12 @@
 (function(){
   const N=window.MinKlockaNative;if(!N||!N.putHealth)return;
   document.documentElement.classList.add('native');
+  // Stilen styrs av Android. Byts tyst, utan meddelande, och sparas inte som sidans egen.
+  window.nativeTheme=function(t){const r=document.documentElement;if(r.dataset.theme===t)return;r.dataset.theme=t;r.style.removeProperty('--a1');r.style.removeProperty('--a2');
+    try{markTheme();}catch(e){}if(typeof hlRender==='function')setTimeout(()=>hlRender(false),60);};
+  try{const t=N.webTheme&&N.webTheme();if(t)nativeTheme(t);}catch(e){}
+  // Hälsan hämtas när Hälsa öppnas, högst var tredje minut
+  let lastSync=0;window.nativeHealthOpen=function(){if(Date.now()-lastSync<180000)return;lastSync=Date.now();try{hlSync(false);}catch(e){}};
   let last='';
   function health(){
     try{

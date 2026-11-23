@@ -164,7 +164,7 @@ function tour(force){
           b.onclick=()=>{if(!d)return;pickDial(d.gk,true);o.querySelectorAll('.ob-faces button').forEach(x=>x.classList.toggle('on',x===b));};});
         const sb=o.querySelector('[data-a="send"]');if(sb)sb.onclick=()=>{$('btnSend').click();};
         return setInterval(()=>{const pr=o.querySelector('#obProg');if(pr)pr.textContent=$('stProg').textContent;},400);}},
-    {k:'tema',art:()=>'',h:'Välj utseende',p:'Ljust, mörkt eller i urtavlans färger. Du kan ändra under Mer.',body:()=>'<div class="themes ob-th">'+THEMES.map(t=>'<button data-th="'+t[0]+'"><span class="sw"><i style="background:'+t[2]+'"></i><i style="background:'+t[3]+'"></i><i style="background:'+t[4]+'"></i></span>'+t[1]+'</button>').join('')+'</div>',
+    {k:'tema',art:()=>'',h:'Välj utseende',p:'Ljust, mörkt eller i urtavlans färger. Du kan ändra under Mer.',body:()=>window.MinKlockaNative&&MinKlockaNative.openStil?'<button class="ob-big" onclick="MinKlockaNative.openStil()">Välj stil</button>':'<div class="themes ob-th">'+THEMES.map(t=>'<button data-th="'+t[0]+'"><span class="sw"><i style="background:'+t[2]+'"></i><i style="background:'+t[3]+'"></i><i style="background:'+t[4]+'"></i></span>'+t[1]+'</button>').join('')+'</div>',
       bind:(o)=>{o.querySelector('.themes').onclick=e=>{const b=e.target.closest('button');if(b){setTheme(b.dataset.th);o.querySelectorAll('.themes button').forEach(x=>x.classList.toggle('on',x===b));}};
         const t=document.documentElement.dataset.theme;o.querySelectorAll('.themes button').forEach(x=>x.classList.toggle('on',x.dataset.th===t));}},
     {k:'klar',art:()=>doneArt(),h:'Klart!',p:'',body:()=>'<div class="ob-list tips"><div class="ob-row"><span>'+svg('watch')+'</span><b>Urtavlor<small>Tryck på en och sedan Skicka</small></b></div><div class="ob-row"><span>'+svg('note')+'</span><b>Verktyg<small>Lapp med påminnelser, meddelanden, väder och mer</small></b></div><div class="ob-row"><span>'+svg('music')+'</span><b>Musik<small>Klockans musikknappar styr telefonen</small></b></div></div>',next:'Börja använda'}
@@ -200,6 +200,9 @@ function helpCard(){
   th.innerHTML='<div class="block" style="border-top:0"><span class="lab">Tema<small>Välj färger för appen. Urtavlans färger följer den urtavla du valt</small></span><div class="themes">'+
     THEMES.map(t=>'<button data-th="'+t[0]+'"><span class="sw"><i style="background:'+t[2]+'"></i><i style="background:'+t[3]+'"></i><i style="background:'+t[4]+'"></i></span>'+t[1]+'</button>').join('')+'</div></div>';
   v.insertBefore(th,c.nextSibling);
+  // I appen finns bara en stilväljare, den i Android. Här blir det en knapp till den.
+  if(window.MinKlockaNative&&MinKlockaNative.openStil){th.innerHTML='<div class="block" style="border-top:0"><span class="lab">Stil<small>Hela appen byter uppställning, meny, färger och rörelser</small></span><button class="btn" id="btnNatStil" style="margin-top:10px;width:100%">Välj stil</button></div>';
+    $('btnNatStil').onclick=()=>MinKlockaNative.openStil();return;}
   th.querySelector('.themes').onclick=e=>{const b=e.target.closest('button');if(!b)return;setTheme(b.dataset.th);};
   markTheme();
 }
