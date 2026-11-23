@@ -7,7 +7,12 @@ adb shell dumpsys deviceidle whitelist +$P >/dev/null 2>&1
 adb logcat -c; adb logcat -v time > $OUT/logcat.txt 2>&1 & LC=$!
 start(){ adb shell am start -n $A "$@" >/dev/null 2>&1; }
 shot(){ adb exec-out screencap -p > $OUT/shots/$1.png; }
-start; sleep 30; start --ez demo true --es stil MATERIAL --ei tab 2; sleep 8; shot dials
+start; sleep 30; start --ez demo true; sleep 2
+adb shell input tap 540 1700; sleep 1
+start --es stil PRICK --ei tab 1; sleep 5; shot a_prick1
+start --es stil MATERIAL --ei tab 0; sleep 4; shot b_mat0
+start --ei tab 2; sleep 6; shot dials
+adb shell dumpsys activity top > $OUT/top.txt 2>&1
 PID=$(adb shell pidof $P | tr -d '\r')
 adb forward tcp:9222 localabstract:webview_devtools_remote_$PID
 curl -s http://127.0.0.1:9222/json > $OUT/cdp_list.json
