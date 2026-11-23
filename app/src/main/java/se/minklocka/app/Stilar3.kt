@@ -282,7 +282,8 @@ private val SEG = mapOf('0' to "abcdef", '1' to "bc", '2' to "abged", '3' to "ab
 @Composable
 private fun Seg7(text: String, h: Dp, col: Color = L_INK) {
     val wd = h * .56f
-    val total = text.sumOf { if (it == ':') 1 else 0 } * (h * .3f).value + text.count { it != ':' } * (wd + h * .12f).value
+    val colons = text.count { it == ':' }; val digits = text.length - colons
+    val total: Float = colons * (h.value * .3f) + digits * (wd.value + h.value * .12f)
     Canvas(Modifier.size(total.dp, h)) {
         var x = 0f; val H = size.height; val Wd = H * .56f; val t = H * .11f
         for (ch in text) {
@@ -750,10 +751,9 @@ private fun KortShell(tab: Int, onTab: (Int) -> Unit, body: @Composable () -> Un
     }
 }
 
-/** Kortlek: korten bredvid lutar, krymper och bleknar; det aktiva ligger överst. */
-@Composable
 class Card3(val t: String, val c: Color, val body: @Composable () -> Unit)
 
+/** Kortlek: korten bredvid lutar, krymper och bleknar; det aktiva ligger överst. */
 @Composable
 private fun Deck(cards: List<Card3>, m: Modifier) {
     val st = rememberPagerState { cards.size }
