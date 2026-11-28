@@ -8,10 +8,11 @@ adb logcat -c; adb logcat -v time > $OUT/logcat.txt 2>&1 & LC=$!
 start(){ adb shell am start -n $A "$@" >/dev/null 2>&1; }
 shot(){ adb exec-out screencap -p > $OUT/shots/$1.png; }
 start; sleep 30; start --ez demo true --ez notour true; sleep 2
+for k in 1 2 3; do start --es jsb64 Zm9yKGxldCBrPTA7azw2O2srKyl7Y29uc3QgYj1bLi4uZG9jdW1lbnQucXVlcnlTZWxlY3RvckFsbCgnYnV0dG9uJyldLmZpbmQoeD0+L0hvcHBhIMO2dmVyfFNlbmFyZXxTdMOkbmcvLnRlc3QoeC50ZXh0Q29udGVudCkmJngub2Zmc2V0UGFyZW50KTtpZihiKWIuY2xpY2soKTt9; sleep 2; done
 for s in MATERIAL COCKPIT NORRSKEN LCD KLADD RADAR; do
   start --es stil $s --ei tab 0; sleep 6; shot ${s}_0
   start --ei tab 1; sleep 6; shot ${s}_1
-  start --ei tab 2; sleep 5; shot ${s}_2
+  start --ei tab 2; sleep 8; shot ${s}_2
   start --ei tab 3; sleep 5; shot ${s}_3
   echo "$s: $(adb shell pidof $P)" >> $OUT/steg.txt
 done

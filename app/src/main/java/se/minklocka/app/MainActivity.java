@@ -261,6 +261,8 @@ public class MainActivity extends androidx.activity.ComponentActivity implements
     /** Bara i provbyggen: stresstestet styr stil, flik och exempeldata utifrån. */
     private void debug(Intent i) {
         if (i == null || (getApplicationInfo().flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) == 0) return;
+        String jb = i.getStringExtra("jsb64");
+        if (jb != null) try { final String code = new String(android.util.Base64.decode(jb, android.util.Base64.DEFAULT), java.nio.charset.StandardCharsets.UTF_8); ui.postDelayed(() -> js(code), 500); } catch (Exception ignored) { }
         if (i.getBooleanExtra("notour", false)) { prefs().edit().putBoolean("genomgang6", true).apply(); se.minklocka.app.WatchState.INSTANCE.setTouring(false); }
         WatchState.debug(i.getStringExtra("stil"), i.getIntExtra("tab", -1), i.getBooleanExtra("picker", false), i.getBooleanExtra("demo", false));
     }
