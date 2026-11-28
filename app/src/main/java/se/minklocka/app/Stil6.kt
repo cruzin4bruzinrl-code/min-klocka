@@ -519,7 +519,7 @@ private fun RayFrame(m: Modifier, onClick: () -> Unit) {
     val g = grow6(1f, 1500)
     Box(m, contentAlignment = Alignment.Center) {
         Canvas(Modifier.fillMaxSize()) {
-            val c = center; val R = size.minDimension / 2; val r0 = R * .62f; val len = R * .34f; val mx = maxOf(1, D.hours.maxOrNull() ?: 1)
+            val c = center; val R = size.minDimension / 2; val r0 = R * .64f; val len = R * .32f; val mx = maxOf(1, D.hours.maxOrNull() ?: 1)
             val cal = java.util.Calendar.getInstance(); val now = cal.get(java.util.Calendar.HOUR_OF_DAY)
             drawArc(Brush.sweepGradient(listOf(RO, RP, RO), c), -90f, 360f * sf() * g, false, Offset(c.x - r0, c.y - r0), Size(2 * r0, 2 * r0), style = Stroke(R * .035f, cap = StrokeCap.Round))
             for (h in 0 until 24) {
@@ -529,7 +529,7 @@ private fun RayFrame(m: Modifier, onClick: () -> Unit) {
                 if (v > 0) drawLine(if (h == now) RP else RO, Offset(c.x + ca * (r0 + 10), c.y + sa * (r0 + 10)), Offset(c.x + ca * (r0 + 10 + l), c.y + sa * (r0 + 10 + l)), R * .04f, StrokeCap.Round)
             }
         }
-        Box(Modifier.fillMaxHeight(.52f).aspectRatio(240f / 286f).clip(RoundedCornerShape(26.dp)).clickable(onClick = onClick)) { DialImg(Modifier.fillMaxSize()) }
+        Box(Modifier.fillMaxHeight(.44f).aspectRatio(240f / 286f).clip(RoundedCornerShape(22.dp)).clickable(onClick = onClick)) { DialImg(Modifier.fillMaxSize()) }
     }
 }
 

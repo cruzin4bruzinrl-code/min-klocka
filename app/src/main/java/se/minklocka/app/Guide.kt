@@ -93,7 +93,8 @@ fun StyledNav(s: Stil, tab: Int, onTab: (Int) -> Unit) {
 @Composable
 fun UnifiedShell(s: Stil, tab: Int, onTab: (Int) -> Unit, body: @Composable () -> Unit) {
     Box(Modifier.fillMaxSize()) {
-        StilBackdrop(s)
+        // Norrskenet ritas bara bakom Klocka och Hälsa; här räcker en mörk färg (sparar kraft)
+        if (s == Stil.NORRSKEN) Box(Modifier.fillMaxSize().background(Color(0xFF050814))) else StilBackdrop(s)
         Column(Modifier.fillMaxSize()) {
             StilHeader(s)
             Box(Modifier.weight(1f).fillMaxWidth()) { body() }
