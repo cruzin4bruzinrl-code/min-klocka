@@ -51,7 +51,7 @@ fun TourOverlay(s: Stil, onTab: (Int) -> Unit) {
             (slideInHorizontally(spring(dampingRatio = .8f, stiffness = 300f)) { if (targetState > initialState) it / 3 else -it / 3 } + fadeIn()) togetherWith fadeOut(tween(120))
         }, label = "steg") { k ->
             val sk = STEPS[k]
-            Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(maxOf(p.r, 16.dp))).background(p.card).border(p.border, p.borderCol, RoundedCornerShape(maxOf(p.r, 16.dp))).padding(22.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(maxOf(p.r, 16.dp))).background(if (p.card.alpha < .9f) Color(0xFF141A2E) else p.card).border(p.border, p.borderCol, RoundedCornerShape(maxOf(p.r, 16.dp))).padding(22.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(Modifier.size(64.dp).clip(CircleShape).background(p.acc), contentAlignment = Alignment.Center) { DockIconPub(sk.icon, p.onAcc, Modifier.graphicsLayer { scaleX = 1.5f; scaleY = 1.5f }) }
                 Spacer(Modifier.height(14.dp))
                 Text(sk.title, color = p.ink, fontFamily = p.font, fontSize = 24.sp, fontWeight = FontWeight.Bold)

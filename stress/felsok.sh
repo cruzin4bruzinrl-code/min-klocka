@@ -7,7 +7,7 @@ adb shell dumpsys deviceidle whitelist +$P >/dev/null 2>&1
 adb logcat -c; adb logcat -v time > $OUT/logcat.txt 2>&1 & LC=$!
 start(){ adb shell am start -n $A "$@" >/dev/null 2>&1; }
 shot(){ adb exec-out screencap -p > $OUT/shots/$1.png; }
-start; sleep 30; start --ez demo true; sleep 2
+start; sleep 30; start --ez demo true --ez notour true; sleep 2
 for s in MATERIAL COCKPIT NORRSKEN LCD KLADD RADAR; do
   start --es stil $s --ei tab 0; sleep 6; shot ${s}_0
   start --ei tab 1; sleep 6; shot ${s}_1
