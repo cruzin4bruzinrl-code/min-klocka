@@ -334,6 +334,24 @@ public class MainActivity extends androidx.activity.ComponentActivity implements
         }
 
         @JavascriptInterface
+        public void putDials(String json) {
+            if (!trusted || json == null) return;
+            se.minklocka.app.DialData.put(json);
+        }
+
+        @JavascriptInterface
+        public void putSel(String json) {
+            if (!trusted || json == null) return;
+            ui.post(() -> se.minklocka.app.DialData.putSel(json));
+        }
+
+        @JavascriptInterface
+        public void webOverlay(boolean on) {
+            if (!trusted) return;
+            ui.post(() -> se.minklocka.app.WatchState.overlay(on));
+        }
+
+        @JavascriptInterface
         public String webTokens() {
             return se.minklocka.app.WatchState.getWebTokens();
         }

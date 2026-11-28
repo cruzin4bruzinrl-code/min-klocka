@@ -81,6 +81,8 @@ object WatchState {
 
     var picking by mutableStateOf(false)
     var touring by mutableStateOf(false)
+    var webOverlay by mutableStateOf(false)
+    @JvmStatic fun overlay(on: Boolean) { webOverlay = on }
     var tourDone: (() -> Unit)? = null
     @JvmStatic var webTheme: String = ""
     @JvmStatic var webTokens: String = ""
@@ -204,11 +206,13 @@ private fun App(wv: WebView, js: (String) -> Unit) {
                 update = { },
                 modifier = slotMod
             )
-            Box(slotMod) {
+            // Sidans egna fönster (redigeraren, frågor) visas ovanpå; då göms Android-delen en stund
+            if (!WatchState.webOverlay) Box(slotMod) {
                 AnimatedContent(targetState = tab, transitionSpec = { stilTransition(stil, initialState, targetState) }, label = "flik") { t ->
                     when (t) {
                         0 -> Box(Modifier.fillMaxSize()) { StilBackdrop(stil); StilHome(stil, acts) }
                         1 -> Box(Modifier.fillMaxSize()) { StilBackdrop(stil); StilHealth(stil, acts) }
+                        2 -> DialsScreen(stil, js)
                         else -> Spacer(Modifier.fillMaxSize())
                     }
                 }
