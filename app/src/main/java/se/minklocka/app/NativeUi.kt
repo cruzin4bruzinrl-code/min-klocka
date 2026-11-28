@@ -83,6 +83,7 @@ object WatchState {
     var touring by mutableStateOf(false)
     var tourDone: (() -> Unit)? = null
     @JvmStatic var webTheme: String = ""
+    @JvmStatic var webTokens: String = ""
     @JvmStatic fun openPicker() { picking = true }
     var tab by mutableIntStateOf(0)
     var reqStil by mutableStateOf<String?>(null)
@@ -147,7 +148,12 @@ private fun App(wv: WebView, js: (String) -> Unit) {
             if (tab == 1) js("window.nativeHealthOpen&&nativeHealthOpen()")
         }
     }
-    LaunchedEffect(stil, dark) {
+    val tok = webTokens(stil, scheme)
+    LaunchedEffect(tok) {
+        WatchState.webTokens = tok
+        js("window.nativeStyle&&nativeStyle(" + tok + ")")
+    }
+        LaunchedEffect(stil, dark) {
         prefs.edit().putString("ui_stil", stil.name).apply()
         // Flikarna som ännu är webb får samma stil
         WatchState.webTheme = stil.web(dark)

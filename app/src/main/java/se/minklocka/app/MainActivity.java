@@ -333,6 +333,11 @@ public class MainActivity extends androidx.activity.ComponentActivity implements
         }
 
         @JavascriptInterface
+        public String webTokens() {
+            return se.minklocka.app.WatchState.getWebTokens();
+        }
+
+        @JavascriptInterface
         public String webTheme() {
             return se.minklocka.app.WatchState.getWebTheme();
         }

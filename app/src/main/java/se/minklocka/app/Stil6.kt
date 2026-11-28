@@ -590,3 +590,23 @@ private fun ColumnScope.RdHealth(a: Acts, mode: Int, set: (Int) -> Unit) {
         }
     }
 }
+
+// =====================================================================
+// Samma utseende i webbdelen (Urtavlor, Verktyg, Mer) som i Android-delen
+// =====================================================================
+
+private fun hex(c: Color): String = "#%06X".format(c.toArgb() and 0xFFFFFF)
+
+/** Färger, typsnitt och rundning som webbdelen ska använda, som JSON. */
+fun webTokens(s: Stil, cs: ColorScheme): String {
+    val m: Map<String, String> = when (s) {
+        Stil.MATERIAL -> mapOf("ink" to hex(cs.surface), "text" to hex(cs.onSurface), "dim" to hex(cs.onSurfaceVariant), "glass" to hex(cs.surfaceContainerHigh), "edge" to "transparent",
+            "a1" to hex(cs.primary), "a2" to hex(cs.primary), "onpri" to hex(cs.onPrimary), "pricont" to hex(cs.primaryContainer), "onpricont" to hex(cs.onPrimaryContainer), "navbg" to hex(cs.surfaceContainer), "r" to "24px", "font" to "Roboto, 'Google Sans', sans-serif")
+        Stil.COCKPIT -> mapOf("ink" to "#03090D", "text" to "#CFEFF5", "dim" to "#5E8A93", "glass" to "#07161C", "edge" to "#2B5058", "a1" to "#2EF2FF", "a2" to "#2EF2FF", "onpri" to "#03090D", "pricont" to "#0F2A30", "onpricont" to "#2EF2FF", "navbg" to "#03090D", "r" to "4px", "font" to "'Roboto Mono', monospace")
+        Stil.NORRSKEN -> mapOf("ink" to "#050814", "text" to "#FFFFFF", "dim" to "rgba(255,255,255,.7)", "glass" to "rgba(255,255,255,.08)", "edge" to "rgba(255,255,255,.16)", "a1" to "#1DE9B6", "a2" to "#7C4DFF", "onpri" to "#02221A", "pricont" to "rgba(29,233,182,.18)", "onpricont" to "#1DE9B6", "navbg" to "#050814", "r" to "28px", "font" to "Roboto, sans-serif")
+        Stil.LCD -> mapOf("ink" to "#26282B", "text" to "#E5E7EA", "dim" to "#9A9DA2", "glass" to "#33363A", "edge" to "#111111", "a1" to "#A3B38C", "a2" to "#A3B38C", "onpri" to "#1C2416", "pricont" to "#A3B38C", "onpricont" to "#1C2416", "navbg" to "#26282B", "r" to "10px", "font" to "'Roboto Mono', monospace")
+        Stil.KLADD -> mapOf("ink" to "#FBF8EF", "text" to "#26304A", "dim" to "#5B6478", "glass" to "#FFF4C2", "edge" to "transparent", "a1" to "#FFD43B", "a2" to "#FF8FAB", "onpri" to "#26304A", "pricont" to "#FFE066", "onpricont" to "#26304A", "navbg" to "#FBF8EF", "r" to "4px", "font" to "Roboto, sans-serif")
+        else -> mapOf("ink" to "#0E1116", "text" to "#F2F4F8", "dim" to "#8A92A3", "glass" to "#1A1F29", "edge" to "transparent", "a1" to "#FF8A3D", "a2" to "#FF3D7F", "onpri" to "#FFFFFF", "pricont" to "#2A1F22", "onpricont" to "#FF8A3D", "navbg" to "#0E1116", "r" to "28px", "font" to "Roboto, sans-serif")
+    }
+    return org.json.JSONObject(m).toString()
+}

@@ -12,7 +12,7 @@ for s in MATERIAL COCKPIT NORRSKEN LCD KLADD RADAR; do
   start --es stil $s --ei tab 0; sleep 6; shot ${s}_0
   start --ei tab 1; sleep 6; shot ${s}_1
   start --ei tab 2; sleep 5; shot ${s}_2
-  adb shell input tap 540 470; sleep 3; shot ${s}_1b
+  start --ei tab 3; sleep 5; shot ${s}_3
   echo "$s: $(adb shell pidof $P)" >> $OUT/steg.txt
 done
 start --ei tab 0 --ez picker true; sleep 4; adb shell input swipe 540 1900 540 400 400; sleep 2; shot valjare
