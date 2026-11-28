@@ -80,6 +80,8 @@ object WatchState {
     @JvmStatic fun putBattery(p: Int) { battery = p }
 
     var picking by mutableStateOf(false)
+    var touring by mutableStateOf(false)
+    var tourDone: (() -> Unit)? = null
     @JvmStatic var webTheme: String = ""
     @JvmStatic fun openPicker() { picking = true }
     var tab by mutableIntStateOf(0)
@@ -133,7 +135,11 @@ private fun App(wv: WebView, js: (String) -> Unit) {
     LaunchedEffect(WatchState.reqTab) { val r = WatchState.reqTab; if (r in 0..4) { tab = r; WatchState.reqTab = -1 } }
     LaunchedEffect(WatchState.reqStil) { val r = WatchState.reqStil ?: return@LaunchedEffect; Stil.entries.firstOrNull { it.name == r }?.let { stil = it }; WatchState.reqStil = null }
     SideEffect { WatchState.tab = tab }
-    LaunchedEffect(tab) {
+    LaunchedEffect(Unit) {
+        WatchState.tourDone = { prefs.edit().putBoolean("genomgang6", true).apply() }
+        if (!prefs.getBoolean("genomgang6", false)) { delay(1200); WatchState.touring = true }
+    }
+        LaunchedEffect(tab) {
         if (tab >= 2) {
             js("document.documentElement.classList.add('native');window.showTab&&showTab('" + WEB[tab] + "')")
         } else {
@@ -202,6 +208,7 @@ private fun App(wv: WebView, js: (String) -> Unit) {
                 }
             }
             StilPicker(WatchState.picking, stil, onPick = { stil = it; WatchState.picking = false }, onClose = { WatchState.picking = false })
+            TourOverlay(stil, onTab)
         }
     }
 }

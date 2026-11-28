@@ -264,6 +264,7 @@ fun StilPicker(open: Boolean, cur: Stil, onPick: (Stil) -> Unit, onClose: () -> 
                     Text("Bygge $bygge", color = Color(0xFF9AA0B4), fontSize = 13.sp)
                 }
                 Text("Hela appen byter uppställning, meny och rörelser.", color = Color(0xFF9AA0B4), fontSize = 14.sp)
+                Text("Visa genomgång av appen", Modifier.padding(top = 10.dp).clip(CircleShape).background(Color(0xFF262B38)).clickable { WatchState.picking = false; WatchState.touring = true }.padding(horizontal = 14.dp, vertical = 8.dp), color = Color(0xFF8AB4FF), fontSize = 14.sp)
                 Spacer(Modifier.height(14.dp))
                 SEX.forEachIndexed { i, s ->
                     val shown = reveal(380, 50 * i)
