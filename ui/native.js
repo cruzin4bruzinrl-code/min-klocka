@@ -28,7 +28,15 @@
     if(st!==lastSel){lastSel=st;N.putSel(st);}}catch(e){}},500);
   // när sidan behöver visa något eget (redigeraren, ett blad, en fråga) visas den ovanpå Android-delen
   let lastOv=null;
-  setInterval(()=>{try{const ov=!!(document.body.classList.contains('editing')||(typeof busyUI==='function'&&busyUI()));if(ov!==lastOv){lastOv=ov;N.webOverlay&&N.webOverlay(ov);}}catch(e){}},300);
+  // (inte under skickning: då visar Android-delen förloppet själv)
+  const ownUI=()=>{const t=document.getElementById('tour');return !!(document.body.classList.contains('editing')||(t&&t.offsetParent)||document.querySelector('#tsheet.on,.ob.on,.hl-sheet.on,#onb.on'));};
+  setInterval(()=>{try{const ov=ownUI();if(ov!==lastOv){lastOv=ov;N.webOverlay&&N.webOverlay(ov);}}catch(e){}},300);
+  // frågor ("Skicka ändå?", "Hur ser urtavlan ut?") visas som riktig Android-ruta
+  if(N.putAsk){let lastAsk='';const sh=document.getElementById('shade');
+    const pushAsk=()=>{try{let j='';if(sh&&!sh.hidden){const b=[...document.querySelectorAll('#shB [data-r]')].map(x=>({t:x.textContent,main:/\bcta\b/.test(x.className),bad:/\bbad\b/.test(x.className)}));
+        j=JSON.stringify({t:$('shT').textContent,p:$('shP').textContent,b:b});}
+      if(j!==lastAsk){lastAsk=j;N.putAsk(j);}}catch(e){}};
+    if(sh){new MutationObserver(pushAsk).observe(sh,{attributes:true,attributeFilter:['hidden'],subtree:true,childList:true,characterData:true});pushAsk();}}
   if(typeof renderGrid==='function'){const rg=renderGrid;renderGrid=function(){const r=rg.apply(this,arguments);nativePushDials();return r;};}
   if(window.__galleryReady)nativePushDials();else{const w=setInterval(()=>{if(window.__galleryReady){clearInterval(w);nativePushDials();}},500);}
   // Hälsan hämtas när Hälsa öppnas, högst var tredje minut
