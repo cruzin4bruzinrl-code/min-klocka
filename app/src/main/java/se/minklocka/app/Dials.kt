@@ -66,7 +66,9 @@ private val CATS = listOf("Alla", "Favoriter", "Digitala", "Analoga", "Mina")
 /** Urtavlor i riktig Android-kod, i vald stils färger, typsnitt och former. */
 @Composable
 fun DialsScreen(s: Stil, js: (String) -> Unit) {
-    val p = pal(s)
+    val pc = pal(s)
+    // LCD: kortet är grönt med mörk text, men resten ligger på mörkt hölje och behöver ljus text
+    val p = if (s == Stil.LCD) Pal(pc.bg, pc.card, Color(0xFFE5E7EA), Color(0xFF9A9DA2), Color(0xFFA3B38C), Color(0xFF1C2416), pc.good, pc.warn, pc.bad, pc.font, pc.r, pc.border, pc.borderCol) else pc
     val sel = DialData.sel
     var cat by rememberSaveable { mutableIntStateOf(0) }
     val all = DialData.items
@@ -82,19 +84,19 @@ fun DialsScreen(s: Stil, js: (String) -> Unit) {
     val solidCard = if (p.card.alpha < .9f) Color(0xFF141A2E) else p.card
     Column(Modifier.fillMaxSize().background(bodyBg).padding(horizontal = 14.dp)) {
         // vald urtavla: bild, namn, skicka
-        Row(Modifier.padding(top = 10.dp).fillMaxWidth().clip(shape).background(solidCard).border(p.border, p.borderCol, shape).padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(96.dp, 114.dp).clip(RoundedCornerShape(maxOf(p.r * .7f, 6.dp))).background(Color.Black)) {
+        Row(Modifier.padding(top = 10.dp).fillMaxWidth().clip(shape).background(solidCard).border(pc.border, pc.borderCol, shape).padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.size(96.dp, 114.dp).clip(RoundedCornerShape(maxOf(pc.r * .7f, 6.dp))).background(Color.Black)) {
                 WatchState.dial?.let { Image(it, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop) }
             }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text(sel?.name ?: "Välj en urtavla", color = p.ink, fontFamily = p.font, fontSize = 18.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(sel?.desc ?: "", color = p.dim, fontSize = 12.sp, maxLines = 2, overflow = TextOverflow.Ellipsis, lineHeight = 15.sp)
+                Text(sel?.name ?: "Välj en urtavla", color = pc.ink, fontFamily = pc.font, fontSize = 18.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(sel?.desc ?: "", color = pc.dim, fontSize = 12.sp, maxLines = 2, overflow = TextOverflow.Ellipsis, lineHeight = 15.sp)
                 Spacer(Modifier.height(8.dp))
                 val can = sel?.canSend == true
-                Text(if (sel?.btn.isNullOrBlank()) "Skicka till klockan" else sel!!.btn, Modifier.fillMaxWidth().clip(CircleShape).background(if (can) p.acc else p.dim.copy(alpha = .3f)).clickable(enabled = can) { js("document.getElementById('btnSend').click()") }.padding(vertical = 11.dp),
-                    color = if (can) p.onAcc else p.ink.copy(alpha = .6f), fontFamily = p.font, fontWeight = FontWeight.Bold, fontSize = 15.sp, textAlign = TextAlign.Center)
-                if (!sel?.prog.isNullOrBlank()) Text(sel!!.prog, color = p.dim, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 4.dp))
+                Text(if (sel?.btn.isNullOrBlank()) "Skicka till klockan" else sel!!.btn, Modifier.fillMaxWidth().clip(CircleShape).background(if (can) pc.acc else pc.dim.copy(alpha = .3f)).clickable(enabled = can) { js("document.getElementById('btnSend').click()") }.padding(vertical = 11.dp),
+                    color = if (can) pc.onAcc else pc.ink.copy(alpha = .6f), fontFamily = pc.font, fontWeight = FontWeight.Bold, fontSize = 15.sp, textAlign = TextAlign.Center)
+                if (!sel?.prog.isNullOrBlank()) Text(sel!!.prog, color = pc.dim, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 4.dp))
             }
         }
         // snabbknappar för vald urtavla
