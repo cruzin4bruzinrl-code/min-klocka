@@ -11,6 +11,26 @@
   try{const t=N.webTokens&&N.webTokens();if(t)nativeStyle(JSON.parse(t));}catch(e){}
   // flik som visas, så att CSS kan dölja klockbilden där den inte hör hemma
   if(typeof showTab==='function'){const st=showTab;showTab=function(t){const r=st.apply(this,arguments);const c=document.documentElement.classList;['home','health','dials','tools','log'].forEach(x=>c.remove('nat-'+x));c.add('nat-'+t);return r;};}
+  // ---------- Urtavlor i Android-delen: sidan ritar rutorna och skickar dem, Android visar dem ----------
+  let dialsT=0;
+  window.nativePushDials=function(){clearTimeout(dialsT);dialsT=setTimeout(async()=>{
+    if(!N.putDials||typeof allDials!=='function')return;
+    const t=nowT(),cv=document.createElement('canvas');cv.width=150;cv.height=179;const out=[],all=allDials();
+    for(let i=0;i<all.length;i++){const d=all[i];let th='';
+      try{if(paintFace(d,cv,t))th=cv.toDataURL('image/jpeg',.82);}catch(e){}
+      out.push({gk:d.gk,name:d.name,desc:d.desc||'',kind:d.kind,fav:!!(typeof FAV!=='undefined'&&FAV[d.gk]),st:(typeof statusOf==='function'?statusOf(d):''),an:d.kind==='a'||!!(d.def&&d.def.els&&d.def.els.some(e=>e.k==='hands')),th:th});
+      if(i%6===5)await new Promise(r=>setTimeout(r,0));}
+    N.putDials(JSON.stringify(out));},600);};
+  window.nativePick=function(gk){try{pickDial(gk);}catch(e){}};
+  let lastSel='';
+  setInterval(()=>{try{if(!N.putSel||typeof cur==='undefined'||!cur)return;const b=$('btnSend'),p=$('stProg');
+    const st=JSON.stringify({gk:cur.gk,name:cur.name,desc:cur.desc||'',can:!b.disabled,btn:b.textContent,prog:p?p.textContent:'',fav:!!(typeof FAV!=='undefined'&&FAV[cur.gk]),edit:!$('btnEdit').disabled});
+    if(st!==lastSel){lastSel=st;N.putSel(st);}}catch(e){}},500);
+  // när sidan behöver visa något eget (redigeraren, ett blad, en fråga) visas den ovanpå Android-delen
+  let lastOv=null;
+  setInterval(()=>{try{const ov=!!(document.body.classList.contains('editing')||(typeof busyUI==='function'&&busyUI()));if(ov!==lastOv){lastOv=ov;N.webOverlay&&N.webOverlay(ov);}}catch(e){}},300);
+  if(typeof renderGrid==='function'){const rg=renderGrid;renderGrid=function(){const r=rg.apply(this,arguments);nativePushDials();return r;};}
+  if(window.__galleryReady)nativePushDials();else{const w=setInterval(()=>{if(window.__galleryReady){clearInterval(w);nativePushDials();}},500);}
   // Hälsan hämtas när Hälsa öppnas, högst var tredje minut
   let lastSync=0;window.nativeHealthOpen=function(){if(Date.now()-lastSync<180000)return;lastSync=Date.now();try{hlSync(false);}catch(e){}};
   let last='';
