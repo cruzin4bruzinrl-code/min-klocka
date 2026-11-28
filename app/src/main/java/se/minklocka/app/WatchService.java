@@ -719,6 +719,130 @@ public class WatchService extends Service {
         if (!android.provider.Settings.canDrawOverlays(this)) log("Tips: ge Min klocka lovet Visa ovanpå andra appar, så öppnas kameran även när appen ligger i bakgrunden");
     }
 
+    // ---------- hälsa i bakgrunden ----------
+    // När appen är stängd hämtar tjänsten själv dagens steg och puls var 20:e minut och sparar dem i telefonen.
+    // Samma frågor som sidan ställer (0A/A6 och 0A/A0); när appen är öppen sköter sidan det, så de krockar inte.
+    private int bgKey = -1;
+    private final List<byte[]> bgParts = new ArrayList<>();
+    private Runnable bgNext = null;
+    private boolean bgBusy = false;
+    private long bgLast = 0;
+
+    private boolean bgCollect(int cmd, int key, int flags, byte[] d) {
+        if (bgKey < 0 || cmd != 0x0A || key != bgKey) return false;
+        bgParts.add(d);
+        h.removeCallbacks(bgTimeout);
+        if ((flags & 0x40) != 0 && bgKey != 0xAC) h.postDelayed(bgTimeout, 4000);   // fler delar kommer
+        else h.post(bgTimeout);
+        return true;
+    }
+
+    private final Runnable bgTimeout = () -> {
+        bgKey = -1;
+        Runnable r = bgNext;
+        bgNext = null;
+        if (r != null) r.run();
+    };
+
+    private void bgAsk(int cmd, int key, byte[] data, int replyKey, long ms, Runnable then) {
+        bgParts.clear();
+        bgKey = replyKey;
+        bgNext = then;
+        send(cmd, key, data);
+        h.postDelayed(bgTimeout, ms);
+    }
+
+    void bgHealthMaybe() {
+        long now = System.currentTimeMillis();
+        if (bgBusy || web != null || now - bgLast < 20 * 60 * 1000L) return;
+        bgLast = now;
+        bgBusy = true;
+        final java.util.Calendar c = java.util.Calendar.getInstance();
+        final byte[] q = {0, (byte) (c.get(java.util.Calendar.YEAR) - 2000), (byte) (c.get(java.util.Calendar.MONTH) + 1), (byte) c.get(java.util.Calendar.DAY_OF_MONTH),
+                (byte) c.get(java.util.Calendar.HOUR_OF_DAY), (byte) c.get(java.util.Calendar.MINUTE), (byte) c.get(java.util.Calendar.SECOND), 1};
+        final long[] live = {-1};
+        final int[][] hours = {null};
+        bgAsk(0x0A, 0xA6, new byte[]{3}, 0xAC, 3000, () -> {
+            for (byte[] d : bgParts) if (d.length >= 4) live[0] = u32(d, 0);
+            byte[] qs = q.clone(); qs[0] = 3;
+            bgAsk(0x0A, 0xA0, qs, 0xA3, 4000, () -> {
+                hours[0] = bgSteps(new ArrayList<>(bgParts), q);
+                byte[] qh = q.clone(); qh[0] = 2;
+                bgAsk(0x0A, 0xA0, qh, 0xA4, 4000, () -> {
+                    List<int[]> hr = bgRecords(new ArrayList<>(bgParts), q);
+                    bgStore(live[0], hours[0], hr);
+                    bgBusy = false;
+                });
+            });
+        });
+    }
+
+    private static long u32(byte[] d, int i) {
+        return ((long) (d[i] & 255) << 24) | ((d[i + 1] & 255) << 16) | ((d[i + 2] & 255) << 8) | (d[i + 3] & 255);
+    }
+
+    private static boolean sameDay(byte[] d, int i, byte[] q) {
+        return d.length > i + 2 && d[i] == q[1] && d[i + 1] == q[2] && d[i + 2] == q[3];
+    }
+
+    /** Stegen per timme (klockan skickar en löpande summa per timme). */
+    private static int[] bgSteps(List<byte[]> parts, byte[] q) {
+        int[] out = null;
+        for (byte[] d : parts) {
+            if (d.length < 100 || !sameDay(d, 0, q)) continue;
+            if (out == null) out = new int[24];
+            for (int h = 0; h < 24; h++) {
+                int v = (d[4 + h * 4] & 255) == 0xFF ? 0 : (int) u32(d, 4 + h * 4);
+                if (v > out[h]) out[h] = v;
+            }
+        }
+        return out;
+    }
+
+    /** Pulsmätningar: poster om 7 byte (år, mån, dag, timme, minut, ?, värde). */
+    private static List<int[]> bgRecords(List<byte[]> parts, byte[] q) {
+        java.io.ByteArrayOutputStream all = new java.io.ByteArrayOutputStream();
+        for (byte[] p : parts) all.write(p, 0, p.length);
+        byte[] a = all.toByteArray();
+        java.util.TreeMap<Integer, int[]> m = new java.util.TreeMap<>();
+        for (int i = 0; i + 7 <= a.length; i += 7) {
+            if (a[i] != q[1] || a[i + 1] != q[2] || a[i + 2] != q[3]) continue;
+            int v = a[i + 6] & 255;
+            if (v == 0 || v == 255) continue;
+            m.put((a[i + 3] & 255) * 60 + (a[i + 4] & 255), new int[]{a[i + 3] & 255, a[i + 4] & 255, v});
+        }
+        return new ArrayList<>(m.values());
+    }
+
+    /** Sparar det som hämtats, både per dag och som det Klocka och Hälsa visar direkt. */
+    private void bgStore(long live, int[] cum, List<int[]> hr) {
+        try {
+            SharedPreferences p = prefs();
+            String day = new SimpleDateFormat("yyyyMMdd", Locale.ROOT).format(new Date());
+            org.json.JSONObject o = new org.json.JSONObject(p.getString("cache_halsa", "{}"));
+            int total = (int) Math.max(0, live);
+            org.json.JSONArray hrs = new org.json.JSONArray();
+            if (cum != null) {
+                int prev = 0;
+                for (int h = 0; h < 24; h++) { total = Math.max(total, cum[h]); hrs.put(Math.max(0, cum[h] - prev)); if (cum[h] > 0) prev = cum[h]; }
+                o.put("hours", hrs);
+            }
+            if (total > 0 || live >= 0) o.put("steps", total);
+            if (!hr.isEmpty()) {
+                org.json.JSONArray pv = new org.json.JSONArray();
+                for (int[] r : hr) pv.put(r[2]);
+                o.put("hr", pv);
+                o.put("pulse", hr.get(hr.size() - 1)[2]);
+            }
+            String js = o.toString();
+            p.edit().putString("cache_halsa", js).putString("bg_halsa_" + day, js).putLong("bg_halsa_tid", System.currentTimeMillis()).apply();
+            new Handler(Looper.getMainLooper()).post(() -> se.minklocka.app.WatchState.putHealth(js));
+            log("Hälsa hämtad i bakgrunden: " + total + " steg, " + hr.size() + " pulsmätningar");
+        } catch (Exception e) {
+            log("Hälsa i bakgrunden: " + e.getMessage());
+        }
+    }
+
     // ---------- skicka från appen själv (aviseringar, ljusstyrka) ----------
     /** Skickar ett kommando till klockan. Får anropas från vilken tråd som helst. */
     void send(final int cmd, final int key, final byte[] data) {
@@ -841,6 +965,7 @@ public class WatchService extends Service {
             checkAlive(false);
             Updater.check(WatchService.this, false);   // högst var tredje timme
             if (ready) Weather.maybe(WatchService.this);   // högst en gång i timmen
+            if (ready) bgHealthMaybe();   // hälsan hämtas även när appen är stängd
             h.postDelayed(this, 30 * 1000);
         }
     };
@@ -902,7 +1027,11 @@ public class WatchService extends Service {
             if (rx.length < 8 + len) break;
             byte[] f = java.util.Arrays.copyOfRange(rx, 0, 8 + len);
             rx = java.util.Arrays.copyOfRange(rx, 8 + len, rx.length);
-            if (f.length >= 13) handle(f[8] & 255, f[10] & 255, java.util.Arrays.copyOfRange(f, 13, f.length));
+            if (f.length >= 13) {
+                byte[] dd = java.util.Arrays.copyOfRange(f, 13, f.length);
+                if (bgCollect(f[8] & 255, f[10] & 255, f[1] & 255, dd)) continue;
+                handle(f[8] & 255, f[10] & 255, dd);
+            }
         }
         if (rx.length > 8192) rx = new byte[0];
     }
