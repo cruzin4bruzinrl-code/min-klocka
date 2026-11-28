@@ -219,6 +219,7 @@ private fun App(wv: WebView, js: (String) -> Unit) {
             }
             StilPicker(WatchState.picking, stil, onPick = { stil = it; WatchState.picking = false }, onClose = { WatchState.picking = false })
             TourOverlay(stil, onTab)
+            AskOverlay(stil, js)
         }
     }
 }

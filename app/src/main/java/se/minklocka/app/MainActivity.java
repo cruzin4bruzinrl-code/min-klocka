@@ -271,6 +271,8 @@ public class MainActivity extends androidx.activity.ComponentActivity implements
     public void onBackPressed() {
         // Stilväljaren stängs först
         if (WatchState.closePicker()) return;
+        // En fråga från sidan besvaras med Avbryt
+        if (se.minklocka.app.AskData.back(c -> { js(c); return kotlin.Unit.INSTANCE; })) return;
         // Är ett verktyg öppet stänger tillbaka det. Annars läggs appen i bakgrunden; kontakten med klockan fortsätter.
         if (WatchState.webTab() && trusted && wv != null && wv.canGoBack()) {
             wv.goBack();
@@ -345,6 +347,12 @@ public class MainActivity extends androidx.activity.ComponentActivity implements
         public void putSel(String json) {
             if (!trusted || json == null) return;
             ui.post(() -> se.minklocka.app.DialData.putSel(json));
+        }
+
+        @JavascriptInterface
+        public void putAsk(String json) {
+            if (!trusted || json == null) return;
+            ui.post(() -> se.minklocka.app.AskData.put(json));
         }
 
         @JavascriptInterface
