@@ -104,3 +104,6 @@ html.native #tabSlide{transition:none!important}
 html.native .aurora,html.native .thbg{display:none!important}
 html.native .view{-webkit-mask-image:none!important;mask-image:none!important}
 html.native *,html.native *::before,html.native *::after{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+/* I appen: klockbilden överst bara på Urtavlor (Android-delen visar klockan på Klocka) */
+html.native:not(.nat-dials) .stage{display:none!important}
+html.native body,html.native button,html.native input,html.native select,html.native textarea{font-family:var(--font)!important}

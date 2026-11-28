@@ -6,6 +6,11 @@
   window.nativeTheme=function(t){const r=document.documentElement;if(r.dataset.theme===t)return;r.dataset.theme=t;r.style.removeProperty('--a1');r.style.removeProperty('--a2');
     try{markTheme();}catch(e){}if(typeof hlRender==='function')setTimeout(()=>hlRender(false),60);};
   try{const t=N.webTheme&&N.webTheme();if(t)nativeTheme(t);}catch(e){}
+  // Exakt samma färger, typsnitt och former som Android-delen (sätts som variabler som vinner över sidans teman)
+  window.nativeStyle=function(o){try{const r=document.documentElement.style;Object.keys(o).forEach(k=>r.setProperty('--'+k,o[k]));}catch(e){}};
+  try{const t=N.webTokens&&N.webTokens();if(t)nativeStyle(JSON.parse(t));}catch(e){}
+  // flik som visas, så att CSS kan dölja klockbilden där den inte hör hemma
+  if(typeof showTab==='function'){const st=showTab;showTab=function(t){const r=st.apply(this,arguments);const c=document.documentElement.classList;['home','health','dials','tools','log'].forEach(x=>c.remove('nat-'+x));c.add('nat-'+t);return r;};}
   // Hälsan hämtas när Hälsa öppnas, högst var tredje minut
   let lastSync=0;window.nativeHealthOpen=function(){if(Date.now()-lastSync<180000)return;lastSync=Date.now();try{hlSync(false);}catch(e){}};
   let last='';
