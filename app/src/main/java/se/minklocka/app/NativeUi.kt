@@ -120,7 +120,7 @@ private fun App(wv: WebView, js: (String) -> Unit) {
     val ctx = LocalContext.current
     val scheme = if (dark) dynamicDarkColorScheme(ctx) else dynamicLightColorScheme(ctx)
     val prefs = remember { ctx.getSharedPreferences(WatchService.PREFS, android.content.Context.MODE_PRIVATE) }
-    var stil by remember { mutableStateOf(Stil.entries.firstOrNull { it.name == prefs.getString("ui_stil", "") } ?: Stil.MATERIAL) }
+    var stil by remember { mutableStateOf(SEX.firstOrNull { it.name == prefs.getString("ui_stil", "") } ?: Stil.MATERIAL) }
     var tab by rememberSaveable { mutableIntStateOf(0) }
     val haptic = LocalHapticFeedback.current
     LaunchedEffect(Unit) {

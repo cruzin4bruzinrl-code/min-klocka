@@ -97,7 +97,7 @@ fun UnifiedShell(s: Stil, tab: Int, onTab: (Int) -> Unit, body: @Composable () -
         Column(Modifier.fillMaxSize()) {
             StilHeader(s)
             Box(Modifier.weight(1f).fillMaxWidth()) { body() }
-            StyledNav(s, tab, onTab)
+            if (s in SEX) Nav6(s, tab, onTab) else StyledNav(s, tab, onTab)
         }
     }
 }

@@ -163,7 +163,7 @@ fun M3Home(a: Acts) {
 
 /** Staplar i Material-stil; tryck på en stapel så visas dess värde i en etikett. */
 @Composable
-private fun M3Bars(v: List<Int>, labels: List<String>, m: Modifier) {
+internal fun M3Bars(v: List<Int>, labels: List<String>, m: Modifier) {
     val cs = MaterialTheme.colorScheme
     var sel by remember(v) { mutableIntStateOf(v.indices.maxByOrNull { v[it] } ?: -1) }
     val g = grow(1f, 900)
@@ -660,7 +660,7 @@ private val NTEAL = Color(0xFF1DE9B6); private val NVIO = Color(0xFF7C4DFF); pri
 
 /** Glödande klot vars storlek och ljus växer med andelen av målet. Andas sakta. */
 @Composable
-private fun Orb(f: Float, col: Color, m: Modifier, content: @Composable BoxScope.() -> Unit) {
+internal fun Orb(f: Float, col: Color, m: Modifier, content: @Composable BoxScope.() -> Unit) {
     val g = grow(f, 1800)
     val br by rememberInfiniteTransition(label = "andas").animateFloat(.92f, 1.04f, infiniteRepeatable(tween(2800, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "b")
     Box(m, contentAlignment = Alignment.Center) {
@@ -676,7 +676,7 @@ private fun Orb(f: Float, col: Color, m: Modifier, content: @Composable BoxScope
 
 /** Ringar som sprids utåt i pulsens takt, som vågor på vatten. */
 @Composable
-private fun Ripples(bpm: Int, col: Color, m: Modifier) {
+internal fun Ripples(bpm: Int, col: Color, m: Modifier) {
     val period = if (bpm > 30) 60000 / bpm else 1000
     val t by rememberInfiniteTransition(label = "vågor").animateFloat(0f, 1f, infiniteRepeatable(tween(period, easing = LinearEasing)), label = "t")
     Canvas(m) {
@@ -691,7 +691,7 @@ private fun Ripples(bpm: Int, col: Color, m: Modifier) {
 
 /** Veckan som stjärnbild: en stjärna per dag, större ju fler steg, förbundna med linjer. */
 @Composable
-private fun Constellation(v: List<Int>, days: List<String>, goal: Int, m: Modifier) {
+internal fun Constellation(v: List<Int>, days: List<String>, goal: Int, m: Modifier) {
     val g = grow(1f, 1600)
     val tw by rememberInfiniteTransition(label = "blink").animateFloat(.6f, 1f, infiniteRepeatable(tween(1700), RepeatMode.Reverse), label = "tw")
     Box(m) {
@@ -713,7 +713,7 @@ private fun Constellation(v: List<Int>, days: List<String>, goal: Int, m: Modifi
 
 /** Dygnet som ett band av norrsken: höjd = steg, färgen skimrar. */
 @Composable
-private fun Ribbon(v: List<Int>, m: Modifier) {
+internal fun Ribbon(v: List<Int>, m: Modifier) {
     val g = grow(1f, 1500)
     val sh by rememberInfiniteTransition(label = "skimmer").animateFloat(0f, 1f, infiniteRepeatable(tween(5000, easing = LinearEasing), RepeatMode.Reverse), label = "s")
     Canvas(m) {
@@ -729,7 +729,7 @@ private fun Ribbon(v: List<Int>, m: Modifier) {
 }
 
 @Composable
-private fun NGlass(m: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) =
+internal fun NGlass(m: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) =
     Column(m.clip(RoundedCornerShape(28.dp)).background(Color.White.copy(alpha = .08f)).border(1.dp, Color.White.copy(alpha = .16f), RoundedCornerShape(28.dp)).padding(16.dp), content = content)
 
 @Composable

@@ -282,7 +282,7 @@ private val SEG = mapOf('0' to "abcdef", '1' to "bc", '2' to "abged", '3' to "ab
 
 /** Sjusegmentssiffror med svaga "spöksegment" som på en riktig LCD. */
 @Composable
-private fun Seg7(text: String, h: Dp, col: Color = L_INK) {
+internal fun Seg7(text: String, h: Dp, col: Color = L_INK) {
     val wd = h * .56f
     val colons = text.count { it == ':' }; val digits = text.length - colons
     val total: Float = colons * (h.value * .3f) + digits * (wd.value + h.value * .12f)
@@ -301,15 +301,15 @@ private fun Seg7(text: String, h: Dp, col: Color = L_INK) {
 }
 
 @Composable
-private fun LcdPanel(m: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
+internal fun LcdPanel(m: Modifier = Modifier, content: @Composable ColumnScope.() -> Unit) {
     Column(m.clip(RoundedCornerShape(10.dp)).background(Brush.verticalGradient(listOf(L_LCD, Color(0xFF94A47E)))).border(3.dp, Color(0xFF111111), RoundedCornerShape(10.dp)).padding(14.dp), content = content)
 }
 
-@Composable private fun LT(t: String, sz: Int = 11) = Text(t, color = L_INK, fontFamily = MONO, fontSize = sz.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+@Composable internal fun LT(t: String, sz: Int = 11) = Text(t, color = L_INK, fontFamily = MONO, fontSize = sz.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
 
 /** Segmentstapel: ett antal rutor som tänds. */
 @Composable
-private fun SegBar(f: Float, n: Int, m: Modifier) {
+internal fun SegBar(f: Float, n: Int, m: Modifier) {
     val g = rise(f, 900)
     Row(m, horizontalArrangement = Arrangement.spacedBy(3.dp)) { repeat(n) { i -> Box(Modifier.weight(1f).height(14.dp).background(if (i < (g * n).roundToInt()) L_INK else L_INK.copy(alpha = .08f))) } }
 }
@@ -417,7 +417,7 @@ private val K_Y = Color(0xFFFFE066); private val K_P = Color(0xFFFFB3C7); privat
 private val HAND = FontFamily.Cursive
 
 @Composable
-private fun Paper() = Canvas(Modifier.fillMaxSize()) {
+internal fun Paper() = Canvas(Modifier.fillMaxSize()) {
     drawRect(K_PAPER); var y = 40f; while (y < size.height) { drawLine(K_LINE, Offset(0f, y), Offset(size.width, y), 1.5f); y += 34f }
     drawLine(K_MARG, Offset(size.width * .1f, 0f), Offset(size.width * .1f, size.height), 2f)
 }
@@ -454,7 +454,7 @@ private fun KladdShell(tab: Int, onTab: (Int) -> Unit, body: @Composable () -> U
 
 /** Streck: ett per 500 steg, i grupper om fem med ett snedstreck. Ritas fram ett i taget. */
 @Composable
-private fun Tally(steps: Int, m: Modifier) {
+internal fun Tally(steps: Int, m: Modifier) {
     val marks = (maxOf(0, steps) / 500).coerceAtMost(40)
     val p = rise(1f, 1800)
     Canvas(m) {
@@ -471,7 +471,7 @@ private fun Tally(steps: Int, m: Modifier) {
 
 /** Ett hjärta som ritas med pennan och sedan slår i pulsens takt. */
 @Composable
-private fun DrawnHeart(m: Modifier) {
+internal fun DrawnHeart(m: Modifier) {
     val p = rise(1f, 1400)
     val beat by rememberInfiniteTransition(label = "slag").animateFloat(1f, 1f, infiniteRepeatable(keyframes { durationMillis = if (S.pulse > 30) 60000 / S.pulse else 900; 1f at 0; 1.12f at 120; 1f at 300 }), label = "s")
     Canvas(m.graphicsLayer { scaleX = beat; scaleY = beat }) {
@@ -485,7 +485,7 @@ private fun DrawnHeart(m: Modifier) {
 
 /** Överstrykningspenna som drar över texten. */
 @Composable
-private fun Hi(text: String, fs: Int, col: Color = K_Y) {
+internal fun Hi(text: String, fs: Int, col: Color = K_Y) {
     val p = rise(1f, 700, 300)
     Box {
         Canvas(Modifier.matchParentSize()) { drawRoundRect(col.copy(alpha = .85f), Offset(-4f, size.height * .45f), Size((size.width + 8f) * p, size.height * .45f), CornerRadius(6f)) }
@@ -502,7 +502,7 @@ private fun Polaroid(m: Modifier, rot: Float, onClick: () -> Unit) {
 }
 
 @Composable
-private fun HandBars(v: List<Int>, m: Modifier, col: Color = K_B) {
+internal fun HandBars(v: List<Int>, m: Modifier, col: Color = K_B) {
     val g = rise(1f, 1100)
     Canvas(m) {
         val mx = maxOf(1, v.maxOrNull() ?: 1).toFloat(); val bw = size.width / v.size.coerceAtLeast(1)
@@ -624,7 +624,7 @@ private fun RadarShell(tab: Int, onTab: (Int) -> Unit, body: @Composable () -> U
 
 /** Dygnet som en urtavla: varje timme är en stråle ut från ringen, längre ju fler steg. Inget snurrar. */
 @Composable
-private fun DayDial(m: Modifier) {
+internal fun DayDial(m: Modifier) {
     val g = rise(1f, 1500)
     val now = nowHour()
     Box(m, contentAlignment = Alignment.Center) {
@@ -658,7 +658,7 @@ private fun DayDial(m: Modifier) {
 
 /** Pulsmätningarna som strålar runt en liten cirkel. */
 @Composable
-private fun PulseRing(m: Modifier) {
+internal fun PulseRing(m: Modifier) {
     val g = rise(1f, 1200)
     Box(m, contentAlignment = Alignment.Center) {
         Canvas(Modifier.fillMaxSize()) {
@@ -674,7 +674,7 @@ private fun PulseRing(m: Modifier) {
 
 /** Veckan som tårtbitar: varje dag en bit, större radie ju fler steg. */
 @Composable
-private fun WeekPie(m: Modifier) {
+internal fun WeekPie(m: Modifier) {
     val g = rise(1f, 1200)
     Box(m, contentAlignment = Alignment.Center) {
         Canvas(Modifier.fillMaxSize()) {

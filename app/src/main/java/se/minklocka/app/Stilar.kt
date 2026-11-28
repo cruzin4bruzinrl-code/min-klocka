@@ -173,7 +173,7 @@ fun StilBackdrop(stil: Stil) {
 }
 
 @Composable
-fun StilHome(stil: Stil, a: Acts) = when (stil) {
+fun StilHome(stil: Stil, a: Acts) = if (stil in SEX) Home6(stil, a) else when (stil) {
     Stil.MATERIAL -> M3Home(a)
     Stil.COCKPIT -> CockpitHome(a)
     Stil.TIDNING -> TidningHome2(a)
@@ -185,7 +185,7 @@ fun StilHome(stil: Stil, a: Acts) = when (stil) {
 }
 
 @Composable
-fun StilHealth(stil: Stil, a: Acts) = when (stil) {
+fun StilHealth(stil: Stil, a: Acts) = if (stil in SEX) Health6(stil, a) else when (stil) {
     Stil.MATERIAL -> M3Health(a)
     Stil.COCKPIT -> CockpitHealth(a)
     Stil.TIDNING -> TidningHealth2(a)
@@ -265,7 +265,7 @@ fun StilPicker(open: Boolean, cur: Stil, onPick: (Stil) -> Unit, onClose: () -> 
                 }
                 Text("Hela appen byter uppställning, meny och rörelser.", color = Color(0xFF9AA0B4), fontSize = 14.sp)
                 Spacer(Modifier.height(14.dp))
-                Stil.entries.forEachIndexed { i, s ->
+                SEX.forEachIndexed { i, s ->
                     val shown = reveal(380, 50 * i)
                     val on = s == cur
                     Row(
@@ -351,7 +351,7 @@ private fun ScanLine() {
 
 /** Mätare med visare som slår ut till värdet och gungar till rätta. */
 @Composable
-private fun Gauge(f: Float, label: String, value: String, m: Modifier, col: Color = CK_CY, big: Boolean = false) {
+internal fun Gauge(f: Float, label: String, value: String, m: Modifier, col: Color = CK_CY, big: Boolean = false) {
     var on by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { delay(120); on = true }
     val a by animateFloatAsState(if (on) f.coerceIn(0f, 1f) else 0f, spring(dampingRatio = .42f, stiffness = 28f), label = "visare")
@@ -381,7 +381,7 @@ private fun Gauge(f: Float, label: String, value: String, m: Modifier, col: Colo
 
 /** Staplar av LED-segment som tänds nedifrån. */
 @Composable
-private fun Led(v: List<Int>, m: Modifier, segs: Int = 10, on: Color = CK_CY) {
+internal fun Led(v: List<Int>, m: Modifier, segs: Int = 10, on: Color = CK_CY) {
     val p = reveal(1200)
     Canvas(m) {
         if (v.isEmpty()) return@Canvas
@@ -446,7 +446,7 @@ private fun CockpitHome(a: Acts) {
 
 /** Pulskurva som ritas fram som på ett oscilloskop, på ett rutnät. */
 @Composable
-private fun Scope(v: List<Int>, m: Modifier, col: Color) {
+internal fun Scope(v: List<Int>, m: Modifier, col: Color) {
     val p = reveal(1600)
     Canvas(m) {
         for (i in 1 until 8) drawLine(CK_DIM.copy(alpha = .4f), Offset(size.width * i / 8, 0f), Offset(size.width * i / 8, size.height), 1f)
@@ -897,7 +897,7 @@ private fun NorrskenShell(tab: Int, onTab: (Int) -> Unit, body: @Composable () -
 
 /** Norrsken som sakta driver fram och tillbaka. */
 @Composable
-private fun Aurora() {
+internal fun Aurora() {
     val t = rememberInfiniteTransition(label = "norrsken")
     val a by t.animateFloat(0f, 1f, infiniteRepeatable(tween(14000, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "a")
     val b by t.animateFloat(0f, 1f, infiniteRepeatable(tween(19000, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "b")
